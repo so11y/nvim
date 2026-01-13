@@ -44,11 +44,21 @@ map("n", "K", "<C-u>", { desc = "Scroll up half page" })
 -- 保存与退出
 map("n", "<A-s>", ":w<CR>", { desc = "Save" })
 
+-- 本文件内搜索
+map("n", "<A-f>", "/", { desc = "Search in file" })
+
 -- 移动行
 map("n", "<A-j>", ":m .+1<CR>", { desc = "Move line down" })
 map("n", "<A-k>", ":m .-2<CR>", { desc = "Move line up" })
 map("v", "<A-j>", ":m '>+1<CR>gv", { desc = "Move selection down" })
 map("v", "<A-k>", ":m '<-2<CR>gv", { desc = "Move selection up" })
+
+-- Redo
+map({ "n", "i", "v" }, "<A-y>", "<cmd>redo<cr>", { desc = "Redo" })
+
+-- Jump back/forward
+map("n", "<A-u>", "<C-o>", { desc = "Jump back" })
+map("n", "<A-y>", "<C-i>", { desc = "Jump forward" })
 
 -- 折叠 (VSCode 是 za，Neovim 原生也是 za，这里显式写出来)
 map("n", "za", "za", { desc = "Toggle Fold" })

@@ -9,11 +9,9 @@ return {
     config = function()
         local cmp = require("cmp")
         cmp.setup({
-            view = {
-                entries = "wildmenu", -- 补全菜单在底部显示，像 VSCode
-            },
             completion = {
-                completeopt = "menu,menuone,noinsert", -- 顶部显示菜单
+                completeopt = "menu,menuone,noinsert",
+                max_items = 10, -- 限制补全项数量
             },
             sources = {
                 { name = "nvim_lsp" },   -- LSP 补全
@@ -21,10 +19,10 @@ return {
                 { name = "path" },       -- 文件路径
             },
             mapping = {
-                -- Tab 选中下一个
-                ["<Tab>"] = cmp.mapping.select_next_item(),
-                -- Shift+Tab 选中上一个
-                ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+                -- Alt+j 选中下一个
+                ["<A-j>"] = cmp.mapping.select_next_item(),
+                -- Alt+k 选中上一个
+                ["<A-k>"] = cmp.mapping.select_prev_item(),
                 -- Enter 确认补全
                 ["<CR>"] = cmp.mapping.confirm({ select = true }),
             },

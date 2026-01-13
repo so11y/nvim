@@ -23,6 +23,9 @@ return {
                         -- ["<Space>"] = "select_default", -- 移除，避免与 leader 键冲突
                     },
                 },
+                preview = {
+                    treesitter = false, -- 禁用 treesitter highlighting 以避免错误
+                },
             },
             extensions = {
                 ["ui-select"] = {

@@ -12,7 +12,7 @@ return {
             highlight = { enable = true },
             indent = { enable = true },
             -- 针对 Vue 的特殊上下文识别
-            autotag = { enable = true },
+            -- autotag = { enable = true }, -- 移到单独插件
             textobjects = {
                 select = {
                     enable = true,
@@ -20,14 +20,12 @@ return {
                     keymaps = {
                         ["ib"] = "@block.inner",
                         ["ab"] = "@block.outer",
-                        ["iq"] = "@string.inner",
-                        ["aq"] = "@string.outer",
                     },
                 },
             },
         })
     end,
     dependencies = {
-        "windwp/nvim-ts-autotag", -- 自动闭合 HTML/Vue 标签 (<div> -> </div>)
+        -- "windwp/nvim-ts-autotag", -- 自动闭合 HTML/Vue 标签 (<div> -> </div>)
     }
 }

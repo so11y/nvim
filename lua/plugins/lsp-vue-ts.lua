@@ -64,11 +64,11 @@ return {
                     -- Space + k: 显示悬浮提示 (Hover)
                     vim.keymap.set("n", "<leader>k", vim.lsp.buf.hover, { desc = "LSP Hover", buffer = ev.buf })
 
-                    -- Space + c + a: 代码操作 (使用 Telescope 显示)
-                    vim.keymap.set({ "n", "v" }, "<leader>ca", "<cmd>Telescope lsp_code_actions<cr>", { desc = "Code Action", buffer = ev.buf })
+                    -- Space + c + a: 代码操作 (使用内置 LSP)
+                    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action", buffer = ev.buf })
 
-                    -- Space + c + r: 重命名 (Rename)
-                    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename", buffer = ev.buf })
+                    -- Space + c + r: 重命名 (使用 inc-rename)
+                    vim.keymap.set("n", "<leader>cr", ":IncRename ", { desc = "Rename", buffer = ev.buf })
 
                     -- gd: 跳转到定义
                     vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to Definition", buffer = ev.buf })
