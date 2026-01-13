@@ -2,9 +2,8 @@ return {
     "rmagatti/auto-session",
     lazy = false, -- 必须设为 false，因为我们需要在启动时立即加载它
     opts = {
-        -- 1. 开启自动恢复 (VS Code 核心体验)
-        -- 打开 nvim 时，如果当前目录有保存过 session，自动打开文件
-        auto_restore_enabled = true,
+        -- 1. 临时禁用自动恢复，避免 swap file 冲突
+        auto_restore_enabled = false,
 
         -- 2. 开启自动保存
         -- 退出 nvim 时，自动保存当前打开的文件和布局

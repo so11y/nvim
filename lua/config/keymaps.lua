@@ -37,8 +37,18 @@ map("n", "<C-a>", "ggVG", { desc = "Select All" })
 -- 取消高亮 (对应 <C-n>)
 map("n", "<C-n>", ":nohl<CR>", { desc = "Clear highlights" })
 
+-- 半屏滚动
+map("n", "J", "<C-d>", { desc = "Scroll down half page" })
+map("n", "K", "<C-u>", { desc = "Scroll up half page" })
+
 -- 保存与退出
 map("n", "<A-s>", ":w<CR>", { desc = "Save" })
+
+-- 移动行
+map("n", "<A-j>", ":m .+1<CR>", { desc = "Move line down" })
+map("n", "<A-k>", ":m .-2<CR>", { desc = "Move line up" })
+map("v", "<A-j>", ":m '>+1<CR>gv", { desc = "Move selection down" })
+map("v", "<A-k>", ":m '<-2<CR>gv", { desc = "Move selection up" })
 
 -- 折叠 (VSCode 是 za，Neovim 原生也是 za，这里显式写出来)
 map("n", "za", "za", { desc = "Toggle Fold" })

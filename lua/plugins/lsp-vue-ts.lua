@@ -11,11 +11,11 @@ return {
         dependencies = { "williamboman/mason.nvim" },
         opts = {
             ensure_installed = {
-                "vue-language-server",
-                "typescript-language-server",
-                "eslint-lsp",
-                "html-lsp",
-                "css-lsp",
+                "volar",
+                "tsserver",
+                "eslint",
+                "html",
+                "cssls",
             },
             automatic_installation = true,
         },

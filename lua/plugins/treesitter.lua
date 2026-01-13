@@ -12,7 +12,19 @@ return {
             highlight = { enable = true },
             indent = { enable = true },
             -- 针对 Vue 的特殊上下文识别
-            autotag = { enable = true }, 
+            autotag = { enable = true },
+            textobjects = {
+                select = {
+                    enable = true,
+                    lookahead = true,
+                    keymaps = {
+                        ["ib"] = "@block.inner",
+                        ["ab"] = "@block.outer",
+                        ["iq"] = "@string.inner",
+                        ["aq"] = "@string.outer",
+                    },
+                },
+            },
         })
     end,
     dependencies = {

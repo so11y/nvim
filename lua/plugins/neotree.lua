@@ -16,7 +16,10 @@ return {
             window = {
                 position = "left",
                 width = 30,
-
+                mappings = {
+                    ["<space>"] = "open",
+                    ["<cr>"] = "open", -- 保持回车也可以打开
+                },
             },
             filesystem = {
                 bind_to_cwd = true, 

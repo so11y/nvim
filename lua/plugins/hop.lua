@@ -1,7 +1,12 @@
 return {
-    "folke/flash.nvim",
+    "phaazon/hop.nvim",
+    branch = "v2", -- optional but strongly recommended
     event = "VeryLazy",
-    opts = {}, -- 使用默认配置
+    config = function()
+        require("hop").setup({
+            keys = "etovxqpdygfblzhckisuran",
+        })
+    end,
     keys = {
         -- ==========================================
         -- 1. [Space + j + w] 普通跳转 (Jump Word)
@@ -9,28 +14,26 @@ return {
         {
             "<leader>jw",
             mode = { "n", "x", "o" },
-            function() 
-                -- 默认的 flash.jump() 允许你输入字符来定位
-                -- 这比单纯跳单词更灵活
-                require("flash").jump() 
+            function()
+                require("hop").hint_words()
             end,
-            desc = "Flash Jump"
+            desc = "Hop Jump to Word"
         },
 
         -- ==========================================
         -- 2. [Space + s + w] 选中到跳转点 (Select to Word)
         -- ==========================================
-        
+
         -- 场景 A: 如果你在普通模式 (Normal Mode)
         -- 动作: 自动按下 'v' 进入 Visual 模式 -> 触发跳转 -> 形成选区
         {
             "<leader>sw",
-            mode = { "n" }, 
+            mode = { "n" },
             function()
                 vim.cmd("normal! v") -- 模拟按下 v
-                require("flash").jump()
+                require("hop").hint_words()
             end,
-            desc = "Visual Select to Jump"
+            desc = "Visual Select to Word"
         },
 
         -- 场景 B: 如果你已经在可视模式 (Visual Mode)
@@ -38,11 +41,10 @@ return {
         {
             "<leader>sw",
             mode = { "x" },
-            function() 
-                require("flash").jump() 
+            function()
+                require("hop").hint_words()
             end,
-            desc = "Extend Selection to Jump"
+            desc = "Extend Selection to Word"
         },
-        
     },
 }

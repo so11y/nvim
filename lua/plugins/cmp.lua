@@ -1,5 +1,4 @@
--- nvim-cmp: 代码补全
-{
+return {
     "hrsh7th/nvim-cmp",
     dependencies = {
         "hrsh7th/cmp-nvim-lsp", -- LSP 补全源
@@ -10,6 +9,9 @@
     config = function()
         local cmp = require("cmp")
         cmp.setup({
+            view = {
+                entries = "wildmenu", -- 补全菜单在底部显示，像 VSCode
+            },
             completion = {
                 completeopt = "menu,menuone,noinsert", -- 顶部显示菜单
             },
