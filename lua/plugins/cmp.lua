@@ -1,36 +1,81 @@
 return {
     "hrsh7th/nvim-cmp",
     dependencies = {
-        "hrsh7th/cmp-nvim-lsp", -- LSP 补全源
-        "hrsh7th/cmp-buffer",   -- 缓冲区补全源
-        "hrsh7th/cmp-path",     -- 路径补全源
+        "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-buffer",
+        "hrsh7th/cmp-path",
+        "hrsh7th/cmp-cmdline",
     },
     event = "InsertEnter",
     config = function()
         local cmp = require("cmp")
+
+        -- 过滤重复项
+        local check_backspace = function()
+            local col = vim.fn.col(".") - 1
+            return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
+        end
+
         cmp.setup({
             completion = {
                 completeopt = "menu,menuone,noinsert",
-                max_items = 10, -- 限制补全项数量
+                max_items = 15,
             },
             sources = {
-                { name = "nvim_lsp" },   -- LSP 补全
-                { name = "buffer" },     -- 缓冲区内容
-                { name = "path" },       -- 文件路径
+                { name = "nvim_lsp", priority = 100 },
+                { name = "buffer", priority = 80, keyword_length = 4 },
+                { name = "path", priority = 60 },
             },
             mapping = {
-                -- Alt+j 选中下一个
                 ["<A-j>"] = cmp.mapping.select_next_item(),
-                -- Alt+k 选中上一个
                 ["<A-k>"] = cmp.mapping.select_prev_item(),
-                -- Enter 确认补全
                 ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                ["<C-n>"] = cmp.mapping.select_next_item(),
+                ["<C-p>"] = cmp.mapping.select_prev_item(),
+                ["<C-e>"] = cmp.mapping.abort(),
+                ["<C-Space>"] = cmp.mapping.complete(),
+                ["<Tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_next_item()
+                    elseif check_backspace() then
+                        fallback()
+                    else
+                        fallback()
+                    end
+                end, { "i", "s" }),
+                ["<S-Tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_prev_item()
+                    else
+                        fallback()
+                    end
+                end, { "i", "s" }),
             },
             formatting = {
                 format = function(entry, vim_item)
-                    -- 补全项显示图标（如果有 devicons）
+                    -- 去除重复的 LSP 补全项
+                    if entry.source.name == "nvim_lsp" then
+                        vim_item.dup = 0
+                    end
                     return vim_item
                 end,
+            },
+            experimental = {
+                ghost_text = true,
+            },
+        })
+
+        -- 命令行补全
+        cmp.setup.cmdline(":", {
+            sources = {
+                { name = "cmdline" },
+                { name = "path" },
+            },
+        })
+
+        cmp.setup.cmdline("/", {
+            sources = {
+                { name = "buffer" },
             },
         })
     end,

@@ -1,31 +1,42 @@
 return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    config = function()
-        require("nvim-treesitter.configs").setup({
-            -- 确保安装了 vue 和 typescript 的解析器
-            ensure_installed = { 
-                "vue", "typescript", "javascript", "html", "css", 
-                "json", "lua", "vim", "vimdoc" 
-            },
-            auto_install = true,
-            highlight = { enable = true },
-            indent = { enable = true },
-            -- 针对 Vue 的特殊上下文识别
-            -- autotag = { enable = true }, -- 移到单独插件
-            textobjects = {
-                select = {
-                    enable = true,
-                    lookahead = true,
-                    keymaps = {
-                        ["ib"] = "@block.inner",
-                        ["ab"] = "@block.outer",
-                    },
+    dependencies = {
+        -- ✅ 必须依赖：textobjects 插件
+        "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+    -- ✅ 使用 opts 来定义配置表，而不是写死在 setup 里
+    opts = {
+        install = {
+            prefer_git = true,
+        },
+        -- 确保安装的解析器
+        ensure_installed = {
+            "vue", "typescript", "javascript", "html", "css",
+            "json", "lua", "vim", "vimdoc", "bash", "markdown"
+        },
+        auto_install = true,
+        highlight = { enable = true },
+        indent = { enable = true },
+        
+        -- textobjects 配置
+        textobjects = {
+            select = {
+                enable = true,
+                lookahead = true, -- 自动跳到下一个匹配项
+                keymaps = {
+                    -- 块选择
+                    ["ib"] = "@block.inner",
+                    ["ab"] = "@block.outer",
+                    -- 引号选择 (你的目标 viq)
+                    ["iq"] = "@string.inner",
+                    ["aq"] = "@string.outer",
                 },
             },
-        })
+        },
+    },
+    -- ✅ 标准 config 函数：接收上面的 opts 并传给 setup
+    config = function(_, opts)
+        require("nvim-treesitter.configs").setup(opts)
     end,
-    dependencies = {
-        -- "windwp/nvim-ts-autotag", -- 自动闭合 HTML/Vue 标签 (<div> -> </div>)
-    }
 }
