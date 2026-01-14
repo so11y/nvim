@@ -37,7 +37,7 @@ return {
     },
     -- ✅ 标准 config 函数：接收上面的 opts 并传给 setup
     config = function(_, opts)
-        require('nvim-treesitter.install').compilers = {"zig"}
+        require('nvim-treesitter.install').compilers = {"clang"}
         require("nvim-treesitter.configs").setup(opts)
     end
 }
