@@ -74,7 +74,9 @@ map("n", "<A-d>", "dd", { desc = "Delete Line" }) -- 用 Alt+d 删行
 map("n", "<A-a>", "ggVG", { desc = "Select All" })
 
 -- Alt + w: 关闭当前 Buffer
-vim.keymap.set("n", "<A-w>", "<cmd>bdelete<cr>", { desc = "Close Buffer" })
+-- map("n", "<A-w>", "<cmd>bdelete<cr>", { desc = "Close Buffer" })
+
+-- vim.keymap.set("n", "<A-w>", function() require("snacks").bufdelete() end, { desc = "Close Buffer" })
 
 -- 系统剪贴板复制粘贴
 map("v", "<A-c>", '"+y', { desc = "Copy to system clipboard" })
