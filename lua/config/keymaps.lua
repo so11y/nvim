@@ -69,40 +69,9 @@ map("n", "<A-y>", "<C-i>", { desc = "Jump forward" })
 -- 既然禁用了 u 和 dd，这里必须补上对应的 Alt 键位
 map({ "n", "i", "v" }, "<A-z>", "<cmd>undo<cr>", { desc = "Undo" })
 map({ "n", "i", "v" }, "<A-y>", "<cmd>redo<cr>", { desc = "Redo" })
--- map("n", "<A-w>", "<cmd>close<cr>", { desc = "Close current window" })
+map("n", "<A-w>", "<cmd>close<cr>", { desc = "Close current window" })
 map("n", "<A-d>", "dd", { desc = "Delete Line" }) -- 用 Alt+d 删行
 map("n", "<A-a>", "ggVG", { desc = "Select All" })
-
-map("n", "<A-w>", function()
-    local current_win = vim.api.nvim_get_current_win()
-    
-    -- 1. 判断是否为浮动窗口 (relative 属性不为空即为浮动)
-    local config = vim.api.nvim_win_get_config(current_win)
-    if config.relative ~= "" then
-        -- 强制关闭浮动窗口，不检查保存状态 (true)
-        vim.api.nvim_win_close(current_win, true)
-        return
-    end
-
-    -- 2. 获取当前所有"正常"窗口 (排除浮动窗口)
-    local all_wins = vim.api.nvim_list_wins()
-    local normal_wins_count = 0
-    for _, w in ipairs(all_wins) do
-        local w_config = vim.api.nvim_win_get_config(w)
-        if w_config.relative == "" then
-            normal_wins_count = normal_wins_count + 1
-        end
-    end
-
-    -- 3. 根据窗口数量决定动作
-    if normal_wins_count > 1 then
-        -- 还有其他分屏，只关闭当前
-        vim.cmd("close")
-    -- else
-        -- 只剩最后一个窗口了，执行退出
-        -- vim.cmd("quit")
-    end
-end, { desc = "Smart close: floating -> window -> quit" })
 
 -- 系统剪贴板复制粘贴
 map("v", "<A-c>", '"+y', { desc = "Copy to system clipboard" })

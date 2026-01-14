@@ -113,7 +113,7 @@ return {
                 callback = function(ev)
                     local opts = { buffer = ev.buf }
                     -- 这里的 gd 先用默认的，排除自定义函数报错的可能性
-                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+                    vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<cr>", opts)
                     vim.keymap.set("n", "<Space>k", vim.lsp.buf.hover, opts)
                     vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<cr>", opts)
                     vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
