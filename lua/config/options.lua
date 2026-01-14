@@ -6,6 +6,8 @@ vim.opt.cmdheight = 1
 vim.opt.number = true
 vim.opt.relativenumber = true
 
+vim.opt.swapfile = false
+
 -- 符号索引
 vim.opt.tagstack = true
 
@@ -15,6 +17,16 @@ vim.cmd([[
     set matchpairs+=<:>
     set matchtime=100
 ]])
+
+-- 窗口跳转快捷键
+-- Ctrl + j 下跳
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
+-- Ctrl + k 上跳
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
+-- Ctrl + h 左跳 (可以跳到 Neo-tree)
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
+-- Ctrl + l 右跳
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 
 -- 文件类型检测
 vim.filetype.add({
