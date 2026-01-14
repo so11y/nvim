@@ -1,6 +1,17 @@
 return {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
+    keys = {
+        {
+            -- 按键：Alt + Shift + f (如果你按的是大写F) 或者 Alt + f
+            "<A-F>", 
+            function()
+                require("conform").format({ lsp_fallback = true })
+            end,
+            mode = "n",
+            desc = "Format buffer",
+        },
+    },
     opts = {
         formatters_by_ft = {
             lua = { "stylua" },

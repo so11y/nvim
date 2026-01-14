@@ -8,6 +8,11 @@ vim.opt.relativenumber = true
 
 vim.opt.swapfile = false
 
+
+vim.opt.tabstop = 2
+-- vim.opt.softtabstop = 2
+-- vim.opt.shiftwidth = 2
+-- vim.opt.expandtab = true -- 将 Tab 键转换为空格
 -- 符号索引
 vim.opt.tagstack = true
 
