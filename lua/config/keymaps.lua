@@ -69,7 +69,7 @@ map("n", "za", "za", { desc = "Toggle Fold" })
 -- 既然禁用了 u 和 dd，这里必须补上对应的 Alt 键位
 map({ "n", "i", "v" }, "<A-z>", "<cmd>undo<cr>", { desc = "Undo" })
 map({ "n", "i", "v" }, "<A-y>", "<cmd>redo<cr>", { desc = "Redo" })
-map("n", "<A-w>", "<cmd>Bdelete<cr>", { desc = "Close Buffer Safely" })
+map("n", "<A-w>", "<cmd>close<cr>", { desc = "Close current window" })
 map("n", "<A-d>", "dd", { desc = "Delete Line" }) -- 用 Alt+d 删行
 map("n", "<A-a>", "ggVG", { desc = "Select All" })
 
@@ -89,3 +89,7 @@ map("n", "<leader>ff", "<cmd>Telescope live_grep<cr>", { desc = "Live Grep" })
 
 -- 问题诊断 (对应 workbench.actions.view.problems)
 map("n", "<leader>xx", "<cmd>Telescope diagnostics<cr>", { desc = "Diagnostics" })
+
+-- 诊断跳转 (prev/next diagnostic)
+map("n", "gdj", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
+map("n", "gdk", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })

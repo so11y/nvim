@@ -9,7 +9,7 @@ return {
     keys = {
         { "<A-b>", "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
         -- 绑定快捷键：Alt + e 打开/关闭文件树 (符合你的 VSCode 习惯)
-        { "<A-e>", "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
+       { "<A-e>", "<cmd>Neotree reveal<cr>", desc = "Reveal File" },
     },
     config = function()
         require("neo-tree").setup({

@@ -19,37 +19,16 @@ return {
         cmp.setup({
             completion = {
                 completeopt = "menu,menuone,noinsert",
-                max_items = 15,
+                max_items = 10,
             },
             sources = {
                 { name = "nvim_lsp", priority = 100 },
-                { name = "buffer", priority = 80, keyword_length = 4 },
                 { name = "path", priority = 60 },
             },
             mapping = {
                 ["<A-j>"] = cmp.mapping.select_next_item(),
                 ["<A-k>"] = cmp.mapping.select_prev_item(),
                 ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                ["<C-n>"] = cmp.mapping.select_next_item(),
-                ["<C-p>"] = cmp.mapping.select_prev_item(),
-                ["<C-e>"] = cmp.mapping.abort(),
-                ["<C-Space>"] = cmp.mapping.complete(),
-                ["<Tab>"] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_next_item()
-                    elseif check_backspace() then
-                        fallback()
-                    else
-                        fallback()
-                    end
-                end, { "i", "s" }),
-                ["<S-Tab>"] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_prev_item()
-                    else
-                        fallback()
-                    end
-                end, { "i", "s" }),
             },
             formatting = {
                 format = function(entry, vim_item)

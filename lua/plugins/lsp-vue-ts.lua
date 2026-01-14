@@ -33,76 +33,61 @@ return {
             local lspconfig = require("lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-            -- 诊断配置
-            vim.diagnostic.config({
-                virtual_text = { prefix = "●" },
-                signs = true,
-                underline = true,
-                update_in_insert = false,
-                severity_sort = true,
-            })
+            -- 1. 准备路径 (使用最稳妥的拼接方式)
+            local mason_path = vim.fn.stdpath("data") .. "/mason"
+            local vue_language_server_path = mason_path .. "/packages/vue-language-server/node_modules/@vue/language-server"
+            
+            -- [关键] 告诉 Volar TypeScript 库在哪里 (解决补全的核心)
+            -- 根据 mason 安装的 vtsls 路径推导 typescript 路径
+            local typescript_path = mason_path .. "/packages/vtsls/node_modules/typescript/lib"
 
-            -- 快捷键定义 (LspAttach)
-            vim.api.nvim_create_autocmd("LspAttach", {
-                group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-                callback = function(ev)
-                    local opts = { buffer = ev.buf }
-                    vim.keymap.set("n", "<Space>k", vim.lsp.buf.hover, opts)
-                    vim.keymap.set("n", "gd", function()
-                        local params = vim.lsp.util.make_position_params()
-                        vim.lsp.buf_request(0, 'textDocument/definition', params, function(err, result)
-                            if err then return end
-                            if not result or vim.tbl_isempty(result) then return end
-                            if vim.tbl_count(result) == 1 then
-                                vim.lsp.util.jump_to_location(result[1], 'utf-8', true)
-                            else
-                                vim.cmd('Telescope lsp_definitions')
-                            end
-                        end)
-                    end, opts)
-                    vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<cr>", opts)
-                    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
-                    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-                end,
-            })
-
-            -- [Vue Volar 配置]
-            lspconfig.vue_ls.setup({
-                capabilities = capabilities,
-                init_options = {
-                    vue = {
-                        hybridMode = false,
-                    },
-                },
-            })
-
-            -- [TypeScript 配置 - vtsls (使用 vtsls 替代 ts_ls)]
-            local vue_language_server_path = vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
-
-            local vue_plugin = {
-                name = "@vue/typescript-plugin",
-                location = vue_language_server_path,
-                languages = { "vue" },
-            }
-
+            -- 2. [TypeScript 配置 - vtsls]
+            -- 负责 JS/TS 部分 (包括 Vue 里的 script)
             lspconfig.vtsls.setup({
                 capabilities = capabilities,
                 settings = {
                     vtsls = {
                         tsserver = {
-                            globalPlugins = { vue_plugin },
+                            globalPlugins = {
+                                {
+                                    name = "@vue/typescript-plugin",
+                                    location = vue_language_server_path,
+                                    languages = { "vue" },
+                                    configNamespace = "typescript",
+                                    enableForWorkspaceTypeScriptVersions = true,
+                                },
+                            },
+                        },
+                        experimental = {
+                            completion = {
+                                enableServerSideFuzzyMatch = true,
+                            },
                         },
                     },
                 },
                 filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
             })
 
-            -- [HTML/CSS/ESLint]
-            lspconfig.html.setup({
+            -- 3. [Vue Volar 配置]
+            -- 负责 HTML 模板和 CSS 部分
+            lspconfig.volar.setup({
                 capabilities = capabilities,
-                cmd = { "vscode-html-language-server", "--stdio" },
+                init_options = {
+                    vue = {
+                        -- ✅ 必须设为 true，把 JS/TS 交给 vtsls 处理
+                        hybridMode = true,
+                    },
+                    typescript = {
+                        -- ✅ 显式指定 TSDK 路径，防止找不到 TS 导致无法补全
+                        tsdk = typescript_path
+                    }
+                },
             })
+
+            -- 4. [其他服务]
+            lspconfig.html.setup({ capabilities = capabilities })
             lspconfig.cssls.setup({ capabilities = capabilities })
+            lspconfig.emmet_ls.setup({ capabilities = capabilities })
             lspconfig.eslint.setup({
                 capabilities = capabilities,
                 on_attach = function(client, bufnr)
@@ -112,10 +97,33 @@ return {
                     })
                 end,
             })
+
+            -- 5. 诊断配置
+            vim.diagnostic.config({
+                virtual_text = { prefix = "●" },
+                signs = true,
+                underline = true,
+                update_in_insert = false,
+                severity_sort = true,
+            })
+
+            -- 6. 快捷键 (简化版，先确保功能正常)
+            vim.api.nvim_create_autocmd("LspAttach", {
+                group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+                callback = function(ev)
+                    local opts = { buffer = ev.buf }
+                    -- 这里的 gd 先用默认的，排除自定义函数报错的可能性
+                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+                    vim.keymap.set("n", "<Space>k", vim.lsp.buf.hover, opts)
+                    vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<cr>", opts)
+                    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
+                    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+                end,
+            })
         end,
     },
 
-    -- 3. 格式化配置 (Conform)
+    -- 3. 格式化配置 (Conform) - 保持不变
     {
         "stevearc/conform.nvim",
         event = { "BufWritePre" },
