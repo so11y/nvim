@@ -46,6 +46,28 @@ return {
 
         -- 命令行补全
         cmp.setup.cmdline(":", {
+            mapping = cmp.mapping.preset.cmdline({
+                -- Tab: 如果菜单开了，选下一个；如果没开，尝试唤起补全
+                ["<Tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_next_item()
+                    else
+                        cmp.complete()
+                    end
+                end, { "c" }),
+
+                -- Shift+Tab: 选上一个1
+                ["<S-Tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_prev_item()
+                    else
+                        fallback()
+                    end
+                end, { "c" }),
+
+                -- 回车: 确认补全
+                ["<CR>"] = cmp.mapping.confirm({ select = true }),
+            }),
             sources = cmp.config.sources({
                 { name = "path" }
             }, {
