@@ -69,9 +69,12 @@ map("n", "<A-y>", "<C-i>", { desc = "Jump forward" })
 -- 既然禁用了 u 和 dd，这里必须补上对应的 Alt 键位
 map({ "n", "i", "v" }, "<A-z>", "<cmd>undo<cr>", { desc = "Undo" })
 map({ "n", "i", "v" }, "<A-y>", "<cmd>redo<cr>", { desc = "Redo" })
-map("n", "<A-w>", "<cmd>close<cr>", { desc = "Close current window" })
+-- map("n", "<A-w>", "<cmd>close<cr>", { desc = "Close current window" })
 map("n", "<A-d>", "dd", { desc = "Delete Line" }) -- 用 Alt+d 删行
 map("n", "<A-a>", "ggVG", { desc = "Select All" })
+
+-- Alt + w: 关闭当前 Buffer
+vim.keymap.set("n", "<A-w>", "<cmd>bdelete<cr>", { desc = "Close Buffer" })
 
 -- 系统剪贴板复制粘贴
 map("v", "<A-c>", '"+y', { desc = "Copy to system clipboard" })
