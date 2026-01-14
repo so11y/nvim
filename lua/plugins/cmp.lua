@@ -46,12 +46,12 @@ return {
 
         -- 命令行补全
         cmp.setup.cmdline(":", {
-            sources = {
-                { name = "cmdline" },
-                { name = "path" },
-            },
+            sources = cmp.config.sources({
+                { name = "path" }
+            }, {
+                { name = "cmdline" }
+            }),
         })
-
         cmp.setup.cmdline("/", {
             sources = {
                 { name = "buffer" },
