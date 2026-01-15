@@ -34,6 +34,7 @@ return {{
             }
         end,
         integrations = {
+            bufferline = true,
             -- barbar = true,
             blink_cmp = true,
             -- gitsigns = true,
@@ -47,7 +48,7 @@ return {{
             },
             -- which_key = true,
             -- flash = true,
-            lsp_trouble = true,
+            lsp_trouble = true
             -- dap = true,
             -- dap_ui = true
         }

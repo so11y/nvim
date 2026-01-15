@@ -60,17 +60,14 @@ return { -- 1. Mason & LSP 相关
             capabilities = capabilities,
             init_options = {
                 vue = {
-                    -- ✅ 必须设为 true，把 JS/TS 交给 vtsls 处理
                     hybridMode = true
                 },
                 typescript = {
-                    -- ✅ 显式指定 TSDK 路径，防止找不到 TS 导致无法补全
                     tsdk = typescript_path
                 }
             }
         })
 
-        -- 4. [其他服务]
         lspconfig.html.setup({
             capabilities = capabilities
         })
@@ -110,7 +107,6 @@ return { -- 1. Mason & LSP 相关
                 }
                 -- 这里的 gd 先用默认的，排除自定义函数报错的可能性
                 vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<cr>", opts)
-                vim.keymap.set("n", "<Space>k", vim.lsp.buf.hover, opts)
                 vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<cr>", opts)
                 vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
                 vim.keymap.set({"n", "v"}, "<leader>ca", function()

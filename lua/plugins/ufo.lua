@@ -76,11 +76,24 @@ return {{{
             set_buf_foldlevel(foldlevel)
         end
 
-        -- Keymaps
+        local peek_winid = nil
         vim.keymap.set("n", "<leader>k", function()
-            local winid = require("ufo").peekFoldedLinesUnderCursor()
-            if not winid then
-                vim.lsp.buf.hover()
+            -- 检查预览窗是否已经打开
+            if peek_winid and vim.api.nvim_win_is_valid(peek_winid) then
+                -- 如果已经开了，就把光标传进去
+                vim.api.nvim_set_current_win(peek_winid)
+                local bufnr = vim.api.nvim_win_get_buf(peek_winid)
+                vim.keymap.set("n", "<ESC>", "<cmd>close<CR>", {
+                    buffer = bufnr,
+                    silent = true,
+                    desc = "关闭预览窗"
+                })
+                peek_winid = nil
+            else
+                peek_winid = require('ufo').peekFoldedLinesUnderCursor()
+                if not peek_winid then
+                    vim.lsp.buf.hover()
+                end
             end
         end)
 

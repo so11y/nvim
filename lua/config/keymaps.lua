@@ -27,13 +27,10 @@ map({"n", "v"}, "ge", "G", {
     desc = "Go to end of file"
 })
 
--- 退出插入模式
-map("i", "jk", "<Esc>", {
-    desc = "Exit insert mode"
-})
 map("n", "<CR>", "a", {
     desc = "Enter insert mode"
 }) -- 普通模式回车进入编辑（不换行）
+
 map("i", "<CR>", "<CR>", {
     desc = "New line"
 }) -- 插入模式回车换行
@@ -61,7 +58,8 @@ map('n', '<leader>sh', ':split<CR>') -- 纵向开（水平分屏）
 
 -- 保存与退出
 map("n", "<A-s>", ":w<CR>", {
-    desc = "Save"
+    desc = "Save",
+    silent = true
 })
 
 -- 本文件内搜索
@@ -71,16 +69,20 @@ map("n", "<A-f>", "/", {
 
 -- 移动行
 map("n", "<A-j>", ":m .+1<CR>", {
-    desc = "Move line down"
+    desc = "Move line down",
+    silent = true
 })
 map("n", "<A-k>", ":m .-2<CR>", {
-    desc = "Move line up"
+    desc = "Move line up",
+    silent = true
 })
 map("v", "<A-j>", ":m '>+1<CR>gv", {
-    desc = "Move selection down"
+    desc = "Move selection down",
+    silent = true
 })
 map("v", "<A-k>", ":m '<-2<CR>gv", {
-    desc = "Move selection up"
+    desc = "Move selection up",
+    silent = true
 })
 
 -- Redo
@@ -109,7 +111,6 @@ map({"n", "i", "v"}, "<A-z>", "<cmd>undo<cr>", {
 map({"n", "i", "v"}, "<A-y>", "<cmd>redo<cr>", {
     desc = "Redo"
 })
--- map("n", "<A-w>", "<cmd>close<cr>", { desc = "Close current window" })
 map("n", "<A-d>", "dd", {
     desc = "Delete Line"
 }) -- 用 Alt+d 删行
