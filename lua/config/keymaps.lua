@@ -1,10 +1,5 @@
 local map = vim.keymap.set
 
--- 1. 基础设置 (对应 vim.json 中的 settings)
-vim.g.mapleader = " " -- "vim.leader": "<space>"
-vim.opt.clipboard = "unnamedplus" -- "vim.useSystemClipboard": true
-vim.opt.hlsearch = true -- "vim.hlsearch": true
-
 -- =======================================================
 -- 2. 禁用原生 Vim 编辑键 (对应 vim.json 中的 <nop> 映射)
 -- =======================================================
@@ -168,4 +163,22 @@ map("n", "gdj", vim.diagnostic.goto_prev, {
 })
 map("n", "gdk", vim.diagnostic.goto_next, {
     desc = "Go to next diagnostic"
+})
+
+-- 窗口跳转快捷键
+-- Ctrl + j 下跳
+vim.keymap.set("n", "<C-j>", "<C-w>j", {
+    desc = "Go to lower window"
+})
+-- Ctrl + k 上跳
+vim.keymap.set("n", "<C-k>", "<C-w>k", {
+    desc = "Go to upper window"
+})
+-- Ctrl + h 左跳 (可以跳到 Neo-tree)
+vim.keymap.set("n", "<C-h>", "<C-w>h", {
+    desc = "Go to left window"
+})
+-- Ctrl + l 右跳
+vim.keymap.set("n", "<C-l>", "<C-w>l", {
+    desc = "Go to right window"
 })
