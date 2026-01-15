@@ -6,16 +6,23 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- 加载 lazy，并告诉它去 lua/plugins 目录找插件
 require("lazy").setup({
-    spec = { -- 1. 扫描 lua/plugins 目录下的所有文件
-    {
+    spec = {{
         import = "plugins"
-    }, -- 2. 特别重要：确保它也扫描你新建的 languages 文件夹
-    {
+    }, {
         import = "plugins.languages"
+    }, {
+        import = "plugins.completion"
+    }, {
+        import = "plugins.editor"
+    }, {
+        import = "plugins.navigation"
+    }, {
+        import = "plugins.tool"
+    }, {
+        import = "plugins.ui"
     }},
     change_detection = {
-        notify = false -- 关闭每次修改配置时的通知
+        notify = false
     }
 })
