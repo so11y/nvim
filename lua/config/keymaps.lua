@@ -194,3 +194,21 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", {
 vim.keymap.set("n", "<C-l>", "<C-w>l", {
     desc = "Go to right window"
 })
+
+-- 窗口大小调整快捷键
+-- Alt + up 增加窗口高度
+vim.keymap.set("n", "<A-Up>", "<C-w>+", {
+    desc = "Increase window height"
+})
+-- Alt + down 减少窗口高度
+vim.keymap.set("n", "<A-Down>", "<C-w>-", {
+    desc = "Decrease window height"
+})
+-- Alt + left 减少窗口宽度
+vim.keymap.set("n", "<A-Left>", "<C-w><", {
+    desc = "Decrease window width"
+})
+-- Alt + right 增加窗口宽度
+vim.keymap.set("n", "<A-Right>", "<C-w>>", {
+    desc = "Increase window width"
+})
