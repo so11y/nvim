@@ -1,7 +1,7 @@
 return {
     "nvim-telescope/telescope.nvim",
     branch = "0.1.x",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-ui-select.nvim" },
+    dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope-ui-select.nvim"},
     config = function()
         local telescope = require("telescope")
         local actions = require("telescope.actions")
@@ -14,24 +14,28 @@ return {
                 layout_strategy = "horizontal",
                 layout_config = {
                     width = 0.95,
-                    height = 0.95,
-                },
-                mappings = {
-                    i = {
-                        -- a 确认选择并进入
-                        ["a"] = actions.select_default,
-                        -- ["<Space>"] = "select_default", -- 移除，避免与 leader 键冲突
-                    },
+                    height = 0.95
                 },
                 preview = {
-                    treesitter = false, -- 禁用 treesitter highlighting 以避免错误
+                    treesitter = false -- 禁用 treesitter highlighting 以避免错误
+                }
+            },
+            pickers = {
+                find_files = {
+                    find_command = {"rg", "--files", "--hidden", "-g", "!.git/*"},
+                    -- 你也可以在这里改变这个搜索器的界面主题
+                    theme = "dropdown",
+                    -- 是否显示隐藏文件
+                    hidden = true
                 },
+
+                live_grep = {
+                    glob_pattern = {"!.git/*", "!node_modules/*"}
+                }
             },
             extensions = {
-                ["ui-select"] = {
-                    require("telescope.themes").get_ivy({}),
-                },
-            },
+                ["ui-select"] = {require("telescope.themes").get_ivy({})}
+            }
         })
-    end,
+    end
 }

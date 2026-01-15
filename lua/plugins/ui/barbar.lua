@@ -99,11 +99,11 @@ return {
         "<cmd>BufferGoto 3<cr>",
         desc = "Go to Buffer 3"
     }, -- 关闭标签
-    {
-        "<A-w>",
-        "<cmd>BufferClose<cr>",
-        desc = "Close Buffer"
-    }, -- 钉住标签
+    -- {
+    --     "<A-w>",
+    --     "<cmd>BufferClose<cr>",
+    --     desc = "Close Buffer"
+    -- }, -- 钉住标签
     {
         "<A-p>",
         "<cmd>BufferPin<cr>",

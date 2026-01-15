@@ -4,7 +4,6 @@ return {
     config = function()
         require("lualine").setup({
             options = {
-                -- 自动匹配你的 tokyonight 主题
                 theme = "auto", 
                 -- 分隔符风格 (看起来像能量条)
                 component_separators = { left = '|', right = '|' },

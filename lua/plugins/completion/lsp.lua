@@ -20,10 +20,6 @@ return { -- 1. Mason & LSP 相关
     dependencies = {"williamboman/mason-lspconfig.nvim", "hrsh7th/cmp-nvim-lsp"},
     opts = {
         servers = {
-            -- 1. 在这里显式禁用 vue_ls，确保它哪怕安装了也不许动
-            vue_ls = {
-                enabled = false
-            },
             html = {},
             cssls = {},
             eslint = {}
