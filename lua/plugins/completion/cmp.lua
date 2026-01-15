@@ -23,7 +23,7 @@ return {
             -- }, -- ✅ 签名提示 (参数提示) 放在最前面
             {
                 name = "nvim_lsp",
-                priority = 100,
+                priority = 100
             }, {
                 name = "path",
                 priority = 60
