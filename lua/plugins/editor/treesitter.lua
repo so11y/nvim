@@ -26,11 +26,11 @@ return {
                 lookahead = true, -- 自动跳到下一个匹配项
                 keymaps = {
                     -- 块选择
-                    ["ib"] = "@block.inner",
-                    ["ab"] = "@block.outer",
-                    -- 引号选择 (你的目标 viq)
-                    ["iq"] = "@string.inner",
-                    ["aq"] = "@string.outer"
+                    -- ["ib"] = "@block.inner",
+                    -- ["ab"] = "@block.outer",
+                    -- -- 引号选择 (你的目标 viq)
+                    -- ["aq"] = "@string.outer",
+                    -- ["iq"] = "@string.outer" -- 如果没有 .inner，先用 .outer 测试
                 }
             }
         }

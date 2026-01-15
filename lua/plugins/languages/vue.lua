@@ -63,6 +63,6 @@ return { -- 1. 语法高亮：扩展 Treesitter
             filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue'}
         })
         -- vim.lsp.enable('vtsls')
-        vim.lsp.enable('vue_ls')
+        -- vim.lsp.enable('vue_ls')
     end
 }}

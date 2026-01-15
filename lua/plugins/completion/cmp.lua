@@ -3,8 +3,8 @@ return {
     dependencies = {"hrsh7th/cmp-nvim-lsp", -- LSP 补全源
     "hrsh7th/cmp-buffer", -- Buffer 补全源
     "hrsh7th/cmp-path", -- 路径补全源
-    "hrsh7th/cmp-cmdline", -- 命令行补全源
-    "hrsh7th/cmp-nvim-lsp-signature-help" -- ✅ 新增：函数签名提示源
+    "hrsh7th/cmp-cmdline" -- 命令行补全源
+    -- "hrsh7th/cmp-nvim-lsp-signature-help" -- ✅ 新增：函数签名提示源
     },
     event = {"InsertEnter", "CmdlineEnter"},
     config = function()
@@ -18,12 +18,12 @@ return {
             },
 
             -- 2. 补全源设置
-            sources = cmp.config.sources({{
-                name = "nvim_lsp_signature_help"
-            }, -- ✅ 签名提示 (参数提示) 放在最前面
+            sources = cmp.config.sources({ --     {
+            --     name = "nvim_lsp_signature_help"
+            -- }, -- ✅ 签名提示 (参数提示) 放在最前面
             {
                 name = "nvim_lsp",
-                priority = 100
+                priority = 100,
             }, {
                 name = "path",
                 priority = 60
@@ -76,7 +76,6 @@ return {
             }
         })
 
-        -- 5. 命令行配置 (复用你之前的逻辑)
         local cmdline_mapping = {
             ["<A-j>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
