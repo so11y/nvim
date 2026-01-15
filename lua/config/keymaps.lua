@@ -114,6 +114,17 @@ map({"n", "i", "v"}, "<A-y>", "<cmd>redo<cr>", {
 map("n", "<A-d>", "dd", {
     desc = "Delete Line"
 }) -- 用 Alt+d 删行
+map("v", "<A-d>", '"_d', {
+    desc = "Delete selection"
+}) -- 用 Alt+d 删除选中内容
+
+-- v模式多行选择：选中多行后可以整体操作
+map("v", "J", ":m '>+1<CR>gv", {
+    desc = "Move selection down"
+}) -- 多行选择后下移
+map("v", "K", ":m '<-2<CR>gv", {
+    desc = "Move selection up"
+}) -- 多行选择后上移
 map("n", "<A-a>", "ggVG", {
     desc = "Select All"
 })
