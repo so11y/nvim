@@ -20,7 +20,9 @@ return {
                 width = 30,
                 mappings = {
                     ["<space>"] = "open",
-                    ["<cr>"] = "open" -- 保持回车也可以打开
+                    ["<cr>"] = "open",
+                    ["<tab>"] = "set_root",
+                    ["<bs>"] = "navigate_up"
                 }
             },
             filesystem = {
