@@ -98,7 +98,6 @@ map("n", "<A-y>", "<C-i>", {
     desc = "Jump forward"
 })
 
-
 map({"n", "i", "v"}, "<A-z>", "<cmd>undo<cr>", {
     desc = "Undo"
 })
@@ -143,32 +142,6 @@ map("v", "<A-x>", '"+d', {
 })
 map("n", "<A-x>", '"+dd', {
     desc = "Cut line to system clipboard"
-})
-
--- =======================================================
--- 5. 功能键映射 (搜索与文件)
--- =======================================================
--- 搜索文件 (对应 workbench.action.quickOpen)
-map("n", "<leader>fs", "<cmd>Telescope find_files<cr>", {
-    desc = "Find Files"
-})
-
--- 全局搜索内容 (对应 workbench.action.findInFiles)
-map("n", "<leader>ff", "<cmd>Telescope live_grep<cr>", {
-    desc = "Live Grep"
-})
-
--- 问题诊断 (对应 workbench.actions.view.problems)
-map("n", "<leader>xx", "<cmd>Telescope diagnostics<cr>", {
-    desc = "Diagnostics"
-})
-
--- 诊断跳转 (prev/next diagnostic)
-map("n", "gdj", vim.diagnostic.goto_prev, {
-    desc = "Go to previous diagnostic"
-})
-map("n", "gdk", vim.diagnostic.goto_next, {
-    desc = "Go to next diagnostic"
 })
 
 -- 窗口跳转快捷键

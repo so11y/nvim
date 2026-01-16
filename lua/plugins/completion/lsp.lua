@@ -39,24 +39,6 @@ return { -- 1. Mason & LSP 相关
         vim.api.nvim_create_autocmd("LspAttach", {
             group = vim.api.nvim_create_augroup("UserLspConfig", {}),
             callback = function(ev)
-                local opts = {
-                    buffer = ev.buf
-                }
-
-                -- 这里的 gd 先用默认的，排除自定义函数报错的可能性
-                vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<cr>", opts)
-                vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<cr>", opts)
-                vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
-
-                local ft = vim.bo.filetype -- 获取当前文件的类型
-
-                if ft == "vue" then
-                    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-                else
-                    vim.keymap.set({"n", "v"}, "<leader>ca", function()
-                        require("tiny-code-action").code_action()
-                    end, opts)
-                end
             end
         })
     end

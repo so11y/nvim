@@ -24,7 +24,6 @@ return {
       -- 在终端里按 Esc 退出输入模式
       vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], opts)
 
-      vim.keymap.set("t", "<A-w>", [[<Cmd>ToggleTerm<CR>]], opts)
       -- 在终端里按 Alt + t 也可以关闭终端
       vim.keymap.set("t", "<A-t>", [[<Cmd>ToggleTerm<CR>]], opts)
       
