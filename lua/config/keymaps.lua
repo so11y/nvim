@@ -22,10 +22,6 @@ map({"n", "v"}, "gh", "^", {
 map({"n", "v"}, "gl", "$", {
     desc = "Go to end of line"
 })
--- 文件末尾 (VSCode Vim 默认 G，你映射了 ge -> G)
-map({"n", "v"}, "ge", "G", {
-    desc = "Go to end of file"
-})
 
 map("n", "<CR>", "a", {
     desc = "Enter insert mode"
