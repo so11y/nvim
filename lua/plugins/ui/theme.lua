@@ -7,7 +7,6 @@ return {{
         float = {
             transparent = true -- enable transparent floating windows
         },
-
         custom_highlights = function(colors)
             -- stylua: ignore
             return {
