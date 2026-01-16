@@ -4,7 +4,19 @@ return {
     event = "LspAttach",
     opts = {
         backend = "vim", -- 预览后端
-        picker = "buffer", -- 【关键】使用精简的缓冲区选择器界面
+        picker = {
+            "buffer",
+            opts = {
+                keymaps = {
+                    preview = "K",
+                    select = "<Tab>",
+                    close = {"q", "<Esc>"},
+                    preview_close = {"q", "<Esc>"}
+                },
+                group_icon = " └"
+            }
+
+        },
         lsp_timeout = 3000
     }
 }
