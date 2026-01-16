@@ -1,4 +1,5 @@
 -- 1. 基础设置 (对应 vim.json 中的 settings)
+vim.env.CC = "gcc"
 vim.g.mapleader = " " -- "vim.leader": "<space>"
 vim.opt.clipboard = "unnamedplus" -- "vim.useSystemClipboard": true
 vim.opt.number = true -- 显示绝对行号
