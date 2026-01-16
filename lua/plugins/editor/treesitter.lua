@@ -1,37 +1,34 @@
-return {
+return { -- 1. 先安装核心插件
+{
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    -- dependencies = {"nvim-treesitter/nvim-treesitter-textobjects"},
-    -- config = function()
-    --     local ok, ts_config = pcall(require, "nvim-treesitter.config")
-    --     if ok then
-    --         package.preload["nvim-treesitter.configs"] = function()
-    --             return ts_config
-    --         end
-    --     end
-
-    --     -- 3. 使用新版正确的单数 'config'
-    --     local configs = require("nvim-treesitter.config")
-
-    --     configs.setup({
-    --         ensure_installed = {"lua", "vim", "vimdoc", "javascript", "typescript", "vue", "html", "css", "query"},
-    --         highlight = {
-    --             enable = true
-    --         },
-    --         indent = {
-    --             enable = true
-    --         },
-    --         textobjects = {
-    --             select = {
-    --                 enable = true,
-    --                 lookahead = true,
-    --                 keymaps = {
-    --                     ["af"] = "@function.outer",
-    --                     ["if"] = "@function.inner",
-    --                     ["ac"] = "@class.outer"
-    --                 }
-    --             }
-    --         }
-    --     })
-    -- end
-}
+    opts_extend = {"ensure_installed"},
+    main = "nvim-treesitter.config",
+    opts = {
+        ensure_installed = {"vue", "typescript", "javascript", "html", "css", "tsx", "json", "lua", "vim", "vimdoc",
+                            "bash", "markdown"},
+        highlight = {
+            enable = true
+        },
+        indent = {
+            enable = true
+        }
+    },
+    config = function(_, opts)
+        -- 2. 这里的配置非常关键：指定编译器
+        require('nvim-treesitter.install').compilers = {"gcc"}
+        -- 执行原本的 setup
+        require('nvim-treesitter.config').setup(opts)
+    end
+}, {
+    "windwp/nvim-ts-autotag",
+    config = function()
+        require("nvim-ts-autotag").setup({
+            opts = {
+                -- 默认是开启的，这里显式列出以供参考
+                enable_close = true, -- 自动闭合标签 <div > -> </div>
+                enable_rename = true, -- 自动重命名标签 (这就是你想要的功能)
+                enable_close_on_slash = true -- 输入 </ 自动闭合
+            }
+        })
+    end
+}}
