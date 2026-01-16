@@ -28,7 +28,16 @@ return {{
         },
         notifier = {
             enabled = true,
-            style = "notification"
+            style = "notification",
+            filter = function(notif)
+                local exclude = {"No information available"}
+                for _, m in ipairs(exclude) do
+                    if notif.msg:find(m) then
+                        return false
+                    end
+                end
+                return true
+            end
         },
         scope = {
             enabled = true,
