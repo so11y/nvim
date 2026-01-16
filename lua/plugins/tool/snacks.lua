@@ -102,6 +102,9 @@ return {{
                 }
             }
         },
+        terminal = {
+            enabled = true
+        },
         styles = {
             terminal = {
                 relative = "editor",
@@ -122,7 +125,7 @@ return {{
         end,
         desc = "Delete Buffer"
     }, {
-        "<A-i>",
+        "<A-t>",
         function()
             require("snacks").terminal()
         end,
@@ -185,5 +188,11 @@ return {{
             require("tiny-code-action").code_action()
         end,
         desc = "code_action"
+    }, {
+        "<leader>su",
+        function()
+            require("snacks").picker.undo()
+        end,
+        desc = "[Snacks] Undo history"
     }}
 }}

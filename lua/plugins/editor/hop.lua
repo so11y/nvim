@@ -39,5 +39,11 @@ return {
             require("hop").hint_words()
         end,
         desc = "Extend Selection to Word"
+    }, {
+        "<leader>fp",
+        function()
+            Snacks.picker.projects()
+        end,
+        desc = "选择项目"
     }}
 }

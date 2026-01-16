@@ -16,8 +16,6 @@ require("lazy").setup({
     }, {
         import = "plugins.editor"
     }, {
-        import = "plugins.navigation"
-    }, {
         import = "plugins.tool"
     }, {
         import = "plugins.ui"
