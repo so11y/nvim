@@ -95,7 +95,9 @@ return {{{
                     vim.lsp.buf.hover()
                 end
             end
-        end)
+        end, {
+            desc = "预览"
+        })
 
         -- -- stylua: ignore
         -- vim.keymap.set("n", "zM", function()

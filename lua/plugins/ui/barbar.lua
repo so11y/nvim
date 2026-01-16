@@ -71,37 +71,37 @@ return {
     {
         "<A-h>",
         "<cmd>BufferPrevious<cr>",
-        desc = "Prev Buffer"
+        desc = "上一页缓冲区"
     }, {
         "<A-l>",
         "<cmd>BufferNext<cr>",
-        desc = "Next Buffer"
+        desc = "下一个缓冲区"
     }, -- 移动标签位置
     {
         "<A-<>",
         "<cmd>BufferMovePrevious<cr>",
-        desc = "Move Buffer Left"
+        desc = "向左移动缓冲区"
     }, {
         "<A->>",
         "<cmd>BufferMoveNext<cr>",
-        desc = "Move Buffer Right"
+        desc = "向右移动缓冲区"
     }, -- 跳转到特定标签
     {
         "<A-1>",
         "<cmd>BufferGoto 1<cr>",
-        desc = "Go to Buffer 1"
+        desc = "转到缓冲区1"
     }, {
         "<A-2>",
         "<cmd>BufferGoto 2<cr>",
-        desc = "Go to Buffer 2"
+        desc = "转到缓冲区2"
     }, {
         "<A-3>",
         "<cmd>BufferGoto 3<cr>",
-        desc = "Go to Buffer 3"
+        desc = "转到缓冲区3"
     }, -- 关闭标签
     {
         "<A-p>",
         "<cmd>BufferPin<cr>",
-        desc = "Pin Buffer"
+        desc = "固定/取消固定缓冲区"
     }}
 }

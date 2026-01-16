@@ -132,13 +132,13 @@ return {{
         function()
             require("snacks").bufdelete()
         end,
-        desc = "Delete Buffer"
+        desc = "删除缓冲区"
     }, {
         "<A-t>",
         function()
             require("snacks").terminal()
         end,
-        desc = "[Snacks] Toggle terminal",
+        desc = "切换终端",
         mode = {"n", "t"}
     }, -- Notification
     {
@@ -146,62 +146,62 @@ return {{
         function()
             require("snacks").picker.notifications()
         end,
-        desc = "[Snacks] Notification history"
+        desc = "通知历史"
     }, {
         "<leader>fs",
         function()
             require("snacks").picker.files()
         end,
-        desc = "[Snacks] Notification history"
+        desc = "文件查找"
     }, {
         "gd",
         function()
             Snacks.picker.lsp_definitions()
         end,
-        desc = "Goto Definition"
+        desc = "转到定义"
     }, {
         "gr",
         function()
             Snacks.picker.lsp_references()
         end,
-        desc = "References"
+        desc = "转到引用"
     }, -- 4. 变量重命名 (保持原生 LSP 功能，但写在这里方便统一管理)
     {
         "<leader>cr",
         function()
             vim.lsp.buf.rename()
         end,
-        desc = "Rename"
+        desc = "重命名"
     }, -- 2. 诊断跳转 (保持你习惯的 gdj / gdk)
     {
         "gdj",
         function()
             vim.diagnostic.goto_prev()
         end,
-        desc = "Go to previous diagnostic"
+        desc = "上一个诊断"
     }, {
         "gdk",
         function()
             vim.diagnostic.goto_next()
         end,
-        desc = "Go to next diagnostic"
+        desc = "下一个诊断"
     }, {
         "<leader>xx",
         function()
             Snacks.picker.diagnostics()
         end,
-        desc = "Diagnostics (Workspace)"
+        desc = "诊断（工作区）"
     }, {
         "<leader>ca",
         function()
             require("tiny-code-action").code_action()
         end,
-        desc = "code_action"
+        desc = "代码操作"
     }, {
         "<leader>su",
         function()
             require("snacks").picker.undo()
         end,
-        desc = "[Snacks] Undo history"
+        desc = "撤消历史记录"
     }}
 }}

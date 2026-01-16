@@ -14,9 +14,7 @@ return { -- 1. 先安装核心插件
         }
     },
     config = function(_, opts)
-        -- 2. 这里的配置非常关键：指定编译器
         require('nvim-treesitter.install').compilers = {"gcc"}
-        -- 执行原本的 setup
         require('nvim-treesitter.config').setup(opts)
     end
 }, {

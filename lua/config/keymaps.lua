@@ -17,40 +17,44 @@ map({"n", "v"}, "s", "<nop>") -- 禁用 s (替换)
 -- =======================================================
 -- 行首与行尾
 map({"n", "v"}, "gh", "^", {
-    desc = "Go to start of line"
+    desc = "转到行首"
 })
 map({"n", "v"}, "gl", "$", {
-    desc = "Go to end of line"
+    desc = "转到行尾"
 })
 
 map("n", "<CR>", "a", {
-    desc = "Enter insert mode"
+    desc = "进入插入模式"
 }) -- 普通模式回车进入编辑（不换行）
 
 map("i", "<CR>", "<CR>", {
-    desc = "New line"
+    desc = "新起一行"
 }) -- 插入模式回车换行
 
 -- 选中全部
-map("n", "<C-a>", "ggVG", {
-    desc = "Select All"
+map("n", "<A-a>", "ggVG", {
+    desc = "全选"
 })
 
 -- 取消高亮 (对应 <C-n>)
 map("n", "<C-n>", ":nohl<CR>", {
-    desc = "Clear highlights"
+    desc = "取消高亮"
 })
 
 -- 半屏滚动
 map("n", "J", "<C-d>", {
-    desc = "Scroll down half page"
+    desc = "向下滚动半页"
 })
 map("n", "K", "<C-u>", {
-    desc = "Scroll up half page"
+    desc = "向上滚动半页"
 })
 
-map('n', '<leader>sv', ':vsplit<CR>') -- 横向开（垂直分屏）
-map('n', '<leader>sh', ':split<CR>') -- 纵向开（水平分屏）
+map('n', '<leader>sv', ':vsplit<CR>', {
+    desc = "垂直分屏"
+})
+map('n', '<leader>sh', ':split<CR>', {
+    desc = "水平分屏"
+})
 
 -- 保存与退出
 map("n", "<A-s>", ":w<CR>", {
@@ -60,38 +64,25 @@ map("n", "<A-s>", ":w<CR>", {
 
 -- 本文件内搜索
 map("n", "<A-f>", "/", {
-    desc = "Search in file"
+    desc = "文件中搜索"
 })
 
 -- 移动行
 map("n", "<A-j>", ":m .+1<CR>", {
-    desc = "Move line down",
+    desc = "下移动行",
     silent = true
 })
 map("n", "<A-k>", ":m .-2<CR>", {
-    desc = "Move line up",
+    desc = "上移动行",
     silent = true
 })
 map("v", "<A-j>", ":m '>+1<CR>gv", {
-    desc = "Move selection down",
+    desc = "向下移动选择",
     silent = true
 })
 map("v", "<A-k>", ":m '<-2<CR>gv", {
-    desc = "Move selection up",
+    desc = "向上移动选择",
     silent = true
-})
-
--- Redo
-map({"n", "i", "v"}, "<A-y>", "<cmd>redo<cr>", {
-    desc = "Redo"
-})
-
--- Jump back/forward
-map("n", "<A-u>", "<C-o>", {
-    desc = "Jump back"
-})
-map("n", "<A-y>", "<C-i>", {
-    desc = "Jump forward"
 })
 
 map({"n", "i", "v"}, "<A-z>", "<cmd>undo<cr>", {
@@ -101,10 +92,10 @@ map({"n", "i", "v"}, "<A-y>", "<cmd>redo<cr>", {
     desc = "Redo"
 })
 map("n", "<A-d>", "dd", {
-    desc = "Delete Line"
+    desc = "删除行"
 }) -- 用 Alt+d 删行
 map("v", "<A-d>", '"_d', {
-    desc = "Delete selection"
+    desc = "删除选中内容"
 }) -- 用 Alt+d 删除选中内容
 
 -- v模式多行选择：选中多行后可以整体操作
@@ -118,26 +109,22 @@ map("n", "<A-a>", "ggVG", {
     desc = "Select All"
 })
 
-map('n', '<A>sv', ':vsplit<CR>') -- 横向开（垂直分屏）
-map('n', '<A>sh', ':split<CR>') -- 纵向开（水平分屏）
-
 -- 系统剪贴板复制粘贴
 map("v", "<A-c>", '"+y', {
-    desc = "Copy to system clipboard"
+    desc = "复制"
 })
 map({"n", "v"}, "<A-v>", '"+p', {
-    desc = "Paste"
+    desc = "粘贴"
 })
 map("i", "<A-v>", '<C-r>+', {
-    desc = "Paste (Insert)"
+    desc = "粘贴"
 })
 
--- 系统剪贴板剪切
 map("v", "<A-x>", '"+d', {
-    desc = "Cut to system clipboard"
+    desc = "剪切"
 })
 map("n", "<A-x>", '"+dd', {
-    desc = "Cut line to system clipboard"
+    desc = "剪切"
 })
 
 -- 窗口跳转快捷键
