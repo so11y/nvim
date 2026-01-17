@@ -4,8 +4,6 @@ return {
     dependencies = {'nvim-tree/nvim-web-devicons'},
     config = function()
         local dropbar = require('dropbar')
-        local sources = require('dropbar.sources')
-        local utils = require('dropbar.utils')
 
         dropbar.setup({
             icons = {
