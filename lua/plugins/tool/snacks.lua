@@ -203,5 +203,11 @@ return {{
             require("snacks").picker.undo()
         end,
         desc = "撤消历史记录"
+    }, {
+        "<leader>fp",
+        function()
+            Snacks.picker.projects()
+        end,
+        desc = "选择项目"
     }}
 }}
