@@ -1,46 +1,55 @@
 return {
     "hrsh7th/nvim-cmp",
-    dependencies = {"hrsh7th/cmp-nvim-lsp", -- LSP 补全源
-    "hrsh7th/cmp-buffer", -- Buffer 补全源
-    "hrsh7th/cmp-path", -- 路径补全源
-    "hrsh7th/cmp-cmdline" -- 命令行补全源
-    -- "hrsh7th/cmp-nvim-lsp-signature-help" -- ✅ 新增：函数签名提示源
-    },
+    dependencies = {"hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer", "hrsh7th/cmp-path", "hrsh7th/cmp-cmdline",
+                    "L3MON4D3/LuaSnip", "saadparwaiz1/cmp_luasnip", "rafamadriz/friendly-snippets",
+                    "onsails/lspkind.nvim", "windwp/nvim-autopairs"},
     event = {"InsertEnter", "CmdlineEnter"},
     config = function()
         local cmp = require("cmp")
+        local lspkind = require("lspkind")
+        local luasnip = require("luasnip")
+
+        require("luasnip.loaders.from_vscode").lazy_load()
+
+        local autopairs = require("nvim-autopairs")
+        autopairs.setup()
+        local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+        cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
         cmp.setup({
-            -- 1. 窗口样式：加上圆角边框 (看起来更像 Blink)
+            snippet = {
+                expand = function(args)
+                    luasnip.lsp_expand(args.body)
+                end
+            },
+
             window = {
                 completion = cmp.config.window.bordered(),
                 documentation = cmp.config.window.bordered()
             },
 
-            -- 2. 补全源设置
-            sources = cmp.config.sources({ --     {
-            --     name = "nvim_lsp_signature_help"
-            -- }, -- ✅ 签名提示 (参数提示) 放在最前面
-            {
+            formatting = {
+                format = lspkind.cmp_format({
+                    mode = 'symbol_text',
+                    maxwidth = 50,
+                    ellipsis_char = '...',
+                    show_labelDetails = true
+                })
+            },
+
+            sources = cmp.config.sources({{
                 name = "nvim_lsp",
-                priority = 100
+                priority = 1000
+            }, {
+                name = "luasnip",
+                priority = 700
             }, {
                 name = "path",
-                priority = 60
+                priority = 500
             }}, {{
-                name = "buffer"
+                name = "buffer",
+                priority = 250
             }}),
-
-            -- 3. 模糊匹配与排序优化
-            -- nvim-cmp 默认就是模糊匹配，但我们可以调整排序让它更准
-            sorting = {
-                priority_weight = 2,
-                comparators = {cmp.config.compare.offset, cmp.config.compare.exact, -- 精确匹配优先
-                cmp.config.compare.score, -- ✅ 模糊匹配得分优先
-                cmp.config.compare.recently_used, -- 最近使用过的优先
-                cmp.config.compare.locality, cmp.config.compare.kind, cmp.config.compare.sort_text,
-                               cmp.config.compare.length, cmp.config.compare.order}
-            },
 
             mapping = {
                 ["<A-j>"] = cmp.mapping(function(fallback)
@@ -48,6 +57,8 @@ return {
                         cmp.select_next_item({
                             behavior = cmp.SelectBehavior.Insert
                         })
+                    else
+                        fallback()
                     end
                 end, {"i", "s"}),
 
@@ -56,6 +67,8 @@ return {
                         cmp.select_prev_item({
                             behavior = cmp.SelectBehavior.Insert
                         })
+                    else
+                        fallback()
                     end
                 end, {"i", "s"}),
 
@@ -63,12 +76,21 @@ return {
                     select = true
                 }),
 
-                -- Tab 键逻辑
                 ["<Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         cmp.confirm({
                             select = true
                         })
+                    elseif luasnip.expand_or_jumpable() then
+                        luasnip.expand_or_jump()
+                    else
+                        fallback()
+                    end
+                end, {"i", "s"}),
+
+                ["<S-Tab>"] = cmp.mapping(function(fallback)
+                    if luasnip.jumpable(-1) then
+                        luasnip.jump(-1)
                     else
                         fallback()
                     end
@@ -102,9 +124,8 @@ return {
             end, {"c"}),
             ["<CR>"] = cmp.mapping.confirm({
                 select = true
-            }) -- 选中补全或执行命令
+            })
         }
-
         cmp.setup.cmdline(":", {
             mapping = cmdline_mapping,
             sources = cmp.config.sources({{
@@ -113,7 +134,6 @@ return {
                 name = "cmdline"
             }})
         })
-
         cmp.setup.cmdline("/", {
             mapping = cmdline_mapping,
             sources = {{

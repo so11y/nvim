@@ -85,10 +85,25 @@ map("v", "<A-k>", ":m '<-2<CR>gv", {
     silent = true
 })
 
-map({"n", "i", "v"}, "<A-z>", "<cmd>undo<cr>", {
+-- Undo
+map("n", "<A-z>", "u", {
     desc = "Undo"
 })
-map({"n", "i", "v"}, "<A-y>", "<cmd>redo<cr>", {
+map("i", "<A-z>", "<C-o>u", {
+    desc = "Undo"
+})
+map("v", "<A-z>", "u", {
+    desc = "Undo"
+})
+
+-- Redo
+map("n", "<A-y>", "<C-r>", {
+    desc = "Redo"
+})
+map("i", "<A-y>", "<C-o><C-r>", {
+    desc = "Redo"
+})
+map("v", "<A-y>", "<C-r>", {
     desc = "Redo"
 })
 map("n", "<A-d>", "dd", {
@@ -161,4 +176,16 @@ vim.keymap.set("n", "<A-Left>", "<C-w><", {
 -- Alt + right 增加窗口宽度
 vim.keymap.set("n", "<A-Right>", "<C-w>>", {
     desc = "Increase window width"
+})
+
+local rules = {',', '.', '!', '?', ';'}
+for _, rule in ipairs(rules) do
+    vim.keymap.set('i', rule, rule .. '<C-g>u', {
+        noremap = true,
+        silent = true
+    })
+end
+vim.keymap.set('i', '<space>', '<space><C-g>u', {
+    noremap = true,
+    silent = true
 })

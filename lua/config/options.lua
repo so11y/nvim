@@ -32,6 +32,7 @@ vim.opt.smartindent = true -- 开启智能缩进（换行时自动对齐）
 vim.opt.splitbelow = true -- 水平分屏时，新窗口在下方（默认在上方）
 vim.opt.splitright = true -- 垂直分屏时，新窗口在右方（默认在左方）
 
+
 -- -- 文件类型检测
 -- vim.filetype.add({
 --     extension = {
