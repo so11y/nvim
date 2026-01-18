@@ -142,6 +142,10 @@ map("n", "<A-x>", '"+dd', {
     desc = "剪切"
 })
 
+map({"n", "v"}, "c", '"_c')
+map({"n", "v"}, "C", '"_C')
+map({"n", "v"}, "x", '"_x')
+
 -- 窗口跳转快捷键
 -- Ctrl + j 下跳
 vim.keymap.set("n", "<C-j>", "<C-w>j", {
