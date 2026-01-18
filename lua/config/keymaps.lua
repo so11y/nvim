@@ -1,21 +1,24 @@
 local map = vim.keymap.set
 
 -- =======================================================
--- 2. 禁用原生 Vim 编辑键 (对应 vim.json 中的 <nop> 映射)
+-- 1. 禁用/覆盖原生 Vim 键位
 -- =======================================================
--- 你决定放弃 Vim 的原生编辑方式，完全依赖 Alt+Key
-map({"n", "v"}, "u", "<nop>") -- 禁用 u (撤销)
-map({"n", "v"}, "dd", "<nop>") -- 禁用 dd (删行)
-map({"n", "v"}, "<C-r>", "<nop>") -- 禁用 Ctrl+r (重做)
-map({"n", "v"}, "x", "<nop>") -- 禁用 x (删除字符)
-map({"n", "v"}, "s", "<nop>") -- 禁用 s (替换)
--- 注意：在 Neovim 里禁用这些键是大胆的操作，
--- 确保你已经熟练掌握了下面定义的 Alt 快捷键。
+-- 禁用撤销、删行、重做、替换 (完全依赖 Alt 组合键)
+map({"n", "v"}, "u", "<nop>") -- 禁用 u
+map({"n", "v"}, "dd", "<nop>") -- 禁用 dd
+map({"n", "v"}, "<C-r>", "<nop>") -- 禁用 Ctrl+r
+map({"n", "v"}, "s", "<nop>") -- 禁用 s
+
+-- 替换默认删除行为：不污染剪贴板 (Blackhole Register)
+-- 注意：这里覆盖了上面对 x 的禁用，x 变成了 "删除字符但不复制"
+map({"n", "v"}, "x", '"_x')
+map({"n", "v"}, "c", '"_c')
+map({"n", "v"}, "C", '"_C')
 
 -- =======================================================
--- 3. 核心移动与导航 (对应 vim.json 的 normal/visual 绑定)
+-- 2. 基础导航与滚动
 -- =======================================================
--- 行首与行尾
+-- 行首行尾 (替代 0/$)
 map({"n", "v"}, "gh", "^", {
     desc = "转到行首"
 })
@@ -23,25 +26,7 @@ map({"n", "v"}, "gl", "$", {
     desc = "转到行尾"
 })
 
-map("n", "<CR>", "a", {
-    desc = "进入插入模式"
-}) -- 普通模式回车进入编辑（不换行）
-
-map("i", "<CR>", "<CR>", {
-    desc = "新起一行"
-}) -- 插入模式回车换行
-
--- 选中全部
-map("n", "<A-a>", "ggVG", {
-    desc = "全选"
-})
-
--- 取消高亮 (对应 <C-n>)
-map("n", "<C-n>", ":nohl<CR>", {
-    desc = "取消高亮"
-})
-
--- 半屏滚动
+-- 滚动 (替代 Ctrl+d/u)
 map("n", "J", "<C-d>", {
     desc = "向下滚动半页"
 })
@@ -49,33 +34,103 @@ map("n", "K", "<C-u>", {
     desc = "向上滚动半页"
 })
 
-map('n', '<leader>sv', ':vsplit<CR>', {
-    desc = "垂直分屏"
+-- 跳转历史 (光标前进后退)
+map("n", "<A-u>", "<C-o>", {
+    desc = "光标位置撤销 (Back)"
 })
-map('n', '<leader>sh', ':split<CR>', {
-    desc = "水平分屏"
-})
-
--- 保存与退出
-map("n", "<A-s>", ":w<CR>", {
-    desc = "Save",
-    silent = true
+map("n", "<A-i>", "<C-i>", {
+    desc = "光标位置重做 (Forward)"
 })
 
--- 本文件内搜索
-map("n", "<A-f>", "/", {
-    desc = "文件中搜索"
+-- =======================================================
+-- 3. 编辑操作 (Insert/Select/Delete)
+-- =======================================================
+-- 回车键行为
+map("n", "<CR>", "a", {
+    desc = "进入插入模式 (Append)"
+})
+map("i", "<CR>", "<CR>", {
+    desc = "换行"
 })
 
--- 移动行
+-- 全选
+map("n", "<A-a>", "ggVG", {
+    desc = "全选"
+})
+
+-- 取消搜索高亮
+map("n", "<C-n>", ":nohl<CR>", {
+    desc = "取消高亮"
+})
+
+-- 删除操作 (Alt+d)
+map("n", "<A-d>", "dd", {
+    desc = "删除当前行"
+})
+map("v", "<A-d>", '"_d', {
+    desc = "删除选中内容"
+}) -- 这里用了 _d，表示删除不复制
+
+-- 撤销 (Undo) - 映射到 Alt+z
+map("n", "<A-z>", "u", {
+    desc = "Undo"
+})
+map("v", "<A-z>", "u", {
+    desc = "Undo"
+})
+map("i", "<A-z>", "<C-o>u", {
+    desc = "Undo"
+})
+
+-- 重做 (Redo) - 映射到 Alt+y
+map("n", "<A-y>", "<C-r>", {
+    desc = "Redo"
+})
+map("v", "<A-y>", "<C-r>", {
+    desc = "Redo"
+})
+map("i", "<A-y>", "<C-o><C-r>", {
+    desc = "Redo"
+})
+
+-- =======================================================
+-- 4. 系统剪贴板操作 (Ctrl+c/v 风格)
+-- =======================================================
+-- 复制 (Alt+c)
+map("v", "<A-c>", '"+y', {
+    desc = "复制到系统剪贴板"
+})
+
+-- 剪切 (Alt+x)
+map("n", "<A-x>", '"+dd', {
+    desc = "剪切行"
+})
+map("v", "<A-x>", '"+d', {
+    desc = "剪切选中"
+})
+
+-- 粘贴 (Alt+v)
+map({"n", "v"}, "<A-v>", '"+p', {
+    desc = "从系统剪贴板粘贴"
+})
+map("i", "<A-v>", '<C-r>+', {
+    desc = "从系统剪贴板粘贴"
+})
+
+-- =======================================================
+-- 5. 代码行移动 (Alt+j/k)
+-- =======================================================
+-- 普通模式移动单行
 map("n", "<A-j>", ":m .+1<CR>", {
-    desc = "下移动行",
+    desc = "向下移动行",
     silent = true
 })
 map("n", "<A-k>", ":m .-2<CR>", {
-    desc = "上移动行",
+    desc = "向上移动行",
     silent = true
 })
+
+-- Visual模式移动选中块
 map("v", "<A-j>", ":m '>+1<CR>gv", {
     desc = "向下移动选择",
     silent = true
@@ -85,112 +140,74 @@ map("v", "<A-k>", ":m '<-2<CR>gv", {
     silent = true
 })
 
--- Undo
-map("n", "<A-z>", "u", {
-    desc = "Undo"
-})
-map("i", "<A-z>", "<C-o>u", {
-    desc = "Undo"
-})
-map("v", "<A-z>", "u", {
-    desc = "Undo"
-})
-
--- Redo
-map("n", "<A-y>", "<C-r>", {
-    desc = "Redo"
-})
-map("i", "<A-y>", "<C-o><C-r>", {
-    desc = "Redo"
-})
-map("v", "<A-y>", "<C-r>", {
-    desc = "Redo"
-})
-map("n", "<A-d>", "dd", {
-    desc = "删除行"
-}) -- 用 Alt+d 删行
-map("v", "<A-d>", '"_d', {
-    desc = "删除选中内容"
-}) -- 用 Alt+d 删除选中内容
-
--- v模式多行选择：选中多行后可以整体操作
+-- Visual模式 J/K 也映射为移动 (保留原逻辑)
 map("v", "J", ":m '>+1<CR>gv", {
     desc = "Move selection down"
-}) -- 多行选择后下移
+})
 map("v", "K", ":m '<-2<CR>gv", {
     desc = "Move selection up"
-}) -- 多行选择后上移
-map("n", "<A-a>", "ggVG", {
-    desc = "Select All"
 })
 
--- 系统剪贴板复制粘贴
-map("v", "<A-c>", '"+y', {
-    desc = "复制"
+-- =======================================================
+-- 6. 文件与窗口管理
+-- =======================================================
+-- 保存与搜索
+map("n", "<A-s>", ":w<CR>", {
+    desc = "保存文件",
+    silent = true
 })
-map({"n", "v"}, "<A-v>", '"+p', {
-    desc = "粘贴"
-})
-map("i", "<A-v>", '<C-r>+', {
-    desc = "粘贴"
-})
-
-map("v", "<A-x>", '"+d', {
-    desc = "剪切"
-})
-map("n", "<A-x>", '"+dd', {
-    desc = "剪切"
+map("n", "<A-f>", "/", {
+    desc = "文件中搜索"
 })
 
--- 移除默认寄存器影响
-map({"n", "v"}, "c", '"_c')
-map({"n", "v"}, "C", '"_C')
-map({"n", "v"}, "x", '"_x')
-
--- 窗口跳转快捷键
--- Ctrl + j 下跳
-vim.keymap.set("n", "<C-j>", "<C-w>j", {
-    desc = "Go to lower window"
+-- 分屏
+map("n", "<leader>sv", ":vsplit<CR>", {
+    desc = "垂直分屏"
 })
--- Ctrl + k 上跳
-vim.keymap.set("n", "<C-k>", "<C-w>k", {
-    desc = "Go to upper window"
-})
--- Ctrl + h 左跳 (可以跳到 Neo-tree)
-vim.keymap.set("n", "<C-h>", "<C-w>h", {
-    desc = "Go to left window"
-})
--- Ctrl + l 右跳
-vim.keymap.set("n", "<C-l>", "<C-w>l", {
-    desc = "Go to right window"
+map("n", "<leader>sh", ":split<CR>", {
+    desc = "水平分屏"
 })
 
--- 窗口大小调整快捷键
--- Alt + up 增加窗口高度
-vim.keymap.set("n", "<A-Up>", "<C-w>+", {
-    desc = "Increase window height"
+-- 窗口跳转 (Ctrl + hjkl)
+map("n", "<C-h>", "<C-w>h", {
+    desc = "跳转左窗口"
 })
--- Alt + down 减少窗口高度
-vim.keymap.set("n", "<A-Down>", "<C-w>-", {
-    desc = "Decrease window height"
+map("n", "<C-j>", "<C-w>j", {
+    desc = "跳转下窗口"
 })
--- Alt + left 减少窗口宽度
-vim.keymap.set("n", "<A-Left>", "<C-w><", {
-    desc = "Decrease window width"
+map("n", "<C-k>", "<C-w>k", {
+    desc = "跳转上窗口"
 })
--- Alt + right 增加窗口宽度
-vim.keymap.set("n", "<A-Right>", "<C-w>>", {
-    desc = "Increase window width"
+map("n", "<C-l>", "<C-w>l", {
+    desc = "跳转右窗口"
 })
 
+-- 窗口大小调整 (Alt + 方向键)
+map("n", "<A-Up>", "<C-w>+", {
+    desc = "增加窗口高度"
+})
+map("n", "<A-Down>", "<C-w>-", {
+    desc = "减少窗口高度"
+})
+map("n", "<A-Left>", "<C-w><", {
+    desc = "减少窗口宽度"
+})
+map("n", "<A-Right>", "<C-w>>", {
+    desc = "增加窗口宽度"
+})
+
+-- =======================================================
+-- 7. 输入体验优化 (Undo Breakpoints)
+-- =======================================================
+-- 在标点符号处打断撤销链，使得撤销粒度更细
 local rules = {',', '.', '!', '?', ';'}
 for _, rule in ipairs(rules) do
-    vim.keymap.set('i', rule, rule .. '<C-g>u', {
+    map('i', rule, rule .. '<C-g>u', {
         noremap = true,
         silent = true
     })
 end
-vim.keymap.set('i', '<space>', '<space><C-g>u', {
+map('i', '<space>', '<space><C-g>u', {
     noremap = true,
     silent = true
 })

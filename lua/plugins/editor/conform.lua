@@ -10,6 +10,7 @@ return {
             end,
             mode = "n",
             desc = "Format buffer",
+            silent = true
         },
     },
     opts = {
