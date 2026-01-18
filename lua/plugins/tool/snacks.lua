@@ -48,12 +48,10 @@ return {{
             win = {
                 input = {
                     keys = {
-                        -- 拦截 Ctrl+l，改为聚焦到预览窗口，而不是跳出 Neovim
                         ["<C-l>"] = {
                             "focus_preview",
                             mode = {"i", "n"}
                         },
-                        -- 拦截 Ctrl+j/k，确保它们在列表里上下移动，而不是尝试跳出窗口
                         ["<C-j>"] = {
                             "list_down",
                             mode = {"i", "n"}
@@ -62,7 +60,6 @@ return {{
                             "list_up",
                             mode = {"i", "n"}
                         },
-                        -- 如果你想按 Ctrl+h 没反应或者有其他逻辑，也可以定义
                         ["<C-h>"] = {
                             "nop",
                             mode = {"i", "n"}
@@ -71,12 +68,10 @@ return {{
                 },
                 preview = {
                     keys = {
-                        -- 在预览窗按下 Ctrl+h，跳回输入框
                         ["<C-h>"] = {
                             "focus_input",
                             mode = {"i", "n"}
                         },
-                        -- 预防在预览窗按 j/k 导致退出
                         ["<C-j>"] = {
                             "focus_list",
                             mode = {"i", "n"}
@@ -112,7 +107,7 @@ return {{
             }
         },
         terminal = {
-            enabled = true,
+            enabled = true
             -- win = {
             --     position = "bottom",
             --     height = 0.35, -- 默认高度（35%）
@@ -214,5 +209,13 @@ return {{
             Snacks.picker.projects()
         end,
         desc = "选择项目"
-    }}
+    }},
+    config = function(_, opts)
+        require("snacks").setup(opts)
+        vim.api.nvim_set_hl(0, "SnacksPickerListCursorLine", {
+            fg = "#ffffff", -- 文字
+            bg = "#005faf" -- 背景
+        })
+
+    end
 }}
