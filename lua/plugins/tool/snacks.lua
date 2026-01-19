@@ -10,6 +10,15 @@ return {{
         explorer = {
             enabled = false
         },
+        statuscolumn = {
+            enabled = true,
+            left = {"mark", "sign"}, -- 显示书签和诊断图标
+            right = {"fold", "git"}, -- 显示折叠箭头和 Git 状态
+            folds = {
+                open = true, -- 显示展开图标
+                git_hl = true
+            }
+        },
         indent = {
             enabled = true,
             animate = {
