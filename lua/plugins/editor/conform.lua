@@ -6,7 +6,7 @@ return {
             -- 按键：Alt + Shift + f (如果你按的是大写F) 或者 Alt + f
             "<A-F>", 
             function()
-                require("conform").format({ lsp_fallback = true })
+                require("conform").format({ lsp_fallback = false })
             end,
             mode = "n",
             desc = "Format buffer",
@@ -23,6 +23,6 @@ return {
             scss = { "prettier" },
             html = { "prettier" },
         },
-        format_on_save = { timeout_ms = 1000, lsp_fallback = true },
+        format_on_save = { timeout_ms = 1000, lsp_fallback = false },
     },
 }

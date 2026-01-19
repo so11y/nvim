@@ -52,6 +52,21 @@ return { -- 1. 语法高亮：扩展 Treesitter
             configNamespace = 'typescript'
         }
 
+        local on_attach = function(client, bufnr)
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
+        end
+
+        vim.lsp.config('vue_ls', {
+            on_attach = on_attach, -- 禁用格式化，交给 conform
+            init_options = {
+                vue = {
+                    hybridMode = true -- 借鉴 AstroNvim 的做法
+                }
+            },
+            filetypes = {"vue"}
+        })
+
         vim.lsp.config('vtsls', {
             settings = {
                 vtsls = {
@@ -62,6 +77,8 @@ return { -- 1. 语法高亮：扩展 Treesitter
             },
             filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue'}
         })
+
+        
         -- vim.lsp.enable('vtsls')
         -- vim.lsp.enable('vue_ls')
     end
