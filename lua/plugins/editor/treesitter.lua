@@ -7,7 +7,8 @@ return { -- 1. 先安装核心插件
         ensure_installed = {"vue", "typescript", "javascript", "html", "css", "tsx", "json", "lua", "vim", "vimdoc",
                             "bash", "markdown"},
         highlight = {
-            enable = true
+            enable = true,
+            additional_vim_regex_highlighting = false
         },
         indent = {
             enable = true

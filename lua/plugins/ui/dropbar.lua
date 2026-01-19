@@ -1,6 +1,7 @@
 return {
     'Bekaboo/dropbar.nvim',
     event = {"BufReadPost", "BufNewFile"},
+    enabled = false,
     dependencies = {'nvim-tree/nvim-web-devicons'},
     config = function()
         local dropbar = require('dropbar')
