@@ -1,15 +1,23 @@
 return {
     "rachartier/tiny-inline-diagnostic.nvim",
     event = "VeryLazy",
+    priority = 1000,
     config = function()
-        preset = "modern", -- 或者 "classic"
         require('tiny-inline-diagnostic').setup({
+            preset = "classic",
             options = {
                 show_source = true,
-                use_icons_from_diagnostic = true,
+                multilines = true,
+                overflow = {
+                    mode = "wrap"
+                }
             }
         })
-        -- 禁用 Neovim 原生的虚拟文本，防止重复显示
-        vim.diagnostic.config({ virtual_text = false }) 
+
+        vim.diagnostic.config({
+            virtual_text = false,
+            underline = true,
+            severity_sort = true
+        })
     end
 }

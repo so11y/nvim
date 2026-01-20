@@ -33,14 +33,4 @@ vim.opt.splitbelow = true -- 水平分屏时，新窗口在下方（默认在上
 vim.opt.splitright = true -- 垂直分屏时，新窗口在右方（默认在左方）
 
 
--- -- 文件类型检测
--- vim.filetype.add({
---     extension = {
---         vue = "vue"
---     }
--- })
 
--- 启动时禁止所有警告通知
-vim.notify = function(msg, level, opts)
-    -- 空实现，忽略所有通知
-end

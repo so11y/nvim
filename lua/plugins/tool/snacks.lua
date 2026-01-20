@@ -221,10 +221,5 @@ return {{
     }},
     config = function(_, opts)
         require("snacks").setup(opts)
-        vim.api.nvim_set_hl(0, "SnacksPickerListCursorLine", {
-            fg = "#ffffff", -- 文字
-            bg = "#005faf" -- 背景
-        })
-
     end
 }}

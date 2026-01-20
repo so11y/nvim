@@ -27,13 +27,6 @@ return {
                 button = "",
                 filename = true
             },
-
-            -- 分隔符：这里设置为垂直线，增加“边框感”
-            separator = {
-                left = "▎",
-                right = ""
-            },
-
             -- LSP 诊断状态图标
             diagnostics = {
                 [vim.diagnostic.severity.ERROR] = {
@@ -53,7 +46,7 @@ return {
             },
             -- 文件类型图标
             filetype = {
-                custom_colors = true,
+                custom_colors = false,
                 enabled = true
             }
         },
