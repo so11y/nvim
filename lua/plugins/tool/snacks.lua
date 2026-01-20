@@ -57,6 +57,7 @@ return {{
             win = {
                 input = {
                     keys = {
+                        ["<A-w>"] = false,
                         ["<C-l>"] = {
                             "focus_preview",
                             mode = {"i", "n"}
@@ -77,6 +78,7 @@ return {{
                 },
                 preview = {
                     keys = {
+                        ["<A-w>"] = false,
                         ["<C-h>"] = {
                             "focus_input",
                             mode = {"i", "n"}
@@ -89,6 +91,7 @@ return {{
                 },
                 list = {
                     keys = {
+                        ["<A-w>"] = false,
                         ["<C-l>"] = {
                             "focus_preview",
                             mode = {"i", "n"}
@@ -139,7 +142,37 @@ return {{
     keys = {{
         "<A-w>",
         function()
-            require("snacks").bufdelete()
+            local winid = vim.api.nvim_get_current_win()
+            local win_config = vim.api.nvim_win_get_config(winid)
+            local bufnr = vim.api.nvim_get_current_buf()
+            local buftype = vim.bo[bufnr].buftype
+            -- 2. 如果是浮动窗口 (LSP 详情、提示框等)，直接关闭
+            if win_config.relative ~= "" then
+                vim.api.nvim_win_close(winid, false)
+                return
+            end
+
+            -- 3. 如果是特殊窗口 (帮助文档、快速修复栏、Neo-tree)，直接关闭
+            if buftype == "help" or buftype == "quickfix" or ft == "neo-tree" then
+                vim.cmd("close")
+                return
+            end
+
+            -- 4. 如果当前有多个分屏窗口，则只关闭当前分屏
+            local wins = vim.api.nvim_tabpage_list_wins(0)
+            local normal_wins = {}
+            for _, w in ipairs(wins) do
+                if vim.api.nvim_win_get_config(w).relative == "" then
+                    table.insert(normal_wins, w)
+                end
+            end
+
+            if #normal_wins > 1 then
+                vim.cmd("close")
+            else
+                -- 5. 最后一个窗口，调用 snacks 智能删除 buffer
+                require("snacks").bufdelete()
+            end
         end,
         desc = "删除缓冲区"
     }, {
