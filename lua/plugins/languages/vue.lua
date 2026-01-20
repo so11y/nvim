@@ -61,7 +61,7 @@ return { -- 1. 语法高亮：扩展 Treesitter
             on_attach = on_attach, -- 禁用格式化，交给 conform
             init_options = {
                 vue = {
-                    hybridMode = true -- 借鉴 AstroNvim 的做法
+                    hybridMode = true
                 }
             },
             filetypes = {"vue"}
@@ -78,7 +78,6 @@ return { -- 1. 语法高亮：扩展 Treesitter
             filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue'}
         })
 
-        
         -- vim.lsp.enable('vtsls')
         -- vim.lsp.enable('vue_ls')
     end

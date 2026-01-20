@@ -53,14 +53,18 @@ map("i", "<CR>", "<CR>", {
     desc = "换行"
 })
 
+-- 取消搜索高亮
+map("n", "<Esc>", function()
+    vim.cmd("nohlsearch") -- 动作 1：清除高亮
+    vim.fn.setreg("/", "") -- 动作 2：清空搜索记录
+    return "<Esc>" -- 动作 3：返回 "<Esc>" 字符串
+end, {
+    expr = true
+})
+
 -- 全选
 map("n", "<A-a>", "ggVG", {
     desc = "全选"
-})
-
--- 取消搜索高亮
-map("n", "<C-n>", ":nohl<CR>", {
-    desc = "取消高亮"
 })
 
 -- 删除操作 (Alt+d)
@@ -97,7 +101,7 @@ map("i", "<A-y>", "<C-o><C-r>", {
 -- 4. 系统剪贴板操作 (Ctrl+c/v 风格)
 -- =======================================================
 -- 复制 (Alt+c)
-map("v", "<A-c>", '"+y', {
+map("v", "<A-c>", '"+ygv', {
     desc = "复制到系统剪贴板"
 })
 
@@ -200,7 +204,7 @@ map("n", "<A-Right>", "<C-w>>", {
 -- 7. 输入体验优化 (Undo Breakpoints)
 -- =======================================================
 -- 在标点符号处打断撤销链，使得撤销粒度更细
-local rules = {',', '.', '!', '?','='}
+local rules = {',', '.', '!', '?', '='}
 for _, rule in ipairs(rules) do
     map('i', rule, rule .. '<C-g>u', {
         noremap = true,
