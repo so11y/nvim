@@ -43,5 +43,6 @@
   "snacks.nvim": { "branch": "main", "commit": "fe7cfe9800a182274d0f868a74b7263b8c0c020b" },
   "tiny-code-action.nvim": { "branch": "main", "commit": "f4a154569146d29fd4661ae289d83c4378135736" },
   "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "c7b1488ad0b389763c34bd17a6264424b3da5a52" },
+  "vim-matchup": { "branch": "master", "commit": "0fb1e6b7cea34e931a2af50b8ad565c5c4fd8f4d" },
   "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" }
 }
