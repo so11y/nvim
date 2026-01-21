@@ -4,6 +4,7 @@ vim.g.maplocalleader = " "
 vim.g.mapleader = " " -- "vim.leader": "<space>"
 vim.opt.clipboard = "unnamedplus" -- "vim.useSystemClipboard": true
 vim.opt.number = true -- 显示绝对行号
+vim.opt.relativenumber = true  -- 显示相对行号
 vim.wo.cursorline = true -- 高亮当前光标所在的行（方便定位）
 vim.opt.list = true -- 显示不可见字符（如空格、Tab）
 vim.opt.listchars = {
