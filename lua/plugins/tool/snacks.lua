@@ -26,7 +26,7 @@ return {{
             },
             scope = {
                 enabled = true, -- enable highlighting the current scope
-                underline = true -- underline the start of the scope
+                underline = false -- underline the start of the scope
             },
             chunk = {
                 enabled = true
