@@ -63,7 +63,7 @@ return {{
             }
         end,
         integrations = {
-            lualine = true,
+            -- lualine = true,
             barbar = true,
             cmp = true,
             -- gitsigns = true,
