@@ -48,23 +48,18 @@ return { -- 1. Mason & LSP 相关
                         group = group,
                         buffer = args.buf,
                         callback = function()
-                            -- 【核心逻辑】：使用 Treesitter 检查光标下的节点类型
                             local node = vim.treesitter.get_node()
                             if not node then
                                 return
                             end
 
                             local node_type = node:type()
-                            -- 打印类型可以调试: print(node_type) 
 
-                            -- 如果节点是 HTML 标签名、属性名等，我们【不】执行 LSP 全文高亮
                             local ignore_types = {"tag_name", "attribute_name", "start_tag", "end_tag", "element"}
 
                             if vim.tbl_contains(ignore_types, node_type) then
-                                -- 如果是标签，只让 matchup 工作，清除 LSP 的全文残留
                                 vim.lsp.buf.clear_references()
                             else
-                                -- 如果是变量、函数名等，才执行全文高亮
                                 vim.lsp.buf.document_highlight()
                             end
                         end
