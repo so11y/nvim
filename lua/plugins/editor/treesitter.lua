@@ -87,7 +87,6 @@ return {{{
 
     -- 4. 启动函数
     config = function(_, opts)
-        -- 只要这里不报错，说明你成功回到了 master 分支
         require("nvim-treesitter.configs").setup(opts)
 
         -- 2. 【核心】让 ; 和 , 支持重复跳转
