@@ -37,7 +37,7 @@ return {{{
                         desc = "下一个参数"
                     },
                     ["gjd"] = {
-                        query = "@parameter.inner",
+                        query = "@conditional.inner",
                         desc = "下一个条件"
                     }
                 },
@@ -51,7 +51,7 @@ return {{{
                         desc = "上一个参数"
                     },
                     ["gkd"] = {
-                        query = "@parameter.inner",
+                        query = "@conditional.inner",
                         desc = "上一个条件"
                     }
                 }
@@ -60,7 +60,6 @@ return {{{
                 enable = true,
                 lookahead = true,
                 keymaps = {
-                    -- select 模块也可以加 desc
                     ["am"] = {
                         query = "@function.outer",
                         desc = "选中 函数(外)"
@@ -73,11 +72,11 @@ return {{{
                         query = "@class.outer",
                         desc = "选中 类(外)"
                     },
-                    ["aa"] = {
-                        query = "@parameter.outer",
-                        desc = "选中 参数(外)"
-                    },
-
+                    -- miniai处理
+                    -- ["aa"] = {
+                    --     query = "@parameter.outer",
+                    --     desc = "选中 参数(外)"
+                    -- },
                     ["as"] = {
                         query = "@assignment.outer",
                         desc = "选中 变量赋值"
