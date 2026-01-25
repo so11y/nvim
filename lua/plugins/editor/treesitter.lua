@@ -1,32 +1,116 @@
-return { -- 1. 先安装核心插件
-{
+return {{{
     "nvim-treesitter/nvim-treesitter",
-    opts_extend = {"ensure_installed"},
-    main = "nvim-treesitter.config",
+    -- 1. 强制锁定 master 分支 (稳定版)
+    branch = "master",
+    build = ":TSUpdate",
+    event = {"BufReadPost", "BufNewFile"},
+
+    -- 2. 声明依赖 (让 lazy 帮你下载 textobjects)
+    dependencies = {"nvim-treesitter/nvim-treesitter-textobjects"},
+
+    -- 3. 统一配置 (opts)
     opts = {
-        ensure_installed = {"vue", "typescript", "javascript", "html", "css", "tsx", "json", "lua", "vim", "vimdoc",
-                            "bash", "markdown"},
+        ensure_installed = {"vue", "typescript", "javascript", "html", "css", "lua", "bash", "markdown", "json"},
+
+        -- 高亮与缩进
         highlight = {
-            enable = true,
-            additional_vim_regex_highlighting = false
+            enable = true
         },
         indent = {
             enable = true
+        },
+
+        -- Textobjects 配置直接写在这里，Treesitter 会自动加载它
+        textobjects = {
+            move = {
+                enable = true,
+                set_jumps = true,
+                goto_next_start = {
+                    ["gjf"] = {
+                        query = "@function.outer",
+                        desc = "下一个函数/方法"
+                    },
+                    ["gja"] = {
+                        query = "@parameter.inner",
+                        desc = "下一个参数"
+                    },
+                    ["gjd"] = {
+                        query = {"@assignment.outer", "@function.outer", "@class.outer"},
+                        desc = "下一个声明(变量/函数/类)"
+                    }
+                },
+                goto_previous_start = {
+                    ["gkf"] = {
+                        query = "@function.outer",
+                        desc = "上一个函数/方法"
+                    },
+                    ["gka"] = {
+                        query = "@parameter.inner",
+                        desc = "上一个参数"
+                    },
+                    ["gkd"] = {
+                        query = {"@assignment.outer", "@function.outer", "@class.outer"},
+                        desc = "下一个声明(变量/函数/类)"
+                    }
+                }
+            },
+            select = {
+                enable = true,
+                lookahead = true,
+                keymaps = {
+                    -- select 模块也可以加 desc
+                    ["am"] = {
+                        query = "@function.outer",
+                        desc = "选中 函数(外)"
+                    },
+                    ["im"] = {
+                        query = "@function.inner",
+                        desc = "选中 函数(内)"
+                    },
+                    ["ac"] = {
+                        query = "@class.outer",
+                        desc = "选中 类(外)"
+                    },
+                    ["aa"] = {
+                        query = "@parameter.outer",
+                        desc = "选中 参数(外)"
+                    },
+
+                    ["as"] = {
+                        query = "@assignment.outer",
+                        desc = "选中 变量赋值"
+                    }
+                }
+            }
         }
     },
+
+    -- 4. 启动函数
     config = function(_, opts)
-        require('nvim-treesitter.install').compilers = {"gcc"}
-        require('nvim-treesitter.config').setup(opts)
+        -- 只要这里不报错，说明你成功回到了 master 分支
+        require("nvim-treesitter.configs").setup(opts)
+
+        -- 2. 【核心】让 ; 和 , 支持重复跳转
+        local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
+        -- 绑定 ; 为“重复刚才的移动（向下/向后）”
+        vim.keymap.set({"n", "x", "o"}, ";", ts_repeat_move.repeat_last_move_next)
+        -- 绑定 , 为“反向重复刚才的移动（向上/向前）”
+        vim.keymap.set({"n", "x", "o"}, ",", ts_repeat_move.repeat_last_move_previous)
+        -- 3. 【可选】让原生 f/t/F/T 也继续支持 ; 和 ,
+        -- 因为上面的绑定覆盖了原生的 ; , 所以需要这几行把原生功能加回来
+        vim.keymap.set({"n", "x", "o"}, "f", ts_repeat_move.builtin_f)
+        vim.keymap.set({"n", "x", "o"}, "F", ts_repeat_move.builtin_F)
+        vim.keymap.set({"n", "x", "o"}, "t", ts_repeat_move.builtin_t)
+        vim.keymap.set({"n", "x", "o"}, "T", ts_repeat_move.builtin_T)
     end
-}, {
+}}, {
     "windwp/nvim-ts-autotag",
     config = function()
         require("nvim-ts-autotag").setup({
             opts = {
-                -- 默认是开启的，这里显式列出以供参考
-                enable_close = true, -- 自动闭合标签 <div > -> </div>
-                enable_rename = true, -- 自动重命名标签 (这就是你想要的功能)
-                enable_close_on_slash = true -- 输入 </ 自动闭合
+                enable_close = true,
+                enable_rename = true,
+                enable_close_on_slash = true
             }
         })
     end
