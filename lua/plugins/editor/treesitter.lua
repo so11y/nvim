@@ -22,6 +22,15 @@ return {{{
 
         -- Textobjects 配置直接写在这里，Treesitter 会自动加载它
         textobjects = {
+            swap = {
+                enable = true,
+                swap_next = {
+                    ["<leader>ra"] = "@parameter.inner"
+                },
+                swap_previous = {
+                    ["<leader>rA"] = "@parameter.inner"
+                }
+            },
             move = {
                 enable = true,
                 set_jumps = true,
@@ -35,8 +44,8 @@ return {{{
                         desc = "下一个参数"
                     },
                     ["gjd"] = {
-                        query = {"@assignment.outer", "@function.outer", "@class.outer"},
-                        desc = "下一个声明(变量/函数/类)"
+                        query = "@parameter.inner",
+                        desc = "下一个条件"
                     }
                 },
                 goto_previous_start = {
@@ -49,8 +58,8 @@ return {{{
                         desc = "上一个参数"
                     },
                     ["gkd"] = {
-                        query = {"@assignment.outer", "@function.outer", "@class.outer"},
-                        desc = "下一个声明(变量/函数/类)"
+                        query = "@parameter.inner",
+                        desc = "上一个条件"
                     }
                 }
             },
