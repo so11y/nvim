@@ -32,6 +32,7 @@
 (switch_case) @statement.outer
 (switch_statement) @statement.outer
 (try_statement) @statement.outer
+(import_statement) @statement.outer
 
 ; 2. 再写变量定义
 (lexical_declaration) @statement.outer
