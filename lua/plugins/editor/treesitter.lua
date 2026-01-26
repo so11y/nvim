@@ -23,84 +23,84 @@ return {{{
                     ["<leader>rA"] = "@parameter.inner"
                 }
             },
-            move = {
-                enable = true,
-                set_jumps = true, -- 是否在跳转列表中记录位置 (可以使用 Ctrl-o/i 回退)
-                goto_next_start = {
-                    -- 函数/方法跳转
-                    ["gjf"] = {
-                        query = "@function.outer",
-                        desc = "下一个函数/方法开头"
-                    },
-                    -- 参数跳转
-                    ["gja"] = {
-                        query = "@parameter.inner",
-                        desc = "下一个参数开头"
-                    },
-                    -- 条件判断跳转 (d: Decision)
-                    ["gjd"] = {
-                        query = "@conditional.outer",
-                        desc = "下一个条件判断 (if/switch)"
-                    },
-                    -- 循环跳转 (l: Loop)
-                    ["gjl"] = {
-                        query = "@loop.outer",
-                        desc = "下一个循环 (for/while)"
-                    },
-                    -- 语句跳转 (s: Statement)
-                    ["gjs"] = {
-                        query = "@statement.combined",
-                        desc = "下一个语句/声明"
-                    },
-                    -- 字符串跳转 (q: Quote)
-                    ["gjq"] = {
-                        query = "@string.outer",
-                        desc = "下一个字符串"
-                    },
-                    -- 方法调用跳转 (c: Call)
-                    ["gjc"] = {
-                        query = "@call.outer",
-                        desc = "下一个方法调用"
-                    }
-                },
-                goto_previous_start = {
-                    -- 函数/方法跳转
-                    ["gkf"] = {
-                        query = "@function.outer",
-                        desc = "上一个函数/方法开头"
-                    },
-                    -- 参数跳转
-                    ["gka"] = {
-                        query = "@parameter.inner",
-                        desc = "上一个参数开头"
-                    },
-                    -- 条件判断跳转
-                    ["gkd"] = {
-                        query = "@conditional.outer",
-                        desc = "上一个条件判断 (if/switch)"
-                    },
-                    -- 循环跳转
-                    ["gkl"] = {
-                        query = "@loop.outer",
-                        desc = "上一个循环 (for/while)"
-                    },
-                    -- 语句跳转
-                    ["gks"] = {
-                        query = "@statement.combined",
-                        desc = "上一个语句/声明"
-                    },
-                    -- 字符串跳转
-                    ["gkq"] = {
-                        query = "@string.outer",
-                        desc = "上一个字符串"
-                    },
-                    -- 方法调用跳转
-                    ["gkc"] = {
-                        query = "@call.outer",
-                        desc = "上一个方法调用"
-                    }
-                }
-            },
+            -- move = {
+            --     enable = true,
+            --     set_jumps = true, -- 是否在跳转列表中记录位置 (可以使用 Ctrl-o/i 回退)
+            --     goto_next_start = {
+            --         -- 函数/方法跳转
+            --         ["gjf"] = {
+            --             query = "@function.outer",
+            --             desc = "下一个函数/方法开头"
+            --         },
+            --         -- 参数跳转
+            --         ["gja"] = {
+            --             query = "@parameter.inner",
+            --             desc = "下一个参数开头"
+            --         },
+            --         -- 条件判断跳转 (d: Decision)
+            --         ["gjd"] = {
+            --             query = "@conditional.outer",
+            --             desc = "下一个条件判断 (if/switch)"
+            --         },
+            --         -- 循环跳转 (l: Loop)
+            --         ["gjl"] = {
+            --             query = "@loop.outer",
+            --             desc = "下一个循环 (for/while)"
+            --         },
+            --         -- 语句跳转 (s: Statement)
+            --         ["gjs"] = {
+            --             query = "@statement.combined",
+            --             desc = "下一个语句/声明"
+            --         },
+            --         -- 字符串跳转 (q: Quote)
+            --         ["gjq"] = {
+            --             query = "@string.outer",
+            --             desc = "下一个字符串"
+            --         },
+            --         -- 方法调用跳转 (c: Call)
+            --         ["gjc"] = {
+            --             query = "@call.outer",
+            --             desc = "下一个方法调用"
+            --         }
+            --     },
+            --     goto_previous_start = {
+            --         -- 函数/方法跳转
+            --         ["gkf"] = {
+            --             query = "@function.outer",
+            --             desc = "上一个函数/方法开头"
+            --         },
+            --         -- 参数跳转
+            --         ["gka"] = {
+            --             query = "@parameter.inner",
+            --             desc = "上一个参数开头"
+            --         },
+            --         -- 条件判断跳转
+            --         ["gkd"] = {
+            --             query = "@conditional.outer",
+            --             desc = "上一个条件判断 (if/switch)"
+            --         },
+            --         -- 循环跳转
+            --         ["gkl"] = {
+            --             query = "@loop.outer",
+            --             desc = "上一个循环 (for/while)"
+            --         },
+            --         -- 语句跳转
+            --         ["gks"] = {
+            --             query = "@statement.combined",
+            --             desc = "上一个语句/声明"
+            --         },
+            --         -- 字符串跳转
+            --         ["gkq"] = {
+            --             query = "@string.outer",
+            --             desc = "上一个字符串"
+            --         },
+            --         -- 方法调用跳转
+            --         ["gkc"] = {
+            --             query = "@call.outer",
+            --             desc = "上一个方法调用"
+            --         }
+            --     }
+            -- },
             select = {
                 enable = true,
                 lookahead = true, -- 自动跳转到下一个匹配项进行操作
@@ -157,11 +157,12 @@ return {{{
 
                     -- 【语句】as: a statement, is: inner statement
                     ["as"] = {
-                        query = "@statement.combined",
+                        query = "@statement.outer",
                         desc = "选中整个语句"
                     },
                     ["is"] = {
-                        query = "@statement.combined.inner",
+                        query = "@statement.inner",
+                        -- query = "@statement.combined.inner",
                         desc = "选中语句内容"
                     },
 
@@ -182,79 +183,178 @@ return {{{
     config = function(_, opts)
         require("nvim-treesitter.configs").setup(opts)
 
-        -- 支持重复跳转
-        local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
-        vim.keymap.set({"n", "x", "o"}, ";", ts_repeat_move.repeat_last_move_next)
-        vim.keymap.set({"n", "x", "o"}, ",", ts_repeat_move.repeat_last_move_previous)
-        vim.keymap.set({"n", "x", "o"}, "f", ts_repeat_move.builtin_f)
-        vim.keymap.set({"n", "x", "o"}, "F", ts_repeat_move.builtin_F)
-        vim.keymap.set({"n", "x", "o"}, "t", ts_repeat_move.builtin_t)
-        vim.keymap.set({"n", "x", "o"}, "T", ts_repeat_move.builtin_T)
+        require("nvim-treesitter.configs").setup(opts)
 
-        local ts_move = require('nvim-treesitter.textobjects.move')
-
-        -- 【强力版】上下文感知跳转
-        local function bulletproof_jump(query, direction)
+        local function move(capture, forward)
             local bufnr = vim.api.nvim_get_current_buf()
-            local cursor = vim.api.nvim_win_get_cursor(0)
-            local row, col = cursor[1] - 1, cursor[2]
-
-            -- 1. 获取解析器并探测当前位置的真实语言
-            local ok_parser, parser = pcall(vim.treesitter.get_parser, bufnr)
-            if not ok_parser or not parser then
+            local parser = vim.treesitter.get_parser(bufnr)
+            if not parser then
                 return
             end
 
-            -- 2. 探测当前光标下的语言（如 tsx, vue, css）
-            local lang_tree = parser:language_for_range({row, col, row, col})
-            local current_lang = lang_tree:lang()
+            local cursor = vim.api.nvim_win_get_cursor(0)
+            local cur_row, cur_col = cursor[1] - 1, cursor[2]
 
-            -- 3. 尝试跳转逻辑
-            local function try_jump(l)
-                local ok = pcall(function()
-                    ts_move[direction](query, "textobjects", l)
-                end)
-                return ok
-            end
+            local target_node = nil
+            local best_row, best_col = nil, nil
 
-            -- 逻辑：
-            -- 第一步：尝试当前探测到的语言（比如 tsx）
-            -- 第二步：如果是 Vue 文件且第一步没跳成，强制尝试用 'tsx' 解析器再跳一次
-            if not try_jump(current_lang) then
-                if vim.bo.filetype == "vue" then
-                    try_jump("tsx")
+            parser:for_each_tree(function(tree, lang_tree)
+                local lang = lang_tree:lang()
+                local query = vim.treesitter.query.get(lang, "textobjects")
+                if not query then
+                    return
                 end
+
+                local root = tree:root()
+                for id, node in query:iter_captures(root, bufnr) do
+                    if "@" .. query.captures[id] == capture then
+                        local r, c = node:start()
+                        if forward then
+                            if r > cur_row or (r == cur_row and c > cur_col) then
+                                if not best_row or (r < best_row or (r == best_row and c < best_col)) then
+                                    best_row, best_col = r, c
+                                    target_node = node
+                                end
+                            end
+                        else
+                            if r < cur_row or (r == cur_row and c < cur_col) then
+                                if not best_row or (r > best_row or (r == best_row and c > best_col)) then
+                                    best_row, best_col = r, c
+                                    target_node = node
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+
+            if target_node then
+                local r, c = target_node:start()
+                vim.api.nvim_win_set_cursor(0, {r + 1, c})
+                vim.cmd("normal! m'")
             end
         end
 
-        -- 定义按键 (以此类推修改你的 move_maps)
-        local move_maps = {
-            ["]s"] = {
-                q = "@statement.outer",
-                d = "goto_next_start"
-            },
-            ["[s"] = {
-                q = "@statement.outer",
-                d = "goto_previous_start"
-            },
-            ["]f"] = {
-                q = "@function.outer",
-                d = "goto_next_start"
-            },
-            ["[f"] = {
-                q = "@function.outer",
-                d = "goto_previous_start"
-            }
-        }
+        local repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
 
-        for key, val in pairs(move_maps) do
-            vim.keymap.set("n", key, function()
-                bulletproof_jump(val.q, val.d)
-            end, {
-                desc = "Smart Jump: " .. val.q
-            })
-        end
+        -- 包装器接收 (opts, capture)
+        local move_repeatable = repeat_move.make_repeatable_move(function(opts, capture)
+            move(capture, opts.forward)
+        end)
 
+        -- 5. 绑定快捷键
+        local set = vim.keymap.set
+        local nxo = {"n", "x", "o"}
+
+        -- 函数跳转
+        set(nxo, "gjf", function()
+            move_repeatable({
+                forward = true
+            }, "@function.outer")
+        end, {
+            desc = "下一个函数"
+        })
+        set(nxo, "gkf", function()
+            move_repeatable({
+                forward = false
+            }, "@function.outer")
+        end, {
+            desc = "上一个函数"
+        })
+
+        -- 参数跳转
+        set(nxo, "gja", function()
+            move_repeatable({
+                forward = true
+            }, "@parameter.inner")
+        end, {
+            desc = "下一个参数"
+        })
+        set(nxo, "gka", function()
+            move_repeatable({
+                forward = false
+            }, "@parameter.inner")
+        end, {
+            desc = "上一个参数"
+        })
+
+        -- 条件跳转
+        set(nxo, "gjd", function()
+            move_repeatable({
+                forward = true
+            }, "@conditional.outer")
+        end, {
+            desc = "下一个条件"
+        })
+        set(nxo, "gkd", function()
+            move_repeatable({
+                forward = false
+            }, "@conditional.outer")
+        end, {
+            desc = "上一个条件"
+        })
+
+        -- 循环跳转
+        set(nxo, "gjl", function()
+            move_repeatable({
+                forward = true
+            }, "@loop.outer")
+        end, {
+            desc = "下一个循环"
+        })
+        set(nxo, "gkl", function()
+            move_repeatable({
+                forward = false
+            }, "@loop.outer")
+        end, {
+            desc = "上一个循环"
+        })
+
+        -- 方法调用跳转
+        set(nxo, "gjc", function()
+            move_repeatable({
+                forward = true
+            }, "@call.outer")
+        end, {
+            desc = "下一个方法调用"
+        })
+        set(nxo, "gkc", function()
+            move_repeatable({
+                forward = false
+            }, "@call.outer")
+        end, {
+            desc = "上一个方法调用"
+        })
+
+        -- 字符串跳转
+        set(nxo, "gjq", function()
+            move_repeatable({
+                forward = true
+            }, "@string.outer")
+        end, {
+            desc = "下一个字符串"
+        })
+        set(nxo, "gkq", function()
+            move_repeatable({
+                forward = false
+            }, "@string.outer")
+        end, {
+            desc = "上一个字符串"
+        })
+
+        -- 6. 绑定重复按键
+        set(nxo, ";", repeat_move.repeat_last_move_next, {
+            desc = "重复上次移动"
+        })
+        set(nxo, ",", repeat_move.repeat_last_move_previous, {
+            desc = "反向重复上次移动"
+        })
+
+        -- 7. 让内置的 f, F, t, T 也能被 ; 重复
+        set(nxo, "f", repeat_move.builtin_f)
+        set(nxo, "F", repeat_move.builtin_F)
+        set(nxo, "t", repeat_move.builtin_t)
+        set(nxo, "T", repeat_move.builtin_T)
     end
 }}, {
     "windwp/nvim-ts-autotag",
