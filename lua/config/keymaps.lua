@@ -14,6 +14,8 @@ map({"n", "v"}, "s", "<nop>") -- 禁用 s
 map({"n", "v"}, "x", '"_x')
 map({"n", "v"}, "c", '"_c')
 map({"n", "v"}, "C", '"_C')
+map({"n", "v"}, "d", '"_d')
+map({"n", "v"}, "D", '"_C')
 
 
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "退出 Neovim" })
