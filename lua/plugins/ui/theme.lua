@@ -9,6 +9,10 @@ return {{
         },
         custom_highlights = function(colors)
             return {
+                FlashBackdrop = {
+                    fg ="NONE",
+                    bg = "NONE"
+                },
                 SnacksPickerListCursorLine = {
                     fg = "#ffffff",
                     bg = "#1E66F5"
@@ -69,6 +73,7 @@ return {{
             -- gitsigns = true,
             mason = true,
             noice = true,
+            flash = true,
             neotree = true,
             rainbow_delimiters = true,
             snacks = {

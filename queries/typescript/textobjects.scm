@@ -22,14 +22,32 @@
 (call_expression) @call.outer
 (call_expression arguments: (arguments) @call.inner)
 
-; --- 语句 (用于 as/is) ---
-(expression_statement) @statement.outer
-(variable_declaration) @statement.outer
+
+; 1. 先写带大括号的结构（保证跳转 ]s 能跳到 if/for 的开头）
+(if_statement) @statement.outer
+(for_statement) @statement.outer
+(for_in_statement) @statement.outer
+(while_statement) @statement.outer
+(switch_default) @statement.outer
+(switch_case) @statement.outer
+(switch_statement) @statement.outer
+(try_statement) @statement.outer
+
+; 2. 再写变量定义
 (lexical_declaration) @statement.outer
+(variable_declaration) @statement.outer
+(class_declaration) @statement.outer
+
+
+; 3. 最后写基础执行语句
+(expression_statement) @statement.outer
 (return_statement) @statement.outer
+
+
 
 ; --- 字符串 (包含 #offset! 修复反引号 viq) ---
 (string) @string.outer
 (string (string_fragment) @string.inner)
 (template_string) @string.outer
 ((template_string) @string.inner (#offset! @string.inner 0 1 0 -1))
+

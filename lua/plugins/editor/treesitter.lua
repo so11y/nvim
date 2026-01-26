@@ -3,7 +3,10 @@ return {{{
     branch = "master",
     build = ":TSUpdate",
     event = {"BufReadPost", "BufNewFile"},
-    dependencies = {"nvim-treesitter/nvim-treesitter-textobjects"},
+    dependencies = {{
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        branch = "master"
+    }},
     opts = {
         ensure_installed = {"vue", "typescript", "javascript", "html", "css", "lua", "bash", "markdown", "json"},
         -- 高亮与缩进
@@ -340,6 +343,22 @@ return {{{
             }, "@string.outer")
         end, {
             desc = "上一个字符串"
+        })
+
+        -- 语句段落跳转
+        set(nxo, "gjs", function()
+            move_repeatable({
+                forward = true
+            }, "@statement.outer")
+        end, {
+            desc = "下一个语句段落"
+        })
+        set(nxo, "gks", function()
+            move_repeatable({
+                forward = false
+            }, "@statement.outer")
+        end, {
+            desc = "上一个语句段落"
         })
 
         -- 6. 绑定重复按键

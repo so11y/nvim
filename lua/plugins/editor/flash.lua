@@ -2,6 +2,14 @@ return {
     "folke/flash.nvim",
     event = "VeryLazy",
     ---@type Flash.Config
+    opts = {
+        modes = {
+            char = {
+                enabled = true,
+                jump_labels = true
+            }
+        }
+    },
     keys = {{
         "<leader>jw",
         mode = {"n", "x", "o"},

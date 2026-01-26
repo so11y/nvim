@@ -51,7 +51,10 @@ return {{{
 
     config = function(_, opts)
         require("ufo").setup(opts)
-        -- Ensure our ufo foldlevel is set for the buffer
+        vim.api.nvim_set_hl(0, "Folded", {
+            bg = "#20242C"
+        })
+
         vim.api.nvim_create_autocmd("BufReadPre", {
             callback = function()
                 vim.b.ufo_foldlevel = 0
@@ -98,56 +101,5 @@ return {{{
         end, {
             desc = "预览"
         })
-
-        -- -- stylua: ignore
-        -- vim.keymap.set("n", "zM", function()
-        --     set_buf_foldlevel(0)
-        -- end, {
-        --     desc = "[UFO] Close all folds"
-        -- })
-        -- vim.keymap.set("n", "zR", require("ufo").openAllFolds, {
-        --     desc = "[UFO] Open all folds"
-        -- })
-
-        -- vim.keymap.set("n", "zm", function()
-        --     local count = vim.v.count
-        --     if count == 0 then
-        --         count = 1
-        --     end
-        --     change_buf_foldlevel_by(-count)
-        -- end, {
-        --     desc = "[UFO] Fold More"
-        -- })
-        -- vim.keymap.set("n", "zr", function()
-        --     local count = vim.v.count
-        --     if count == 0 then
-        --         count = 1
-        --     end
-        --     change_buf_foldlevel_by(count)
-        -- end, {
-        --     desc = "[UFO] Fold Less"
-        -- })
-
-        -- -- 99% sure `zS` isn't mapped by default
-        -- vim.keymap.set("n", "zS", function()
-        --     if vim.v.count == 0 then
-        --         vim.notify("No foldlevel given to set!", vim.log.levels.WARN)
-        --     else
-        --         set_buf_foldlevel(vim.v.count)
-        --     end
-        -- end, {
-        --     desc = "[UFO] Set foldlevel"
-        -- })
-
-        -- -- Delete some predefined keymaps as they are not compatible with nvim-ufo
-        -- vim.keymap.set("n", "zE", "<NOP>", {
-        --     desc = "Disabled"
-        -- })
-        -- vim.keymap.set("n", "zx", "<NOP>", {
-        --     desc = "Disabled"
-        -- })
-        -- vim.keymap.set("n", "zX", "<NOP>", {
-        --     desc = "Disabled"
-        -- })
     end
 }}}
