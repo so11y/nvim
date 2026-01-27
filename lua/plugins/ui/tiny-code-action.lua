@@ -7,6 +7,7 @@ return {
         picker = {
             "buffer",
             opts = {
+                auto_preview = true,
                 keymaps = {
                     preview = "K",
                     select = "<Tab>",
