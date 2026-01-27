@@ -140,6 +140,44 @@ return {{
     },
 
     keys = {{
+        "<leader>o",
+        function()
+            local cursor = vim.api.nvim_win_get_cursor(0)
+
+            local function cursor_in_range(cur, range)
+                local r0 = {cur[1] - 1, cur[2]}
+                return (r0[1] > range.start.line or (r0[1] == range.start.line and r0[2] >= range.start.character)) and
+                           (r0[1] < range["end"].line or
+                               (r0[1] == range["end"].line and r0[2] <= range["end"].character))
+            end
+
+            local picker = Snacks.picker.lsp_symbols({
+                tree = true, -- 树形结构
+                focus = "list" -- 直接聚焦列表
+            })
+
+            -- 监听任务完成 
+            picker.matcher.task:on("done", function()
+                vim.schedule(function()
+                    if picker.list:count() == 0 then
+                        return
+                    end
+
+                    local symbols = picker:items()
+                    -- ：逆序遍历 (#symbols -> 1)
+                    for i = #symbols, 1, -1 do
+                        local symbol = symbols[i]
+                        if symbol.range and cursor_in_range(cursor, symbol.range) then
+                            -- 使用 list:move 而不是 list.cursor 赋值，解决渲染不同步的 Bug
+                            picker.list:move(symbol.idx, true)
+                            return
+                        end
+                    end
+                end)
+            end)
+        end,
+        desc = "outline"
+    }, {
         "<A-w>",
         function()
             local winid = vim.api.nvim_get_current_win()

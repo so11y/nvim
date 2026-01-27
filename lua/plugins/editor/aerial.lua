@@ -1,5 +1,6 @@
 return {
     "stevearc/aerial.nvim",
+    enabled = false,
     opts = {
         backends = {"lsp", "treesitter", "markdown", "man"},
         layout = {
