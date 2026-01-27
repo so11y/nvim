@@ -228,6 +228,16 @@ return {{
         end,
         desc = "通知历史"
     }, {
+        "<a-f>",
+        function()
+            require("snacks").picker.lines({
+                layout = {
+                    preset = "dropdown"
+                }
+            })
+        end,
+        desc = "文件查找"
+    }, {
         "<leader>fs",
         function()
             require("snacks").picker.files()

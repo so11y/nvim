@@ -4,7 +4,7 @@ vim.g.maplocalleader = " "
 vim.g.mapleader = " " -- "vim.leader": "<space>"
 vim.opt.clipboard = "unnamedplus" -- "vim.useSystemClipboard": true
 vim.opt.number = true -- 显示绝对行号
-vim.opt.relativenumber = true  -- 显示相对行号
+vim.opt.relativenumber = true -- 显示相对行号
 vim.wo.cursorline = true -- 高亮当前光标所在的行（方便定位）
 vim.opt.list = true -- 显示不可见字符（如空格、Tab）
 vim.opt.listchars = {
@@ -34,5 +34,5 @@ vim.opt.smartindent = true -- 开启智能缩进（换行时自动对齐）
 vim.opt.splitbelow = true -- 水平分屏时，新窗口在下方（默认在上方）
 vim.opt.splitright = true -- 垂直分屏时，新窗口在右方（默认在左方）
 
-
+-- vim.opt.updatetime = 100 更新响应时间
 
