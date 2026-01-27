@@ -3,14 +3,10 @@ return {
     dependencies = {"lewis6991/gitsigns.nvim", -- 可选：显示文件 git 状态
     "nvim-tree/nvim-web-devicons" -- 图标支持
     },
-    init = function()
-        -- 禁用 barbar 自动 setup，以便我们通过 opts 传参
-        vim.g.barbar_auto_setup = false
-    end,
     opts = {
         -- 1. 基础外观设置
         animation = true, -- 标签页移动时的动画效果
-        auto_hide = false, -- 只有一个标签时是否隐藏（建议不隐藏）
+        auto_hide = true, -- 只有一个标签时是否隐藏（建议不隐藏）
         tabpages = true, -- 是否在右侧显示标签页码
         clickable = true, -- 鼠标点击支持
 
