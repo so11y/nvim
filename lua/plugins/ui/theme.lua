@@ -74,7 +74,7 @@ return {{
             noice = true,
             flash = true,
             neotree = true,
-            -- blink_cmp = true,
+            blink_cmp = true,
             rainbow_delimiters = true,
             snacks = {
                 enabled = true,

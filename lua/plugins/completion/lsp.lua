@@ -41,9 +41,24 @@ return { -- 1. Mason & LSP 相关
             callback = function(args)
 
                 vim.diagnostic.config({
-                    virtual_text = true,
+                    virtual_text = {
+                        prefix = '',
+                        spacing = 4,
+                        severity = {
+                            min = vim.diagnostic.severity.ERROR
+                        }
+                    },
+                    signs = {
+                        text = {
+                            [vim.diagnostic.severity.ERROR] = '',
+                            [vim.diagnostic.severity.WARN] = '',
+                            [vim.diagnostic.severity.INFO] = '',
+                            [vim.diagnostic.severity.HINT] = '󰌵'
+                        }
+                    },
                     underline = true,
-                    severity_sort = true
+                    severity_sort = true,
+                    update_in_insert = false
                 })
 
                 local client = vim.lsp.get_client_by_id(args.data.client_id)
