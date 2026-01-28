@@ -7,8 +7,7 @@ return {
     ---@type blink.cmp.Config
     opts = {
         snippets = {
-            preset = 'default',
-            extra_paths = {vim.fn.stdpath("config") .. "/snippets"}
+            preset = 'default'
         },
         completion = {
             ghost_text = {
