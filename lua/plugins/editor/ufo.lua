@@ -23,7 +23,6 @@ return {{{
                     local hlGroup = chunk[2]
                     table.insert(newVirtText, {chunkText, hlGroup})
                     chunkWidth = vim.fn.strdisplaywidth(chunkText)
-                    -- str width returned from truncate() may less than 2nd argument, need padding
                     if curWidth + chunkWidth < targetWidth then
                         suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
                     end
@@ -31,7 +30,7 @@ return {{{
                 end
                 curWidth = curWidth + chunkWidth
             end
-            table.insert(newVirtText, {suffix, "MoreMsg"})
+            table.insert(newVirtText, {suffix, "Special"})
             return newVirtText
         end
     },
@@ -61,29 +60,9 @@ return {{{
             end
         })
 
-        ---@param num integer Set the fold level to this number
-        local set_buf_foldlevel = function(num)
-            vim.b.ufo_foldlevel = num
-            require("ufo").closeFoldsWith(num)
-        end
-
-        ---@param num integer The amount to change the UFO fold level by
-        local change_buf_foldlevel_by = function(num)
-            local foldlevel = vim.b.ufo_foldlevel or 0
-            -- Ensure the foldlevel can't be set negatively
-            if foldlevel + num >= 0 then
-                foldlevel = foldlevel + num
-            else
-                foldlevel = 0
-            end
-            set_buf_foldlevel(foldlevel)
-        end
-
         local peek_winid = nil
         vim.keymap.set("n", "<leader>k", function()
-            -- 检查预览窗是否已经打开
             if peek_winid and vim.api.nvim_win_is_valid(peek_winid) then
-                -- 如果已经开了，就把光标传进去
                 vim.api.nvim_set_current_win(peek_winid)
                 local bufnr = vim.api.nvim_win_get_buf(peek_winid)
                 vim.keymap.set("n", "<ESC>", "<cmd>close<CR>", {
