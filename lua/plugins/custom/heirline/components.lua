@@ -228,24 +228,27 @@ M.LSPActive = {
     update = {'LspAttach', 'LspDetach'},
     provider = function()
         local names = {}
-        ---@diagnostic disable-next-line: deprecated
-        for _, server in pairs(vim.lsp.get_clients {
+        local clients = vim.lsp.get_clients({
             bufnr = 0
-        }) do
+        })
+        for _, server in pairs(clients) do
             table.insert(names, server.name)
         end
-        return table.concat(names, ',')
+        if #names == 0 then
+            return ""
+        end
+        return "  " .. table.concat(names, ", ")
     end,
     hl = {
         fg = dim_color,
         bold = false
+    },
+    on_click = {
+        name = 'heirline_lsp',
+        callback = function()
+            vim.cmd('LspInfo')
+        end
     }
-    -- on_click = {
-    --   name = 'heirline_lsp',
-    --   callback = function()
-    --     vim.cmd 'LspInfo'
-    --   end,
-    -- },
 }
 
 M.FileType = {
