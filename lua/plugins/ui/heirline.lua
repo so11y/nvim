@@ -1,18 +1,13 @@
 return {
     'rebelot/heirline.nvim',
     event = {'BufReadPre', 'BufNewFile'},
-    dependencies = {
-        {
-            'echasnovski/mini.icons',
-            opts = {}
-        },
-        {
-            'linrongbin16/lsp-progress.nvim',
-            opts = {}
-        },
-        config = function()
-            require 'plugins.custom.heirline.lspprogress'
-        end
+    dependencies = {"nvim-tree/nvim-web-devicons" -- {
+    --     'linrongbin16/lsp-progress.nvim',
+    --     opts = {}
+    -- },
+    -- config = function()
+    --     require 'plugins.custom.heirline.lspprogress'
+    -- end
     },
     init = function()
         vim.keymap.set('n', '<leader>tt', function()
