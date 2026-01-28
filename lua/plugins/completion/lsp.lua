@@ -17,7 +17,8 @@ return { -- 1. Mason & LSP 相关
 }, -- 2. LSPConfig 主配置
 {
     "neovim/nvim-lspconfig",
-    dependencies = {"williamboman/mason-lspconfig.nvim", "hrsh7th/cmp-nvim-lsp"},
+    dependencies = {"williamboman/mason-lspconfig.nvim" -- "hrsh7th/cmp-nvim-lsp"
+    },
     opts = {
         servers = {
             html = {},
@@ -38,6 +39,13 @@ return { -- 1. Mason & LSP 相关
         vim.opt.updatetime = 200
         vim.api.nvim_create_autocmd("LspAttach", {
             callback = function(args)
+
+                vim.diagnostic.config({
+                    virtual_text = true,
+                    underline = true,
+                    severity_sort = true
+                })
+
                 local client = vim.lsp.get_client_by_id(args.data.client_id)
                 if client and client.server_capabilities.documentHighlightProvider then
                     local group = vim.api.nvim_create_augroup("lsp_document_highlight", {

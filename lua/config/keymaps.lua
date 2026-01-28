@@ -213,7 +213,7 @@ map("n", "<A-Right>", "<C-w>>", {
 -- 7. 输入体验优化 (Undo Breakpoints)
 -- =======================================================
 -- 在标点符号处打断撤销链，使得撤销粒度更细
-local rules = {',', '.', '!', '?', '='}
+local rules = {',', '.', '!', '?', '=', "[", "]", "{", "}", "(", ")"}
 for _, rule in ipairs(rules) do
     map('i', rule, rule .. '<C-g>u', {
         noremap = true,

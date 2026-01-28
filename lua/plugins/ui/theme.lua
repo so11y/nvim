@@ -69,7 +69,7 @@ return {{
         integrations = {
             -- lualine = true,
             barbar = true,
-            cmp = true,
+            blink = true,
             -- gitsigns = true,
             mason = true,
             noice = true,

@@ -2,6 +2,7 @@ return {
     "rachartier/tiny-inline-diagnostic.nvim",
     event = "VeryLazy",
     priority = 1000,
+    enable = false,
     config = function()
         require('tiny-inline-diagnostic').setup({
             preset = "minimal",
@@ -13,12 +14,6 @@ return {
                     mode = "wrap"
                 }
             }
-        })
-
-        vim.diagnostic.config({
-            virtual_text = false,
-            underline = true,
-            severity_sort = true
         })
     end
 }
