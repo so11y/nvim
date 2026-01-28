@@ -640,13 +640,13 @@ M.TablineFileNameBlock = vim.tbl_extend('force', M.FileNameBlock, {
     }
 })
 
-vim.opt.showcmdloc = 'statusline'
-M.ShowCmd = {
-    condition = function()
-        return vim.o.cmdheight == 0
-    end,
-    provider = '%3.5(%S%)'
-}
+-- vim.opt.showcmdloc = 'statusline'
+-- M.ShowCmd = {
+--     condition = function()
+--         return vim.o.cmdheight == 0
+--     end,
+--     provider = '%3.5(%S%)'
+-- }
 
 M.SearchOccurrence = {
     condition = function()
