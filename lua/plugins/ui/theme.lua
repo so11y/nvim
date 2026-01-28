@@ -10,7 +10,7 @@ return {{
         custom_highlights = function(colors)
             return {
                 FlashBackdrop = {
-                    fg ="NONE",
+                    fg = "NONE",
                     bg = "NONE"
                 },
                 SnacksPickerListCursorLine = {
@@ -69,12 +69,12 @@ return {{
         integrations = {
             -- lualine = true,
             barbar = true,
-            blink = true,
             -- gitsigns = true,
             mason = true,
             noice = true,
             flash = true,
             neotree = true,
+            -- blink_cmp = true,
             rainbow_delimiters = true,
             snacks = {
                 enabled = true,

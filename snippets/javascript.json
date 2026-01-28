@@ -5,5 +5,12 @@
       "console.log($1);"
     ],
     "description": "console.log"
+  },
+  "Arrow Function": {
+    "prefix": "af",
+    "body": [
+      "($1)=>{$2}"
+    ],
+    "description": "Arrow Function"
   }
 }

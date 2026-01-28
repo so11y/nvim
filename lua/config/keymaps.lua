@@ -62,6 +62,9 @@ map("i", "<CR>", "<CR>", {
 map("n", "<Esc>", function()
     vim.cmd("nohlsearch") -- 动作 1：清除高亮
     vim.fn.setreg("/", "") -- 动作 2：清空搜索记录
+    if vim.snippet then -- 动作 清除片段跳转
+        vim.snippet.stop()
+    end
     return "<Esc>" -- 动作 3：返回 "<Esc>" 字符串
 end, {
     expr = true
