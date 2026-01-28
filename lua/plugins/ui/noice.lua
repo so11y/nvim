@@ -5,11 +5,14 @@ return {{
     },
     opts = {
         lsp = {
-            -- 覆盖 LSP 的默认处理，使用 Noice 的美化界面
             override = {
                 ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
                 ["vim.lsp.util.stylize_markdown"] = true,
                 ["cmp.entry.get_documentation"] = true
+            },
+            -- 只要进入函数参数他就弹框的
+            signature = {
+                enabled = false
             }
         },
         presets = {
@@ -20,7 +23,7 @@ return {{
             lsp_doc_border = true -- 给文档窗加边框
         },
         popupmenu = {
-            enabled = false -- 使用 nvim-cmp 的补全菜单，不冲突
+            enabled = false
         },
         -- 路由设置：过滤掉多余的消息
         routes = {{

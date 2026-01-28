@@ -10,11 +10,26 @@ return {
             preset = 'default'
         },
         completion = {
+            documentation = {
+                auto_show = true,
+                auto_show_delay_ms = 300
+            },
             ghost_text = {
                 enabled = true
             },
             menu = {
-                border = 'rounded'
+                border = 'rounded',
+                draw = {
+                    columns = {{
+                        "kind_icon",
+                        gap = 1
+                    }, {
+                        "label",
+                        "label_description",
+                        gap = 1
+
+                    }, {"kind"}}
+                }
             }
         },
 
