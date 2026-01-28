@@ -7,6 +7,8 @@ return {
         picker = {
             "buffer",
             opts = {
+                auto_preview = true,
+                height = 5, -- 限制只显示 5 个条目
                 keymaps = {
                     preview = "K",
                     select = "<Tab>",
