@@ -184,7 +184,7 @@ M.Formatters = {
         self.conform = conform
         return ok
     end,
-    update = {'BufEnter'},
+    update = {'BufEnter', 'FileType', 'BufWritePost'},
     provider = function(self)
         local ft_entry = self.conform.formatters_by_ft[vim.bo.filetype]
         local ft_formatters

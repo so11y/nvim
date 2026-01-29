@@ -21,7 +21,8 @@ return {
             javascript = {"prettierd"},
             css = {"prettierd"},
             scss = {"prettierd"},
-            html = {"prettierd"}
+            html = {"prettierd"},
+            json = {"prettierd"}
         },
         format_on_save = {
             timeout_ms = 2000,
