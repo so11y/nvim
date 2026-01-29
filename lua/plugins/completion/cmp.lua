@@ -20,6 +20,7 @@ return {
             menu = {
                 border = 'rounded',
                 draw = {
+                    treesitter = {'lsp'},
                     columns = {{
                         "kind_icon",
                         gap = 1
