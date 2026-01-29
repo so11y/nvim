@@ -1,4 +1,4 @@
-local components = require 'plugins.custom.heirline.components'
+local components = require 'custom.heirline.components'
 
 return { -- statusline
 components.RightPadding(components.Mode, 1), components.RightPadding(components.FileNameBlock, 1),

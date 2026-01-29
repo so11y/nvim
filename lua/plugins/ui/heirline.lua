@@ -2,12 +2,6 @@ return {
     'rebelot/heirline.nvim',
     event = {'BufReadPre', 'BufNewFile'},
     dependencies = {"nvim-tree/nvim-web-devicons" -- {
-    --     'linrongbin16/lsp-progress.nvim',
-    --     opts = {}
-    -- },
-    -- config = function()
-    --     require 'plugins.custom.heirline.lspprogress'
-    -- end
     },
     init = function()
         vim.keymap.set('n', '<leader>tt', function()
@@ -19,7 +13,7 @@ return {
     config = function()
         vim.opt.cmdheight = 0
         require('heirline').setup {
-            statusline = require 'plugins.custom.heirline.statusline'
+            statusline = require 'custom.heirline.statusline'
             -- tabline = require 'custom.config.heirline.tabline',
         }
     end
