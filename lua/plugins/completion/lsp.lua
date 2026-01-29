@@ -5,8 +5,7 @@ return {{
         ensure_installed = {"eslint", "html", "cssls"},
         automatic_installation = true
     }
-}, -- 2. LSPConfig 主配置
-{
+}, {
     "neovim/nvim-lspconfig",
     dependencies = {"williamboman/mason-lspconfig.nvim"},
     config = function(_, opts)
