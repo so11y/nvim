@@ -1,76 +1,66 @@
-return {{
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = {"williamboman/mason.nvim"},
-    opts = {
-        ensure_installed = {"eslint", "html", "cssls"},
-        automatic_installation = true
-    }
-}, {
-    "neovim/nvim-lspconfig",
-    dependencies = {"williamboman/mason-lspconfig.nvim"},
-    config = function(_, opts)
-        vim.opt.updatetime = 200
-        vim.api.nvim_create_autocmd("LspAttach", {
-            callback = function(args)
+-- vim.lsp.enable 'vtsls'
+-- vim.lsp.enable 'vue_ls'
 
-                vim.diagnostic.config({
-                    virtual_text = {
-                        prefix = '',
-                        spacing = 4,
-                        severity = {
-                            min = vim.diagnostic.severity.ERROR
-                        }
-                    },
-                    signs = {
-                        text = {
-                            [vim.diagnostic.severity.ERROR] = '󰧞', -- ● •
-                            [vim.diagnostic.severity.WARN] = '󰧞',
-                            [vim.diagnostic.severity.INFO] = '󰧞',
-                            [vim.diagnostic.severity.HINT] = '󱐋'
-                        }
-                    },
-                    underline = true,
-                    severity_sort = true,
-                    update_in_insert = false
-                })
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
 
-                local client = vim.lsp.get_client_by_id(args.data.client_id)
-                if client and client.server_capabilities.documentHighlightProvider then
-                    local group = vim.api.nvim_create_augroup("lsp_document_highlight", {
-                        clear = true
-                    })
-
-                    vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
-                        group = group,
-                        buffer = args.buf,
-                        callback = function()
-                            local node = vim.treesitter.get_node()
-                            if not node then
-                                return
-                            end
-
-                            local node_type = node:type()
-
-                            local ignore_types = {"tag_name", "attribute_name", "start_tag", "end_tag", "element"}
-
-                            if vim.tbl_contains(ignore_types, node_type) then
-                                vim.lsp.buf.clear_references()
-                            else
-                                vim.lsp.buf.document_highlight()
-                            end
-                        end
-                    })
-
-                    -- 移动光标立刻清除高亮
-                    vim.api.nvim_create_autocmd({"CursorMoved", "CursorMovedI"}, {
-                        group = group,
-                        buffer = args.buf,
-                        callback = vim.lsp.buf.clear_references
-                    })
-                end
-
-                -- local capabilities = require('blink.cmp').get_lsp_capabilities()
-            end
+        vim.diagnostic.config({
+            virtual_text = {
+                prefix = '',
+                spacing = 4,
+                severity = {
+                    min = vim.diagnostic.severity.ERROR
+                }
+            },
+            signs = {
+                text = {
+                    [vim.diagnostic.severity.ERROR] = '󰧞', -- ● •
+                    [vim.diagnostic.severity.WARN] = '󰧞',
+                    [vim.diagnostic.severity.INFO] = '󰧞',
+                    [vim.diagnostic.severity.HINT] = '󱐋'
+                }
+            },
+            underline = true,
+            severity_sort = true,
+            update_in_insert = false
         })
+
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+        if client and client.server_capabilities.documentHighlightProvider then
+            local group = vim.api.nvim_create_augroup("lsp_document_highlight", {
+                clear = true
+            })
+
+            vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
+                group = group,
+                buffer = args.buf,
+                callback = function()
+                    local node = vim.treesitter.get_node()
+                    if not node then
+                        return
+                    end
+
+                    local node_type = node:type()
+
+                    local ignore_types = {"tag_name", "attribute_name", "start_tag", "end_tag", "element"}
+
+                    if vim.tbl_contains(ignore_types, node_type) then
+                        vim.lsp.buf.clear_references()
+                    else
+                        vim.lsp.buf.document_highlight()
+                    end
+                end
+            })
+
+            -- 移动光标立刻清除高亮
+            vim.api.nvim_create_autocmd({"CursorMoved", "CursorMovedI"}, {
+                group = group,
+                buffer = args.buf,
+                callback = vim.lsp.buf.clear_references
+            })
+        end
+
     end
-}}
+})
+return {}

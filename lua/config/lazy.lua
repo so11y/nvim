@@ -7,9 +7,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    spec = {{
-        import = "plugins.languages"
-    }, {
+    spec = {
+    --     {
+    --     import = "plugins.languages"
+    -- },
+     {
         import = "plugins.completion"
     }, {
         import = "plugins.editor"
