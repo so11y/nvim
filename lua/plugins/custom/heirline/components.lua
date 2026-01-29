@@ -1,14 +1,14 @@
 local palette = require('catppuccin.palettes').get_palette 'mocha'
 local utils = require 'heirline.utils'
 local conditions = require 'heirline.conditions'
--- local icons = require 'custom.ui.icons'
+local devicons = require('nvim-web-devicons')
 
 local icons = {}
 icons.diagnostics = {
-    Error = '󰅚',
-    Warn = '󰀪',
-    Info = '󰋽',
-    Hint = '󰌶'
+    Error = '●',
+    Warn = '●',
+    Info = '●',
+    Hint = ''
 }
 local colors = {
     diag_warn = utils.get_highlight('DiagnosticWarn').fg,
@@ -20,22 +20,6 @@ local colors = {
     git_change = utils.get_highlight('diffChanged').fg
 }
 local dim_color = palette.surface1
--- overseer
-local function OverseerTasksForStatus(st)
-    return {
-        condition = function(self)
-            return self.tasks[st]
-        end,
-        provider = function(self)
-            return string.format('%s%d', self.symbols[st], #self.tasks[st])
-        end,
-        hl = function(_)
-            return {
-                fg = utils.get_highlight(string.format('Overseer%s', st)).fg
-            }
-        end
-    }
-end
 
 local M = {}
 M.Spacer = {
@@ -45,10 +29,6 @@ M.Fill = {
     provider = '%='
 }
 M.Ruler = {
-    -- %l = current line number
-    -- %L = number of lines in the buffer
-    -- %c = column number
-    -- %P = percentage through file of displayed window
     provider = '%4l,%-3c %P'
 }
 M.ScrollBar = {
@@ -85,7 +65,7 @@ M.Mode = {
         self.mode = vim.fn.mode(1)
     end,
     static = {
-        mode_names = { -- change the strings if you like it vvvvverbose!
+        mode_names = {
             n = 'NORMAL',
             no = '?',
             nov = '?',
@@ -124,7 +104,6 @@ M.Mode = {
         mode_colors = {
             n = palette.lavender,
             nt = dim_color,
-
             i = palette.blue,
             v = palette.mauve,
             V = palette.mauve,
@@ -142,10 +121,9 @@ M.Mode = {
     provider = function(self)
         local name = self.mode_names[self.mode] or self.mode:upper()
         return ' ' .. name .. ' '
-        -- return ' ' .. '%1(' .. self.mode_names[self.mode] .. '%)' .. ' ▍'
     end,
     hl = function(self)
-        local mode = self.mode:sub(1, 1) -- get only the first mode character
+        local mode = self.mode:sub(1, 1)
         return {
             fg = palette.base,
             bg = self.mode_colors[mode],
@@ -165,12 +143,12 @@ M.MacroRecording = {
     condition = conditions.is_active,
     init = function(self)
         self.reg_recording = vim.fn.reg_recording()
-        self.status_dict = vim.b.gitsigns_status_dict or {
-            added = 0,
-            removed = 0,
-            changed = 0
-        }
-        self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
+        -- self.status_dict = vim.b.gitsigns_status_dict or {
+        --     added = 0,
+        --     removed = 0,
+        --     changed = 0
+        -- }
+        -- self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
     end,
     {
         condition = function(self)
@@ -198,7 +176,7 @@ M.MacroRecording = {
         }
     },
     update = {'RecordingEnter', 'RecordingLeave'}
-} -- MacroRecording
+}
 
 M.Formatters = {
     condition = function(self)
@@ -261,53 +239,13 @@ M.FileType = {
     }
 }
 
--- M.CodeiumStatus = {
---     init = function(self)
---         self.codeium_exist = vim.fn.exists '*codeium#GetStatusString' == 1
---         self.codeium_status = self.codeium_exist and vim.fn['codeium#GetStatusString']() or nil
---     end,
---     provider = function(self)
---         if not self.codeium_exist then
---             return ''
---         end
---         if self.codeium_status == ' ON' then
---             return '󰚩 '
---         elseif self.codeium_status == ' OFF' then
---             return '󱚡 '
---         else
---             return '󱚝 '
---         end
---     end,
---     hl = function(self)
---         if self.codeium_status == ' ON' then
---             return {
---                 fg = palette.green
---             }
---         elseif self.codeium_status == ' OFF' then
---             return {
---                 fg = palette.gray
---             }
---         else
---             return {
---                 fg = palette.maroon
---             }
---         end
---     end
--- }
-
 -- Git
 M.Git = {
     condition = conditions.is_git_repo,
-    -- update = {
-    --     "BufEnter",
-    --     "User",
-    --     pattern = "GitsignsUpdate"
-    -- },
     init = function(self)
         self.status_dict = vim.b.gitsigns_status_dict
         self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
     end,
-
     hl = function(self)
         return {
             fg = self.has_changes and palette.maroon or dim_color
@@ -320,46 +258,6 @@ M.Git = {
             return '󰘬 ' .. self.status_dict.head
         end
     end
-    -- {
-    --   condition = function(self)
-    --     return self.has_changes
-    --   end,
-    --   provider = '(',
-    -- },
-    -- {
-    --   provider = function(self)
-    --     local count = self.status_dict.added or 0
-    --     return count > 0 and ('+' .. count)
-    --   end,
-    --   hl = { fg = colors.git_add },
-    -- },
-    -- {
-    --   provider = function(self)
-    --     local count = self.status_dict.removed or 0
-    --     return count > 0 and ('-' .. count)
-    --   end,
-    --   hl = { fg = colors.git_del },
-    -- },
-    -- {
-    --   provider = function(self)
-    --     local count = self.status_dict.changed or 0
-    --     return count > 0 and ('~' .. count)
-    --   end,
-    --   hl = { fg = colors.git_change },
-    -- },
-    -- {
-    --   condition = function(self)
-    --     return self.has_changes
-    --   end,
-    --   provider = ')',
-    -- },
-    -- on_click = {
-    --   name = 'heirline_git',
-    --   callback = function()
-    --     ---@diagnostic disable-next-line: missing-fields
-    --     Snacks.lazygit { cwd = Snacks.git.get_root() }
-    --   end,
-    -- },
 }
 
 -- Dianostics
@@ -371,7 +269,6 @@ M.Diagnostics = {
         info_icon = icons.diagnostics.Info .. ' ',
         hint_icon = icons.diagnostics.Hint .. ' '
     },
-
     init = function(self)
         self.errors = #vim.diagnostic.get(0, {
             severity = vim.diagnostic.severity.ERROR
@@ -386,12 +283,9 @@ M.Diagnostics = {
             severity = vim.diagnostic.severity.INFO
         })
     end,
-
     update = {'DiagnosticChanged', 'BufEnter'},
-
     {
         provider = function(self)
-            -- 0 is just another output, we can decide to print it or not!
             return self.errors > 0 and (self.error_icon .. self.errors .. ' ')
         end,
         hl = {
@@ -422,13 +316,7 @@ M.Diagnostics = {
             fg = colors.diag_hint
         }
     }
-    -- on_click = {
-    --   name = 'heirline_diagnostic',
-    --   callback = function()
-    --     Snacks.picker.diagnostics_buffer()
-    --   end,
-    -- },
-} -- Diagnostics
+}
 
 M.FileIcon = {
     condition = function(self)
@@ -440,17 +328,35 @@ M.FileIcon = {
         })
         local filename = self.filename
         local extension = vim.fn.fnamemodify(filename, ':e')
-        local icon, hl, _ = MiniIcons.get('file', 'file.' .. extension)
+
+        local icon, icon_hl_name = devicons.get_icon(filename, extension, {
+            default = true
+        })
+
+        -- 特殊处理 Terminal
         local bt = vim.api.nvim_get_option_value('buftype', {
             buf = self.bufnr
         }) or nil
         if bt and bt == 'terminal' then
             icon = ''
+            icon_hl_name = nil -- Terminal 通常不需要特定的颜色组，或者你可以自定义
         end
+
         self.icon = icon
-        self.icon_color = string.format('#%06x', vim.api.nvim_get_hl(0, {
-            name = hl
-        })['fg'])
+
+        -- 获取高亮颜色
+        if icon_hl_name then
+            local hl = vim.api.nvim_get_hl(0, {
+                name = icon_hl_name
+            })
+            if hl and hl.fg then
+                self.icon_color = string.format('#%06x', hl.fg)
+            else
+                self.icon_color = dim_color
+            end
+        else
+            self.icon_color = dim_color
+        end
     end,
     provider = function(self)
         return self.icon and (self.icon .. ' ')
@@ -461,7 +367,8 @@ M.FileIcon = {
         }
     end
 }
--- we redefine the filename component, as we probably only want the tail and not the relative path
+
+-- === 修改 2: 使用 nvim-web-devicons 获取颜色 ===
 M.FileName = {
     init = function(self)
         self.is_modified = vim.api.nvim_get_option_value('modified', {
@@ -469,41 +376,44 @@ M.FileName = {
         })
         local filename = self.filename
         local extension = vim.fn.fnamemodify(filename, ':e')
-        local _, hl, _ = MiniIcons.get('file', 'file.' .. extension)
-        self.icon_color = string.format('#%06x', vim.api.nvim_get_hl(0, {
-            name = hl
-        })['fg'])
+
+        -- 获取颜色逻辑
+        local _, icon_hl_name = devicons.get_icon(filename, extension, {
+            default = true
+        })
+
+        if icon_hl_name then
+            local hl = vim.api.nvim_get_hl(0, {
+                name = icon_hl_name
+            })
+            if hl and hl.fg then
+                self.icon_color = string.format('#%06x', hl.fg)
+            else
+                self.icon_color = dim_color
+            end
+        else
+            self.icon_color = dim_color
+        end
     end,
     provider = function(self)
-        -- self.filename will be defined later, just keep looking at the example!
         local filename = self.filename
         filename = filename == '' and vim.bo.filetype or vim.fn.fnamemodify(filename, ':t')
         return '' .. filename .. ''
     end,
     hl = function(self)
         return {
-            -- fg = self.is_modified and palette.yellow or palette.surface2,
             fg = self.is_modified and self.icon_color or dim_color,
             italic = self.is_modified
         }
     end
 }
 
--- we redefine the filename component, as we probably only want the tail and not the relative path
 M.FilePath = {
     provider = function(self)
-        -- first, trim the pattern relative to the current directory. For other
-        -- options, see :h filename-modifers
         local filename = vim.fn.fnamemodify(self.filename, ':.')
         if filename == '' then
             return vim.bo.filetype ~= '' and vim.bo.filetype or vim.bo.buftype
         end
-        -- now, if the filename would occupy more than 1/4th of the available
-        -- space, we trim the file path to its initials
-        -- See Flexible Components section below for dynamic truncation
-        -- if not conditions.width_percent_below(#filename, 0.25) then
-        --   filename = vim.fn.pathshorten(filename, 4)
-        -- end
         return filename
     end,
     hl = function(self)
@@ -515,17 +425,28 @@ M.FilePath = {
     end
 }
 
--- this looks exactly like the FileFlags component that we saw in
--- #crash-course-part-ii-filename-and-friends, but we are indexing the bufnr explicitly
--- also, we are adding a nice icon for terminal buffers.
+-- === 修改 3: 使用 nvim-web-devicons 获取颜色 ===
 M.FileFlags = {{
     init = function(self)
         local filename = self.filename
         local extension = vim.fn.fnamemodify(filename, ':e')
-        local _, hl, _ = MiniIcons.get('file', 'file.' .. extension)
-        self.icon_color = string.format('#%06x', vim.api.nvim_get_hl(0, {
-            name = hl
-        })['fg'])
+
+        local _, icon_hl_name = devicons.get_icon(filename, extension, {
+            default = true
+        })
+
+        if icon_hl_name then
+            local hl = vim.api.nvim_get_hl(0, {
+                name = icon_hl_name
+            })
+            if hl and hl.fg then
+                self.icon_color = string.format('#%06x', hl.fg)
+            else
+                self.icon_color = dim_color
+            end
+        else
+            self.icon_color = dim_color
+        end
     end,
     condition = function(self)
         local ignored_filetypes = {'dap-repl'}
@@ -540,7 +461,7 @@ M.FileFlags = {{
         end
         return result
     end,
-    provider = ' 󰏫 ',
+    provider = ' 󰏫 ', -- 锁图标，JetBrainsMono Nerd Font 完美支持
     hl = function(self)
         return {
             fg = self.icon_color,
@@ -568,31 +489,6 @@ M.FileFlags = {{
         fg = palette.text
     }
 }}
-
--- M.Overseer = {
---     condition = function()
---         return package.loaded.overseer
---     end,
---     init = function(self)
---         local tasks = require('overseer.task_list').list_tasks {
---             unique = true
---         }
---         local tasks_by_status = require('overseer.util').tbl_group_by(tasks, 'status')
---         self.tasks = tasks_by_status
---     end,
---     static = {
---         symbols = {
---             ['CANCELED'] = ' 􀕧 ',
---             ['FAILURE'] = ' 􀁐 ',
---             ['SUCCESS'] = ' 􀁢 ',
---             ['RUNNING'] = ' 􁾤 '
---         }
---     },
---     M.RightPadding(OverseerTasksForStatus 'CANCELED'),
---     M.RightPadding(OverseerTasksForStatus 'RUNNING'),
---     M.RightPadding(OverseerTasksForStatus 'SUCCESS'),
---     M.RightPadding(OverseerTasksForStatus 'FAILURE')
--- }
 
 M.FileNameBlock = {
     init = function(self)
@@ -623,7 +519,7 @@ M.FilePathBlock = {
 M.TablineFileNameBlock = vim.tbl_extend('force', M.FileNameBlock, {
     on_click = {
         callback = function(_, minwid, _, button)
-            if button == 'm' then -- close on mouse middle click
+            if button == 'm' then
                 vim.schedule(function()
                     vim.api.nvim_buf_delete(minwid, {
                         force = false
@@ -639,14 +535,6 @@ M.TablineFileNameBlock = vim.tbl_extend('force', M.FileNameBlock, {
         name = 'heirline_tabline_buffer_callback'
     }
 })
-
--- vim.opt.showcmdloc = 'statusline'
--- M.ShowCmd = {
---     condition = function()
---         return vim.o.cmdheight == 0
---     end,
---     provider = '%3.5(%S%)'
--- }
 
 M.SearchOccurrence = {
     condition = function()

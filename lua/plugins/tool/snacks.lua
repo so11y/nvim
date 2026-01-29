@@ -140,7 +140,7 @@ return {{
     },
 
     keys = {{
-        "<leader>o",
+        "<A-o>",
         function()
             local cursor = vim.api.nvim_win_get_cursor(0)
 
@@ -276,6 +276,12 @@ return {{
         end,
         desc = "下一个诊断"
     }, {
+        "<leader>xf",
+        function()
+            Snacks.picker.diagnostics_buffer()
+        end,
+        desc = "诊断（当前缓冲区）"
+    },{
         "<leader>xx",
         function()
             Snacks.picker.diagnostics()
