@@ -50,9 +50,9 @@ return { -- 1. Mason & LSP 相关
                     },
                     signs = {
                         text = {
-                            [vim.diagnostic.severity.ERROR] = '•',--●
-                            [vim.diagnostic.severity.WARN] = '•',
-                            [vim.diagnostic.severity.INFO] = '•',
+                            [vim.diagnostic.severity.ERROR] = '󰧞',--● •
+                            [vim.diagnostic.severity.WARN] = '󰧞',
+                            [vim.diagnostic.severity.INFO] = '󰧞',
                             [vim.diagnostic.severity.HINT] = '󱐋'
                         }
                     },
