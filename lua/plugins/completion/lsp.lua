@@ -1,40 +1,14 @@
-return { -- 1. Mason & LSP 相关
-{
-    "williamboman/mason.nvim",
-    opts = {
-        ui = {
-            border = "rounded"
-        }
-    }
-}, {
+return {{
     "williamboman/mason-lspconfig.nvim",
     dependencies = {"williamboman/mason.nvim"},
     opts = {
-        ensure_installed = {"eslint", "html", "cssls" -- "emmet_ls"
-        },
+        ensure_installed = {"eslint", "html", "cssls"},
         automatic_installation = true
     }
 }, -- 2. LSPConfig 主配置
 {
     "neovim/nvim-lspconfig",
-    dependencies = {"williamboman/mason-lspconfig.nvim" -- "hrsh7th/cmp-nvim-lsp"
-    },
-    opts = {
-        servers = {
-            html = {},
-            cssls = {},
-            eslint = {}
-        },
-        -- 诊断配置移到这里
-        diagnostics = {
-            virtual_text = {
-                prefix = "●"
-            },
-            underline = true,
-            update_in_insert = false,
-            severity_sort = true
-        }
-    },
+    dependencies = {"williamboman/mason-lspconfig.nvim"},
     config = function(_, opts)
         vim.opt.updatetime = 200
         vim.api.nvim_create_autocmd("LspAttach", {
@@ -50,7 +24,7 @@ return { -- 1. Mason & LSP 相关
                     },
                     signs = {
                         text = {
-                            [vim.diagnostic.severity.ERROR] = '󰧞',--● •
+                            [vim.diagnostic.severity.ERROR] = '󰧞', -- ● •
                             [vim.diagnostic.severity.WARN] = '󰧞',
                             [vim.diagnostic.severity.INFO] = '󰧞',
                             [vim.diagnostic.severity.HINT] = '󱐋'
@@ -95,6 +69,8 @@ return { -- 1. Mason & LSP 相关
                         callback = vim.lsp.buf.clear_references
                     })
                 end
+
+                -- local capabilities = require('blink.cmp').get_lsp_capabilities()
             end
         })
     end
