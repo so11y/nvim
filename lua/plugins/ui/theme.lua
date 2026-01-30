@@ -10,6 +10,10 @@ return {{
         },
         custom_highlights = function(colors)
             return {
+                Folded = {
+                    bg = "#242535",
+                    style = {"italic"}
+                },
                 BlinkCmpMenu = {
                     bg = colors.base
                 },
