@@ -1,3 +1,4 @@
+-- 需要安装eslint_d  14
 return {
     "nvimtools/none-ls.nvim",
     ft = {"javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx", "vue"},
@@ -10,12 +11,12 @@ return {
             root_dir = require("null-ls.utils").root_pattern("eslint.config.js", "eslint.config.mjs", ".eslintrc.js",
                 "package.json", ".git"),
 
-            sources = {require("none-ls.diagnostics.eslint").with({
+            sources = {require("none-ls.diagnostics.eslint_d").with({
                 condition = function(utils)
                     return utils.root_has_file({"eslint.config.js", "eslint.config.mjs", ".eslintrc.js",
                                                 ".eslintrc.json"})
                 end
-            }), require("none-ls.code_actions.eslint").with({
+            }), require("none-ls.code_actions.eslint_d").with({
                 condition = function(utils)
                     return utils.root_has_file({"eslint.config.js", "eslint.config.mjs", ".eslintrc.js",
                                                 ".eslintrc.json"})
