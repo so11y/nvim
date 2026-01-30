@@ -2,12 +2,13 @@ vim.lsp.enable 'vtsls'
 vim.lsp.enable 'vue_ls'
 vim.lsp.enable 'jsonls'
 vim.lsp.enable 'cssls'
---vim.lsp.enable 'eslint'
+-- vim.lsp.enable 'eslint'
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
 
         vim.diagnostic.config({
+            -- virtual_lines = true,
             virtual_text = {
                 prefix = '',
                 spacing = 4,
