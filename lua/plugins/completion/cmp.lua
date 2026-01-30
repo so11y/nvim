@@ -64,6 +64,11 @@ return {
             completion = {
                 menu = {
                     auto_show = true
+                },
+                list = {
+                    selection = {
+                        auto_insert = false
+                    }
                 }
             },
             sources = function()
