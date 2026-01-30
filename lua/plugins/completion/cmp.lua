@@ -14,6 +14,11 @@ return {
                 auto_show = true,
                 auto_show_delay_ms = 300
             },
+            list = {
+                selection = {
+                    auto_insert = false
+                }
+            },
             ghost_text = {
                 enabled = true
             },
