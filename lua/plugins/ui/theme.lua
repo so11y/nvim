@@ -4,6 +4,7 @@ return {{
     priority = 1000,
     opts = {
         -- -- transparent_background = true,
+        -- flavour = "latte",
         float = {
             transparent = true -- enable transparent floating windows
         },

@@ -50,9 +50,6 @@ return {{{
 
     config = function(_, opts)
         require("ufo").setup(opts)
-        vim.api.nvim_set_hl(0, "Folded", {
-            bg = "#20242C"
-        })
 
         vim.api.nvim_create_autocmd("BufReadPre", {
             callback = function()
