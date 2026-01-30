@@ -8,6 +8,12 @@ map({"n", "v"}, "u", "<nop>") -- 禁用 u
 map({"n", "v"}, "dd", "<nop>") -- 禁用 dd
 map({"n", "v"}, "<C-r>", "<nop>") -- 禁用 Ctrl+r
 map({"n", "v"}, "s", "<nop>") -- 禁用 s
+map({'n', 'i', 'v'}, '<PageUp>', '<Nop>', {
+    silent = true
+})
+map({'n', 'i', 'v'}, '<PageDown>', '<Nop>', {
+    silent = true
+})
 
 -- 替换默认删除行为：不污染剪贴板 (Blackhole Register)
 -- 注意：这里覆盖了上面对 x 的禁用，x 变成了 "删除字符但不复制"
