@@ -2,6 +2,7 @@ vim.lsp.enable 'vtsls'
 vim.lsp.enable 'vue_ls'
 vim.lsp.enable 'jsonls'
 vim.lsp.enable 'cssls'
+-- vim.lsp.enable('unocss', false)
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)

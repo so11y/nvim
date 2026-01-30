@@ -1,11 +1,54 @@
 return {{
+    "folke/persistence.nvim",
+    event = "BufReadPre", -- 或者 VeryLazy
+    opts = {} -- 必须有这一行或者 config，否则插件不会初始化
+}, {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
     ---@type snacks.Config
     opts = {
         dashboard = {
-            enabled = true
+            enabled = true,
+            preset = {
+                keys = {{
+                    icon = " ",
+                    key = "f",
+                    desc = "Find File",
+                    action = ":lua Snacks.dashboard.pick('files')"
+                }, {
+                    icon = " ",
+                    key = "n",
+                    desc = "New File",
+                    action = ":ene | startinsert"
+                }, {
+                    icon = " ",
+                    key = "g",
+                    desc = "Find Text",
+                    action = ":lua Snacks.dashboard.pick('live_grep')"
+                }, 
+                -- {
+                --     icon = " ",
+                --     key = "r",
+                --     desc = "Recent Files",
+                --     action = ":lua Snacks.dashboard.pick('recent_files')"
+                -- }, 
+                {
+                    icon = "󰦛 ",
+                    key = "s",
+                    desc = "Restore Session",
+                    action = function()
+                        require("persistence").load({
+                            last = true
+                        })
+                    end
+                }, {
+                    icon = " ",
+                    key = "c",
+                    desc = "Config",
+                    action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})"
+                }}
+            }
         },
         explorer = {
             enabled = false
@@ -281,7 +324,7 @@ return {{
             Snacks.picker.diagnostics_buffer()
         end,
         desc = "诊断（当前缓冲区）"
-    },{
+    }, {
         "<leader>xx",
         function()
             Snacks.picker.diagnostics()
