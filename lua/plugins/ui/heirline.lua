@@ -1,20 +1,11 @@
 return {
     'rebelot/heirline.nvim',
     event = {'BufReadPre', 'BufNewFile'},
-    dependencies = {"nvim-tree/nvim-web-devicons" -- {
-    },
-    init = function()
-        vim.keymap.set('n', '<leader>tt', function()
-            vim.o.showtabline = vim.o.showtabline == 0 and 2 or 0
-        end, {
-            desc = 'Toggle tabline'
-        })
-    end,
+    dependencies = {"nvim-tree/nvim-web-devicons"},
     config = function()
         vim.opt.cmdheight = 0
         require('heirline').setup {
             statusline = require 'custom.heirline.statusline'
-            -- tabline = require 'custom.config.heirline.tabline',
         }
     end
 }

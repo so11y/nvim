@@ -43,7 +43,7 @@ M.ScrollBar = {
     end,
     hl = {
         fg = palette.yellow,
-        bg = palette.base
+        bg = palette.surface0
     }
 }
 

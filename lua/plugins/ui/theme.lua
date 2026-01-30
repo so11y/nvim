@@ -3,84 +3,95 @@ return {{
     name = "catppuccin",
     priority = 1000,
     opts = {
-        transparent_background = true,
-        float = {
-            transparent = true -- enable transparent floating windows
-        },
+        -- -- transparent_background = true,
+        -- float = {
+        --     transparent = true -- enable transparent floating windows
+        -- },
         custom_highlights = function(colors)
             return {
-                FlashBackdrop = {
-                    fg = "NONE",
+                NeoTreeIndentMarker = {
+                    fg = colors.surface0
+                },
+                -- 1. 新增
+                GitSignsAdd = {
+                    fg = "#78A97A",
                     bg = "NONE"
                 },
-                SnacksPickerListCursorLine = {
-                    fg = "#ffffff",
-                    bg = "#1E66F5"
-                },
-                BufferCurrentERROR = {
-                    bg = colors.surface1,
-                    fg = colors.red,
-                    bold = true
-                },
-                BufferCurrentWARN = {
-                    bg = colors.surface1,
-                    fg = colors.warning,
-                    bold = true
-                },
-                DiagnosticUnderlineError = {
-                    undercurl = true,
-                    sp = colors.red
-                },
-                DiagnosticUnderlineWarn = {
-                    undercurl = true,
-                    sp = colors.yellow
-                },
-                DiagnosticUnderlineInfo = {
-                    undercurl = true,
-                    sp = colors.blue
-                },
-                DiagnosticUnderlineHint = {
-                    undercurl = true,
-                    sp = colors.teal
+
+                -- 2. 修改 
+                GitSignsChange = {
+                    fg = "#B5A480",
+                    bg = "NONE"
                 },
 
-                LineNr = {
-                    fg = colors.surface2
+                -- 3. 删除
+                GitSignsDelete = {
+                    fg = "#AC7A7D",
+                    bg = "NONE"
                 },
-                Visual = {
-                    bg = colors.overlay0
+
+                -- 4. 其它同步
+                GitSignsTopdelete = {
+                    fg = "#AC7A7D",
+                    bg = "NONE"
                 },
-                Search = {
-                    bg = colors.surface2
+                GitSignsChangedelete = {
+                    fg = "#B5A480",
+                    bg = "NONE"
                 },
-                IncSearch = {
-                    bg = colors.mauve
+                -- 5. 未追踪 (Untracked): 
+                GitSignsUntracked = {
+                    fg = "#7F849C",
+                    bg = "NONE"
                 },
-                CurSearch = {
-                    bg = colors.mauve
+                -- 当前行 Git Blame
+                GitSignsCurrentLineBlame = {
+                    fg = "#585B70",
+                    italic = true
                 },
-                MatchParen = {
-                    bg = colors.mauve,
-                    fg = colors.base,
-                    bold = true
+                SnacksIndent = {
+                    fg = colors.surface0
+                },
+                StatusLine = {
+                    bg = colors.mantle
+                },
+                BufferLineIndicatorSelected = {
+                    bg = colors.base,
+                    fg = '#45AFF5'
+                },
+                BufferLineFill = {
+                    bg = colors.mantle
+                },
+                DiagnosticUnderlineError = {
+                    undercurl = true
+                },
+                DiagnosticUnderlineWarn = {
+                    undercurl = true
+                },
+                DiagnosticUnderlineInfo = {
+                    undercurl = true
+                },
+                DiagnosticUnderlineHint = {
+                    undercurl = true
                 }
+
             }
         end,
         integrations = {
-            -- lualine = true,
-            barbar = true,
-            -- gitsigns = true,
-            mason = true,
-            noice = true,
-            flash = true,
-            neotree = true,
-            blink_cmp = true,
-            rainbow_delimiters = true,
-            snacks = {
-                enabled = true,
-                indent_scope_color = "flamingo" -- catppuccin color (eg. `lavender`) Default: text
-            },
-            which_key = true
+            neotree = true
+            --     bufferline = true,
+            --     gitsigns = true,
+            --     mason = true,
+            --     noice = true,
+            --     flash = true,
+            --     neotree = true,
+            --     blink_cmp = true,
+            --     rainbow_delimiters = true,
+            --     -- snacks = {
+            --     --     enabled = true,
+            --     --     indent_scope_color = "flamingo" -- catppuccin color (eg. `lavender`) Default: text
+            --     -- },
+            --     -- which_key = true
         }
     },
     config = function(_, opts)

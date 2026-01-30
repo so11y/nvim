@@ -9,13 +9,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         vim.diagnostic.config({
             -- virtual_lines = true,
-            virtual_text = {
-                prefix = '',
-                spacing = 4,
-                severity = {
-                    min = vim.diagnostic.severity.ERROR
-                }
-            },
+            virtual_text =false,
+            -- virtual_text = {
+            --     prefix = '',
+            --     spacing = 4,
+            --     severity = {
+            --         min = vim.diagnostic.severity.ERROR
+            --     }
+            -- },
             signs = {
                 text = {
                     [vim.diagnostic.severity.ERROR] = '󰧞', -- ● •
