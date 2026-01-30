@@ -4,11 +4,17 @@ return {{
     priority = 1000,
     opts = {
         -- -- transparent_background = true,
-        -- float = {
-        --     transparent = true -- enable transparent floating windows
-        -- },
+        float = {
+            transparent = true -- enable transparent floating windows
+        },
         custom_highlights = function(colors)
             return {
+                BlinkCmpMenu = {
+                    bg = colors.base
+                },
+                BlinkCmpMenuBorder = {
+                    bg = colors.base
+                },
                 NeoTreeIndentMarker = {
                     fg = colors.surface0
                 },
@@ -17,19 +23,16 @@ return {{
                     fg = "#78A97A",
                     bg = "NONE"
                 },
-
                 -- 2. 修改 
                 GitSignsChange = {
                     fg = "#B5A480",
                     bg = "NONE"
                 },
-
                 -- 3. 删除
                 GitSignsDelete = {
                     fg = "#AC7A7D",
                     bg = "NONE"
                 },
-
                 -- 4. 其它同步
                 GitSignsTopdelete = {
                     fg = "#AC7A7D",
@@ -77,22 +80,7 @@ return {{
 
             }
         end,
-        integrations = {
-            neotree = true
-            --     bufferline = true,
-            --     gitsigns = true,
-            --     mason = true,
-            --     noice = true,
-            --     flash = true,
-            --     neotree = true,
-            --     blink_cmp = true,
-            --     rainbow_delimiters = true,
-            --     -- snacks = {
-            --     --     enabled = true,
-            --     --     indent_scope_color = "flamingo" -- catppuccin color (eg. `lavender`) Default: text
-            --     -- },
-            --     -- which_key = true
-        }
+        integrations = {}
     },
     config = function(_, opts)
         require("catppuccin").setup(opts)
