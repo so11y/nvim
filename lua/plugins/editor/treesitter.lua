@@ -111,72 +111,72 @@ return {{{
                     -- 【函数】af: a function, if: inner function
                     ["af"] = {
                         query = "@function.outer",
-                        desc = "选中整个函数/方法"
+                        desc = "整个函数/方法"
                     },
                     ["if"] = {
                         query = "@function.inner",
-                        desc = "选中函数/方法内部"
+                        desc = "函数/方法内部"
                     },
 
                     -- 【循环】al: a loop, il: inner loop
                     ["al"] = {
                         query = "@loop.outer",
-                        desc = "选中整个循环 (for/while)"
+                        desc = "整个循环 (for/while)"
                     },
                     ["il"] = {
                         query = "@loop.inner",
-                        desc = "选中循环内部"
+                        desc = "循环内部"
                     },
 
                     -- 【条件】ad: a decision, id: inner decision
                     ["ad"] = {
                         query = "@conditional.outer",
-                        desc = "选中整个条件分支 (if/switch)"
+                        desc = "整个条件分支 (if/switch)"
                     },
                     ["id"] = {
                         query = "@conditional.inner",
-                        desc = "选中条件分支内部"
+                        desc = "条件分支内部"
                     },
 
                     -- 【调用】ac: a call, ic: inner call
                     ["ac"] = {
                         query = "@call.outer",
-                        desc = "选中整个方法调用"
+                        desc = "整个方法调用"
                     },
                     ["ic"] = {
                         query = "@call.inner",
-                        desc = "选中方法调用参数内容"
+                        desc = "方法调用参数内容"
                     },
 
                     -- 【参数】aa: a argument, ia: inner argument
                     ["aa"] = {
                         query = "@parameter.outer",
-                        desc = "选中整个参数 (含逗号)"
+                        desc = "整个参数 (含逗号)"
                     },
                     ["ia"] = {
                         query = "@parameter.inner",
-                        desc = "选中参数内容"
+                        desc = "参数内容"
                     },
 
                     -- 【语句】as: a statement, is: inner statement
                     ["as"] = {
                         query = "@statement.outer",
-                        desc = "选中整个语句"
+                        desc = "整个语句"
                     },
                     ["is"] = {
                         query = "@statement.inner",
                         -- query = "@statement.combined.inner",
-                        desc = "选中语句内容"
+                        desc = "语句内容"
                     },
 
                     -- 【字符串】aq: a quote, iq: inner quote
                     ["aq"] = {
                         query = "@string.outer",
-                        desc = "选中字符串 (含引号)"
+                        desc = "字符串 (含引号)"
                     },
                     ["iq"] = {
                         query = "@string.inner",
-                        desc = "选中字符串内容 (不含引号)"
+                        desc = "字符串内容 (不含引号)"
                     }
                 }
             }
