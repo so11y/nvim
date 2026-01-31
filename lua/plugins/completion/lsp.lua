@@ -9,7 +9,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         vim.diagnostic.config({
             -- virtual_lines = true,
-            virtual_text =false,
+            virtual_text = false,
             -- virtual_text = {
             --     prefix = '',
             --     spacing = 4,
@@ -70,7 +70,37 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 return {{
     'esmuellert/nvim-eslint',
+    ft = {"javascript", "typescript", "javascriptreact", "typescriptreact", "vue"},
     config = function()
-        require('nvim-eslint').setup({})
+        local bufnr = vim.api.nvim_get_current_buf()
+        local fname = vim.api.nvim_buf_get_name(bufnr)
+        if fname == "" then
+            return
+        end
+
+        local git_root = vim.fs.root(bufnr, ".git")
+        if not git_root then
+            return
+        end
+
+        local config_root = vim.fs.root(bufnr, {
+            ".eslintrc.js", 
+            ".eslintrc.cjs", 
+            ".eslintrc.json", 
+            ".eslintrc",
+            "eslint.config.js", 
+            "eslint.config.mjs"})
+
+
+        if config_root then
+            local config_git_check = vim.fs.root(config_root, ".git")
+            if config_git_check == git_root then
+                require('nvim-eslint').setup({
+                    root_dir = function()
+                        return git_root
+                    end
+                })
+            end
+        end
     end
 }}
