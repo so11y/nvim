@@ -34,7 +34,7 @@ return {{
             mode = {"n", "v"}
         }, {
             "<leader>j",
-            group = "🚀 Hop 跳转"
+            group = "🚀  flash 跳转"
         }, {
             "<leader>x",
             group = "❌ 诊断/错误"

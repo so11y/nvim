@@ -375,15 +375,4 @@ return {{{
         set(nxo, "t", repeat_move.builtin_t)
         set(nxo, "T", repeat_move.builtin_T)
     end
-}}, {
-    "windwp/nvim-ts-autotag",
-    config = function()
-        require("nvim-ts-autotag").setup({
-            opts = {
-                enable_close = true,
-                enable_rename = true,
-                enable_close_on_slash = true
-            }
-        })
-    end
-}}
+}}}

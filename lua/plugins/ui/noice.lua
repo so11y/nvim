@@ -5,10 +5,12 @@ return {{
     },
     opts = {
         lsp = {
+            progress = {
+                enabled = true
+            },
             override = {
                 ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
                 ["vim.lsp.util.stylize_markdown"] = true,
-                ["cmp.entry.get_documentation"] = true
             },
             -- 只要进入函数参数他就弹框的
             signature = {
