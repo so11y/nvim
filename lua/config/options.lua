@@ -36,6 +36,7 @@ vim.opt.cmdheight = 0
 
 vim.opt.swapfile = false
 vim.opt.updatetime = 200 
+vim.opt.shada = "!,'100,<500,s50,h"
 -- vim.opt.termguicolors = true
 
 
