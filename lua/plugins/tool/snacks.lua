@@ -299,19 +299,19 @@ return {{
     }, {
         "<leader>fs",
         function()
-            require("snacks").picker.files()
+            require("snacks").picker.files({ focus = "list" })
         end,
         desc = "文件查找"
     }, {
         "gd",
         function()
-            Snacks.picker.lsp_definitions()
+            Snacks.picker.lsp_definitions({ focus = "list" })
         end,
         desc = "转到定义"
     }, {
         "gr",
         function()
-            Snacks.picker.lsp_references()
+            Snacks.picker.lsp_references({ focus = "list" })
         end,
         desc = "转到引用"
     }, -- 4. 变量重命名 (保持原生 LSP 功能，但写在这里方便统一管理)
@@ -343,7 +343,7 @@ return {{
     }, {
         "<leader>xx",
         function()
-            Snacks.picker.diagnostics()
+            Snacks.picker.diagnostics({ focus = "list" })
         end,
         desc = "诊断（工作区）"
     }, {
@@ -361,7 +361,7 @@ return {{
     }, {
         "<leader>fp",
         function()
-            Snacks.picker.projects()
+            Snacks.picker.projects({ focus = "list" })
         end,
         desc = "选择项目"
     }},

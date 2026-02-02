@@ -33,6 +33,8 @@ vim.opt.splitright = true -- 垂直分屏时，新窗口在右方（默认在左
 
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 0
+
+vim.opt.swapfile = false
 -- vim.opt.termguicolors = true
 -- vim.opt.updatetime = 100 更新响应时间
 

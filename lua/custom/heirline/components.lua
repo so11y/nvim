@@ -403,7 +403,7 @@ M.FileName = {
     hl = function(self)
         return {
             fg = self.is_modified and self.icon_color or dim_color,
-            italic = self.is_modified
+            -- italic = self.is_modified
         }
     end
 }
@@ -425,7 +425,6 @@ M.FilePath = {
     end
 }
 
--- === 修改 3: 使用 nvim-web-devicons 获取颜色 ===
 M.FileFlags = {{
     init = function(self)
         local filename = self.filename
@@ -461,7 +460,7 @@ M.FileFlags = {{
         end
         return result
     end,
-    provider = ' 󰏫 ', -- 锁图标，JetBrainsMono Nerd Font 完美支持
+    provider = ' 󰏫 ', 
     hl = function(self)
         return {
             fg = self.icon_color,
