@@ -1,6 +1,6 @@
 return {{
     "NvChad/nvim-colorizer.lua",
-    event = "VeryLazy",
+    event = {"BufReadPost", "BufNewFile"},
     opts = {
         filetypes = {"*"}, -- 对所有文件类型生效
         user_default_options = {

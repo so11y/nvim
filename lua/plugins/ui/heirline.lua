@@ -1,6 +1,6 @@
 return {
     'rebelot/heirline.nvim',
-    event = {'BufReadPre', 'BufNewFile'},
+    event = "VeryLazy",
     dependencies = {"nvim-tree/nvim-web-devicons"},
     config = function()
         require('heirline').setup {
