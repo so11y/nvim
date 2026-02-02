@@ -35,6 +35,7 @@ vim.opt.laststatus = 3
 vim.opt.cmdheight = 0
 
 vim.opt.swapfile = false
+vim.opt.updatetime = 200 
 -- vim.opt.termguicolors = true
--- vim.opt.updatetime = 100 更新响应时间
+
 
