@@ -10,4 +10,4 @@ components.RightPadding(components.SearchOccurrence, 0), components.Fill, compon
 components.RightPadding(components.LSPActive, 1), -- components.RightPadding(components.LspProgress, 1), 
 components.RightPadding(components.Formatters, 1), -- components.RightPadding(components.SimpleIndicator),
 components.RightPadding(components.FileType, 1), -- components.RightPadding(components.Ruler, 1), 
-components.RightPadding(components.ScrollBar, 1)}
+components.ScrollBar}
