@@ -23,6 +23,23 @@ return {
                     ["<bs>"] = "navigate_up"
                 }
             },
+            default_component_configs = {
+                indent = {
+                    with_expanders = true, -- 加上这个，文件夹展开会有箭头感
+                    expander_collapsed = "",
+                    expander_expanded = ""
+                }
+            },
+            renderers = {
+                file = {{"indent"}, {"icon"}, {
+                    "name",
+                    use_git_status_colors = true
+                }},
+                directory = {{"indent"}, {"icon"}, {
+                    "name",
+                    use_git_status_colors = true
+                }}
+            },
             filesystem = {
                 bind_to_cwd = true,
                 use_libuv_file_watcher = true, -- 文件夹变动自动刷新
