@@ -86,7 +86,6 @@ return {
     },
 
     config = function(_, opts)
-        vim.opt.cmdheight = 0
         local blink = require("blink.cmp")
         blink.setup(opts)
     end
