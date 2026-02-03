@@ -10,6 +10,10 @@ return {{
         },
         custom_highlights = function(colors)
             return {
+                Visual = { 
+                    bg = colors.surface2,
+                    style = {} 
+                }, 
                 Folded = {
                     bg = "#242535",
                     -- style = {"italic"}
@@ -81,8 +85,7 @@ return {{
                 },
                 DiagnosticUnderlineHint = {
                     undercurl = true
-                }
-
+                },
             }
         end,
         integrations = {}
