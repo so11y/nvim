@@ -162,12 +162,12 @@ map("v", "<A-k>", ":m '<-2<CR>gv", {
 })
 
 -- Visual模式 J/K 也映射为移动 (保留原逻辑)
-map("v", "J", ":m '>+1<CR>gv", {
-    desc = "Move selection down"
-})
-map("v", "K", ":m '<-2<CR>gv", {
-    desc = "Move selection up"
-})
+-- map("v", "J", ":m '>+1<CR>gv", {
+--     desc = "Move selection down"
+-- })
+-- map("v", "K", ":m '<-2<CR>gv", {
+--     desc = "Move selection up"
+-- })
 
 -- =======================================================
 -- 6. 文件与窗口管理
