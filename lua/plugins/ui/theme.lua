@@ -12,7 +12,7 @@ return {{
             return {
                 Folded = {
                     bg = "#242535",
-                    style = {"italic"}
+                    -- style = {"italic"}
                 },
                 BlinkCmpMenu = {
                     bg = colors.base
