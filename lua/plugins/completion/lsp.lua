@@ -71,6 +71,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 return {{
     'esmuellert/nvim-eslint',
     ft = {"javascript", "typescript", "javascriptreact", "typescriptreact", "vue"},
+    event = {"BufReadPre", "BufNewFile"},
     config = function()
         local bufnr = vim.api.nvim_get_current_buf()
         local fname = vim.api.nvim_buf_get_name(bufnr)

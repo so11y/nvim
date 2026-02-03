@@ -1,6 +1,6 @@
 return {
     "numToStr/Comment.nvim",
-    event = "VeryLazy",
+    event = {"BufReadPost", "BufNewFile"},
     config = function()
         require("Comment").setup({
             -- 配置 Alt+/ 为注释键
