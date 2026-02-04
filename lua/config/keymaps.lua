@@ -4,114 +4,114 @@ local map = vim.keymap.set
 -- 1. 禁用/覆盖原生 Vim 键位
 -- =======================================================
 -- 禁用撤销、删行、重做、替换 (完全依赖 Alt 组合键)
-map({"n", "v"}, "u", "<nop>") -- 禁用 u
-map({"n", "v"}, "dd", "<nop>") -- 禁用 dd
-map({"n", "v"}, "<C-r>", "<nop>") -- 禁用 Ctrl+r
-map({"n", "v"}, "s", "<nop>") -- 禁用 s
-map({'n', 'i', 'v'}, '<PageUp>', '<Nop>', {
-    silent = true
+map({ "n", "v" }, "u", "<nop>") -- 禁用 u
+map({ "n", "v" }, "dd", "<nop>") -- 禁用 dd
+map({ "n", "v" }, "<C-r>", "<nop>") -- 禁用 Ctrl+r
+map({ "n", "v" }, "s", "<nop>") -- 禁用 s
+map({ "n", "i", "v" }, "<PageUp>", "<Nop>", {
+	silent = true,
 })
-map({'n', 'i', 'v'}, '<PageDown>', '<Nop>', {
-    silent = true
+map({ "n", "i", "v" }, "<PageDown>", "<Nop>", {
+	silent = true,
 })
 
 -- 替换默认删除行为：不污染剪贴板 (Blackhole Register)
 -- 注意：这里覆盖了上面对 x 的禁用，x 变成了 "删除字符但不复制"
-map({"n", "v"}, "x", '"_x')
-map({"n", "v"}, "c", '"_c')
-map({"n", "v"}, "C", '"_C')
-map({"n", "v"}, "d", '"_d')
-map({"n", "v"}, "D", '"_C')
+map({ "n", "v" }, "x", '"_x')
+map({ "n", "v" }, "c", '"_c')
+map({ "n", "v" }, "C", '"_C')
+map({ "n", "v" }, "d", '"_d')
+map({ "n", "v" }, "D", '"_C')
 
 map("n", "<leader>qq", "<cmd>qa<cr>", {
-    desc = "退出 Neovim"
+	desc = "退出 Neovim",
 })
 -- =======================================================
 -- 2. 基础导航与滚动
 -- =======================================================
 -- 行首行尾 (替代 0/$)
-map({"n", "v"}, "gh", "^", {
-    desc = "转到行首"
+map({ "n", "v" }, "gh", "^", {
+	desc = "转到行首",
 })
-map({"n", "v"}, "gl", "$", {
-    desc = "转到行尾"
+map({ "n", "v" }, "gl", "$", {
+	desc = "转到行尾",
 })
 
 -- 滚动 (替代 Ctrl+d/u)
 map("n", "J", "<C-d>", {
-    desc = "向下滚动半页"
+	desc = "向下滚动半页",
 })
 map("n", "K", "<C-u>", {
-    desc = "向上滚动半页"
+	desc = "向上滚动半页",
 })
 
 -- 跳转历史 (光标前进后退)
-map("n", "<A-u>", "<C-o>", {
-    desc = "光标位置撤销 (Back)"
-})
-map("n", "<A-i>", "<C-i>", {
-    desc = "光标位置重做 (Forward)"
-})
+-- map("n", "<A-u>", "<C-o>", {
+-- 	desc = "光标位置撤销 (Back)",
+-- })
+-- map("n", "<A-i>", "<C-i>", {
+-- 	desc = "光标位置重做 (Forward)",
+-- })
 
 -- =======================================================
 -- 3. 编辑操作 (Insert/Select/Delete)
 -- =======================================================
 -- 回车键行为
 map("n", "<CR>", "a", {
-    desc = "进入插入模式 (Append)"
+	desc = "进入插入模式 (Append)",
 })
 map("i", "<CR>", "<CR>", {
-    desc = "换行"
+	desc = "换行",
 })
 
 -- 取消搜索高亮
 map("n", "<Esc>", function()
-    vim.cmd("nohlsearch") -- 动作 1：清除高亮
-    vim.fn.setreg("/", "") -- 动作 2：清空搜索记录
-    if vim.snippet then -- 动作 清除片段跳转
-        vim.snippet.stop()
-    end
-    return "<Esc>" -- 动作 3：返回 "<Esc>" 字符串
+	vim.cmd("nohlsearch") -- 动作 1：清除高亮
+	vim.fn.setreg("/", "") -- 动作 2：清空搜索记录
+	if vim.snippet then -- 动作 清除片段跳转
+		vim.snippet.stop()
+	end
+	return "<Esc>" -- 动作 3：返回 "<Esc>" 字符串
 end, {
-    expr = true
+	expr = true,
 })
 
 -- 全选
 map("n", "<A-a>", "ggVG", {
-    desc = "全选"
+	desc = "全选",
 })
 
 -- 删除操作 (Alt+d)
 map("n", "<A-d>", '"_dd', {
-    desc = "删除当前行"
+	desc = "删除当前行",
 })
 map("i", "<A-d>", '<C-o>"_dd', {
-    desc = "删除当前行"
+	desc = "删除当前行",
 })
 map("v", "<A-d>", '"_d', {
-    desc = "删除选中内容"
+	desc = "删除选中内容",
 }) -- 这里用了 _d，表示删除不复制
 
 -- 撤销 (Undo) - 映射到 Alt+z
 map("n", "<A-z>", "u", {
-    desc = "Undo"
+	desc = "Undo",
 })
 map("v", "<A-z>", "u", {
-    desc = "Undo"
+	desc = "Undo",
 })
 map("i", "<A-z>", "<C-o>u", {
-    desc = "Undo"
+	desc = "Undo",
 })
 
 -- 重做 (Redo) - 映射到 Alt+y
 map("n", "<A-y>", "<C-r>", {
-    desc = "Redo"
+	desc = "Redo",
 })
 map("v", "<A-y>", "<C-r>", {
-    desc = "Redo"
+	desc = "Redo",
 })
 map("i", "<A-y>", "<C-o><C-r>", {
-    desc = "Redo"
+	desc = "Redo",
 })
 
 -- =======================================================
@@ -119,23 +119,23 @@ map("i", "<A-y>", "<C-o><C-r>", {
 -- =======================================================
 -- 复制 (Alt+c)
 map("v", "<A-c>", '"+ygv', {
-    desc = "复制到系统剪贴板"
+	desc = "复制到系统剪贴板",
 })
 
 -- 剪切 (Alt+x)
 map("n", "<A-x>", '"+dd', {
-    desc = "剪切行"
+	desc = "剪切行",
 })
 map("v", "<A-x>", '"+d', {
-    desc = "剪切选中"
+	desc = "剪切选中",
 })
 
 -- 粘贴 (Alt+v)
-map({"n", "v"}, "<A-v>", '"+p', {
-    desc = "从系统剪贴板粘贴"
+map({ "n", "v" }, "<A-v>", '"+p', {
+	desc = "从系统剪贴板粘贴",
 })
-map("i", "<A-v>", '<C-r>+', {
-    desc = "从系统剪贴板粘贴"
+map("i", "<A-v>", "<C-r>+", {
+	desc = "从系统剪贴板粘贴",
 })
 
 -- =======================================================
@@ -143,39 +143,34 @@ map("i", "<A-v>", '<C-r>+', {
 -- =======================================================
 -- 普通模式移动单行
 map("n", "<A-j>", ":m .+1<CR>", {
-    desc = "向下移动行",
-    silent = true
+	desc = "向下移动行",
+	silent = true,
 })
 map("n", "<A-k>", ":m .-2<CR>", {
-    desc = "向上移动行",
-    silent = true
+	desc = "向上移动行",
+	silent = true,
 })
 
 -- Visual模式移动选中块
 map("v", "<A-j>", ":m '>+1<CR>gv", {
-    desc = "向下移动选择",
-    silent = true
+	desc = "向下移动选择",
+	silent = true,
 })
 map("v", "<A-k>", ":m '<-2<CR>gv", {
-    desc = "向上移动选择",
-    silent = true
+	desc = "向上移动选择",
+	silent = true,
 })
 
--- Visual模式 J/K 也映射为移动 (保留原逻辑)
--- map("v", "J", ":m '>+1<CR>gv", {
---     desc = "Move selection down"
--- })
--- map("v", "K", ":m '<-2<CR>gv", {
---     desc = "Move selection up"
--- })
+map("n", "j", [[v:count > 1 ? "m'" . v:count . "j" : "j"]], { expr = true })
+map("n", "k", [[v:count > 1 ? "m'" . v:count . "k" : "k"]], { expr = true })
 
 -- =======================================================
 -- 6. 文件与窗口管理
 -- =======================================================
 -- 保存与搜索
-map({"n", "i", "v"}, "<A-s>", "<Esc>:w<CR>", {
-    silent = true,
-    desc = "保存并保持插入"
+map({ "n", "i", "v" }, "<A-s>", "<Esc>:w<CR>", {
+	silent = true,
+	desc = "保存并保持插入",
 })
 
 -- map({'n', 'i', 'v'}, "<A-f>", "/", {
@@ -184,53 +179,52 @@ map({"n", "i", "v"}, "<A-s>", "<Esc>:w<CR>", {
 
 -- 分屏
 map("n", "<leader>sv", ":vsplit<CR>", {
-    desc = "垂直分屏"
+	desc = "垂直分屏",
 })
 map("n", "<leader>sh", ":split<CR>", {
-    desc = "水平分屏"
+	desc = "水平分屏",
 })
 
 -- 窗口跳转 (Ctrl + hjkl)
 map("n", "<C-h>", "<C-w>h", {
-    desc = "跳转左窗口"
+	desc = "跳转左窗口",
 })
 map("n", "<C-j>", "<C-w>j", {
-    desc = "跳转下窗口"
+	desc = "跳转下窗口",
 })
 map("n", "<C-k>", "<C-w>k", {
-    desc = "跳转上窗口"
+	desc = "跳转上窗口",
 })
 map("n", "<C-l>", "<C-w>l", {
-    desc = "跳转右窗口"
+	desc = "跳转右窗口",
 })
 
 -- 窗口大小调整 (Alt + 方向键)
 map("n", "<A-Up>", "<C-w>+", {
-    desc = "增加窗口高度"
+	desc = "增加窗口高度",
 })
 map("n", "<A-Down>", "<C-w>-", {
-    desc = "减少窗口高度"
+	desc = "减少窗口高度",
 })
 map("n", "<A-Left>", "<C-w><", {
-    desc = "减少窗口宽度"
+	desc = "减少窗口宽度",
 })
 map("n", "<A-Right>", "<C-w>>", {
-    desc = "增加窗口宽度"
+	desc = "增加窗口宽度",
 })
 
 -- =======================================================
 -- 7. 输入体验优化 (Undo Breakpoints)
 -- =======================================================
 -- 在标点符号处打断撤销链，使得撤销粒度更细
-local rules = {',', '.', '!', '?', '=', "[", "]", "{", "}", "(", ")"}
+local rules = { ",", ".", "!", "?", "=", "[", "]", "{", "}", "(", ")" }
 for _, rule in ipairs(rules) do
-    map('i', rule, rule .. '<C-g>u', {
-        noremap = true,
-        silent = true
-    })
+	map("i", rule, rule .. "<C-g>u", {
+		noremap = true,
+		silent = true,
+	})
 end
-map('i', '<space>', '<space><C-g>u', {
-    noremap = true,
-    silent = true
+map("i", "<space>", "<space><C-g>u", {
+	noremap = true,
+	silent = true,
 })
-

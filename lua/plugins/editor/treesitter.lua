@@ -245,8 +245,8 @@ return {
 
 					if target_node then
 						local r, c = target_node:start()
-						vim.api.nvim_win_set_cursor(0, { r + 1, c })
 						vim.cmd("normal! m'")
+						vim.api.nvim_win_set_cursor(0, { r + 1, c })
 					end
 				end
 
