@@ -21,7 +21,13 @@ return {
 					"markdown",
 					"json",
 				},
-				-- 高亮与缩进
+				incremental_selection = {
+					enable = true,
+					keymaps = {
+						node_incremental = "<CR>",
+						node_decremental = "<BS>",
+					},
+				},
 				highlight = {
 					enable = true,
 				},
