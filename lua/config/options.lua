@@ -35,9 +35,8 @@ vim.opt.laststatus = 3
 vim.opt.cmdheight = 0
 
 vim.opt.swapfile = false
-vim.opt.updatetime = 200 
+vim.opt.updatetime = 200
 vim.opt.shada = "!,'100,<500,s50,h"
 vim.opt.guicursor = "n-v-c:block,i-ci-ve:ver25,a:blinkwait1000-blinkoff600-blinkon600"
+vim.opt.jumpoptions = { "stack", "view", "clean" }
 -- vim.opt.termguicolors = true
-
-
