@@ -499,7 +499,7 @@ M.FileNameBlock = {
     },
     M.FileIcon,
     M.FileName,
-    M.FileFlags
+    -- M.FileFlags
 }
 
 M.FilePathBlock = {
