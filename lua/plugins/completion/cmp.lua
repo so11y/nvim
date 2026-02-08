@@ -65,9 +65,9 @@ return {
 		cmdline = {
 			enabled = true,
 			completion = {
-				trigger = {
-					show_on_trigger_character = false,
-				},
+				-- trigger = {
+				-- 	show_on_trigger_character = false,
+				-- },
 				menu = {
 					auto_show = true,
 				},
