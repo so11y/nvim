@@ -17,56 +17,20 @@ return {
                 text = "EXPLORER",
                 highlight = "Directory",
                 text_align = "center"
-            }},
+            }}
 
-            -- custom_areas = {
-            --     right = function()
-            --         local result = {}
-            --         local seve = vim.diagnostic.severity
-            --         local error = #vim.diagnostic.get(0, {
-            --             severity = seve.ERROR
-            --         })
-            --         local warning = #vim.diagnostic.get(0, {
-            --             severity = seve.WARN
-            --         })
-            --         local info = #vim.diagnostic.get(0, {
-            --             severity = seve.INFO
-            --         })
-            --         local hint = #vim.diagnostic.get(0, {
-            --             severity = seve.HINT
-            --         })
-
-            --         if error ~= 0 then
-            --             table.insert(result, {
-            --                 text = "  " .. error,
-            --                 link = "DiagnosticError"
-            --             })
-            --         end
-
-            --         if warning ~= 0 then
-            --             table.insert(result, {
-            --                 text = "  " .. warning,
-            --                 link = "DiagnosticWarn"
-            --             })
-            --         end
-
-            --         if hint ~= 0 then
-            --             table.insert(result, {
-            --                 text = "  " .. hint,
-            --                 link = "DiagnosticHint"
-            --             })
-            --         end
-
-            --         if info ~= 0 then
-            --             table.insert(result, {
-            --                 text = "  " .. info,
-            --                 link = "DiagnosticInfo"
-            --             })
-            --         end
-            --         return result
-            --     end
-            -- }
-
+        },
+        highlights = {
+            error = {
+                fg = {
+                    attribute = "fg",
+                    highlight = "DiagnosticError"
+                },
+                bg = {
+                    attribute = "bg",
+                    highlight = "BufferLineBackground"
+                }
+            }
         }
 
     },
@@ -102,16 +66,9 @@ return {
         "<A-3>",
         "<cmd>BufferLineGoToBuffer 3<cr>",
         desc = "转到缓冲区3"
-    }, -- ...以此类推
-    -- 关闭/固定标签
-    {
+    }, {
         "<A-p>",
         "<cmd>BufferLineTogglePin<cr>",
         desc = "固定/取消固定缓冲区"
-    }, -- 关闭当前 buffer
-    {
-        "<A-c>",
-        "<cmd>BufferLineCloseBuffer<cr>",
-        desc = "关闭当前缓冲区"
     }}
 }
