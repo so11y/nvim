@@ -167,12 +167,12 @@ return {{
             }
         },
         terminal = {
-            enabled = true
-            -- win = {
-            --     position = "bottom",
-            --     height = 0.35, -- 默认高度（35%）
-            --     fixed = true -- 面板模式（可选，推荐）
-            -- }
+            enabled = true,
+            win = {
+                position = "bottom",
+                height = 0.35, 
+                fixed = true -- 面板模式（可选，推荐）
+            }
         },
         styles = {
             terminal = {
