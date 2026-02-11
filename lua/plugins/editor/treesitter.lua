@@ -252,7 +252,7 @@ return {{{
         end)
 
         local set = vim.keymap.set
-		local nxo = { "n", "x", "o" }
+        local nxo = {"n", "x", "o"}
 
         local jump_targets = {{
             char = "f",
@@ -282,6 +282,10 @@ return {{{
         }, {
             char = "s",
             query = "@statement.outer",
+            label = "语句段落"
+        }, {
+            char = "b",
+            query = "@block.outer",
             label = "语句段落"
         }}
 
