@@ -21,6 +21,10 @@ return {
 
         },
         highlights = {
+            buffer_selected = {
+                bold = false, -- 禁用加粗
+                italic = false -- 禁用斜体
+            },
             error = {
                 fg = {
                     attribute = "fg",

@@ -60,14 +60,12 @@ return {
         end,
         desc = "Winbar 快速跳转 (Dropbar)"
     }, {
-        "<Leader>td",
+        "<Leader>wd",
         function()
             if vim.wo.winbar ~= "" then
                 vim.wo.winbar = ""
-            else
-                vim.wo.winbar = "%{%v:lua.require'dropbar'.eval()%}"
             end
         end,
-        desc = "开关面包屑"
+        desc = "关面包屑"
     }}
 }

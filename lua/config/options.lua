@@ -39,4 +39,5 @@ vim.opt.updatetime = 200
 vim.opt.shada = "!,'100,<500,s50,h"
 vim.opt.guicursor = "n-v-c:block,i-ci-ve:ver25,a:blinkwait1000-blinkoff600-blinkon600"
 vim.opt.jumpoptions = { "stack", "view", "clean" }
+vim.lsp.log.set_level(vim.log.levels.OFF)
 -- vim.opt.termguicolors = true

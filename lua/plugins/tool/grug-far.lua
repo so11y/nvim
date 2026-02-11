@@ -2,8 +2,15 @@ return {{
     "MagicDuck/grug-far.nvim",
     event = "VeryLazy",
     config = function()
-        require('grug-far').setup({})
+        require('grug-far').setup({
+            keymaps = {
+                close = {
+                    n = "<A-w>"
+                }
+            }
+        })
     end,
+
     keys = {{
         "<leader>r",
         function()
@@ -14,6 +21,7 @@ return {{
                 grug.close()
             else
                 grug.open({
+
                     prefills = {
                         paths = vim.fn.expand("%"),
                         flags = "--fixed-strings"

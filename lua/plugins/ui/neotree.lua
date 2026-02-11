@@ -14,6 +14,7 @@ return {
     }},
     config = function()
         require("neo-tree").setup({
+            log_level = "fatal",
             window = {
                 position = "left",
                 width = 30,
