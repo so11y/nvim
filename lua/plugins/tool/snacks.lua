@@ -337,7 +337,7 @@ return {{
     }, {
         "<leader>xf",
         function()
-            Snacks.picker.diagnostics_buffer()
+            Snacks.picker.diagnostics_buffer({ focus = "list", })
         end,
         desc = "诊断（当前缓冲区）"
     }, {
