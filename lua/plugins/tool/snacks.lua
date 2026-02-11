@@ -299,7 +299,7 @@ return {{
     }, {
         "<leader>fs",
         function()
-            require("snacks").picker.files({ focus = "list" })
+            require("snacks").picker.files()
         end,
         desc = "文件查找"
     }, {
