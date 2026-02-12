@@ -1,13 +1,14 @@
-return {{
-    "mattn/emmet-vim",
-    event = "InsertEnter",
-    config = function()
-    end
-}, {
+return { --     {
+--     "mattn/emmet-vim",
+--     event = "InsertEnter",
+--     config = function()
+--     end
+-- }, 
+{
     "saghen/blink.cmp",
     version = "1.*",
     event = {"InsertEnter", "CmdlineEnter"},
-    dependencies = {"rafamadriz/friendly-snippets"},
+    dependencies = {"rafamadriz/friendly-snippets", "mattn/emmet-vim"},
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
