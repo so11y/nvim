@@ -22,7 +22,16 @@ return {
                     ["<space>"] = "open",
                     ["<cr>"] = "open",
                     ["<tab>"] = "set_root",
-                    ["<bs>"] = "navigate_up"
+                    ["<bs>"] = "navigate_up",
+                    ["O"] = function(state)
+                        local node = state.tree:get_node()
+                        local path = node:get_id()
+                        if node.type == "directory" then
+                            os.execute(string.format([[start explorer "%s"]], path))
+                        else
+                            os.execute(string.format([[start explorer /select,"%s"]], path))
+                        end
+                    end
                 }
             },
             default_component_configs = {

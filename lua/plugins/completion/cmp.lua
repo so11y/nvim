@@ -1,98 +1,127 @@
 return {
-	"saghen/blink.cmp",
-	version = "1.*",
-	event = { "InsertEnter", "CmdlineEnter" },
-	dependencies = { "rafamadriz/friendly-snippets" },
-	---@module 'blink.cmp'
-	---@type blink.cmp.Config
-	opts = {
-		snippets = {
-			preset = "default",
-		},
-		completion = {
-			documentation = {
-				auto_show = true,
-				auto_show_delay_ms = 300,
-			},
-			list = {
-				selection = {
-					auto_insert = false,
-				},
-			},
-			ghost_text = {
-				enabled = true,
-			},
-			menu = {
-				border = "rounded",
-				draw = {
-					treesitter = { "lsp" },
-					columns = {
-						{
-							"kind_icon",
-							gap = 1,
-						},
-						{
-							"label",
-							"label_description",
-							gap = 1,
-						},
-						{ "kind" },
-					},
-				},
-			},
-		},
+    "saghen/blink.cmp",
+    version = "1.*",
+    event = {"InsertEnter", "CmdlineEnter"},
+    dependencies = {"rafamadriz/friendly-snippets" -- "mattn/emmet-vim"
+    },
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+        snippets = {
+            preset = "default"
+        },
+        completion = {
+            documentation = {
+                auto_show = true,
+                auto_show_delay_ms = 300
+            },
+            list = {
+                selection = {
+                    preselect = true,
+                    auto_insert = false
+                }
+            },
+            ghost_text = {
+                enabled = true
+            },
+            menu = {
+                border = "rounded",
+                draw = {
+                    treesitter = {"lsp"},
+                    columns = {{
+                        "kind_icon",
+                        gap = 1
+                    }, {
+                        "label",
+                        "label_description",
+                        gap = 1
+                    }, {"kind"}}
+                }
+            }
+        },
 
-		keymap = {
-			preset = "none",
-			-- 基础控制
-			["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-			["<C-e>"] = { "hide" },
-			["<CR>"] = { "accept", "fallback" },
-			["<Tab>"] = { "select_and_accept", "snippet_forward", "fallback" },
-			-- S-Tab: 片段回退
-			["<S-Tab>"] = { "snippet_backward", "fallback" },
-			["<Up>"] = { "select_prev", "fallback" },
-			["<Down>"] = { "select_next", "fallback" },
+        keymap = {
+            preset = "none",
+            ["<A-q>"] = {"show", "hide"},
+            ["<CR>"] = {"accept", "fallback"},
+            ["<Tab>"] = {function(cmp)
+                if cmp.is_visible() then
+                    return cmp.select_and_accept()
+                end
 
-			["<A-k>"] = { "select_prev", "fallback" },
-			["<A-j>"] = { "select_next", "fallback" },
+                if cmp.snippet_active() then
+                    return cmp.snippet_forward()
+                end
 
-			-- -- 命令行滚动文档
-			-- ['<C-u>']     = { 'scroll_documentation_up', 'fallback' },
-			-- ['<C-d>']     = { 'scroll_documentation_down', 'fallback' },
-		},
+                local col = vim.fn.col('.') - 1
+                local line = vim.api.nvim_get_current_line()
+                local char_before = line:sub(col, col)
 
-		cmdline = {
-			enabled = true,
-			completion = {
-				-- trigger = {
-				-- 	show_on_trigger_character = false,
-				-- },
-				menu = {
-					auto_show = true,
-				},
-				list = {
-					selection = {
-						auto_insert = false,
-					},
-				},
-			},
-			sources = function()
-				return { "path", "cmdline" }
-			end,
-			keymap = {
-				["<Tab>"] = { "show", "accept", "fallback" },
-				["<CR>"] = { "accept_and_enter", "fallback" }, -- 选中并执行命令
-				["<Down>"] = { "select_next", "fallback" },
-				["<Up>"] = { "select_prev", "fallback" },
-				["<A-j>"] = { "select_next", "fallback" },
-				["<A-k>"] = { "select_prev", "fallback" },
-			},
-		},
-	},
+                if col > 0 and char_before:match("[%w%.%#%-]") then
+                    local key = vim.api.nvim_replace_termcodes('<C-y>,', true, true, true)
+                    vim.api.nvim_feedkeys(key, 'i', true)
+                    return true
+                end
 
-	config = function(_, opts)
-		local blink = require("blink.cmp")
-		blink.setup(opts)
-	end,
+                return false
+            end, "fallback"},
+            -- ["<Tab>"] = { "select_and_accept", "snippet_forward", "fallback" },
+            -- S-Tab: 片段回退
+            ["<S-Tab>"] = {"snippet_backward", "fallback"},
+            ["<Up>"] = {"select_prev", "fallback"},
+            ["<Down>"] = {"select_next", "fallback"},
+
+            ["<A-k>"] = {"select_prev", "fallback"},
+            ["<A-j>"] = {"select_next", "fallback"}
+
+            -- -- 命令行滚动文档
+            -- ['<C-u>']     = { 'scroll_documentation_up', 'fallback' },
+            -- ['<C-d>']     = { 'scroll_documentation_down', 'fallback' },
+        },
+
+        cmdline = {
+            enabled = true,
+            completion = {
+                -- trigger = {
+                -- 	show_on_trigger_character = false,
+                -- },
+                menu = {
+                    auto_show = true
+                },
+                list = {
+                    selection = {
+                        auto_insert = false
+                    }
+                }
+            },
+            sources = function()
+                return {"path", "cmdline"}
+            end,
+            keymap = {
+                ["<Tab>"] = {"show", "accept", "fallback"},
+                ["<CR>"] = {"accept_and_enter", "fallback"}, -- 选中并执行命令
+                ["<Down>"] = {"select_next", "fallback"},
+                ["<Up>"] = {"select_prev", "fallback"},
+                ["<A-j>"] = {"select_next", "fallback"},
+                ["<A-k>"] = {"select_prev", "fallback"}
+            }
+        }
+    },
+
+    config = function(_, opts)
+
+        -- vim.g.user_emmet_leader_key = '<C-y>'
+        -- vim.g.user_emmet_settings = {
+        --     variables = {
+        --         lang = "zh-CN"
+        --     },
+        --     -- 关键：允许任何字符串被展开（解决你说的“随意写的名字”）
+        --     -- 比如输入 "my-tag" -> Tab -> "<my-tag></my-tag>"
+        --     ["Variables"] = {
+        --         ["allow_any_tag"] = 1
+        --     }
+        -- }
+
+        require("blink.cmp").setup(opts)
+    end
 }

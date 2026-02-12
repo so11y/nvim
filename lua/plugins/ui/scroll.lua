@@ -20,7 +20,7 @@ return {
                 },
             },
             handlers = {
-                cursor = true,
+                cursor = false,
                 diagnostic = true,
                 gitsigns = false,
                 handle = true,
