@@ -1,9 +1,13 @@
-return {
+return {{
+    "mattn/emmet-vim",
+    event = "InsertEnter",
+    config = function()
+    end
+}, {
     "saghen/blink.cmp",
     version = "1.*",
     event = {"InsertEnter", "CmdlineEnter"},
-    dependencies = {"rafamadriz/friendly-snippets" -- "mattn/emmet-vim"
-    },
+    dependencies = {"rafamadriz/friendly-snippets"},
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
@@ -106,22 +110,5 @@ return {
                 ["<A-k>"] = {"select_prev", "fallback"}
             }
         }
-    },
-
-    config = function(_, opts)
-
-        -- vim.g.user_emmet_leader_key = '<C-y>'
-        -- vim.g.user_emmet_settings = {
-        --     variables = {
-        --         lang = "zh-CN"
-        --     },
-        --     -- 关键：允许任何字符串被展开（解决你说的“随意写的名字”）
-        --     -- 比如输入 "my-tag" -> Tab -> "<my-tag></my-tag>"
-        --     ["Variables"] = {
-        --         ["allow_any_tag"] = 1
-        --     }
-        -- }
-
-        require("blink.cmp").setup(opts)
-    end
-}
+    }
+}}
