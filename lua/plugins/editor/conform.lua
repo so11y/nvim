@@ -2,7 +2,6 @@ return {
     "stevearc/conform.nvim",
     event = {"BufWritePre"},
     keys = {{
-        -- 按键：Alt + Shift + f (如果你按的是大写F) 或者 Alt + f
         "<A-F>",
         function()
             require("conform").format({
@@ -22,7 +21,8 @@ return {
             css = {"prettierd"},
             scss = {"prettierd"},
             html = {"prettierd"},
-            json = {"prettierd"}
+            json = {"prettierd"},
+            rust = {"rustfmt"}
         },
         format_on_save = {
             timeout_ms = 2000,

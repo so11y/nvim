@@ -1,22 +1,7 @@
-vim.lsp.enable 'vtsls'
-vim.lsp.enable 'vue_ls'
-vim.lsp.enable 'jsonls'
-vim.lsp.enable 'cssls'
--- vim.lsp.enable('unocss', false)
-
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
-
         vim.diagnostic.config({
-            -- virtual_lines = true,
             virtual_text = false,
-            -- virtual_text = {
-            --     prefix = '',
-            --     spacing = 4,
-            --     severity = {
-            --         min = vim.diagnostic.severity.ERROR
-            --     }
-            -- },
             signs = {
                 text = {
                     [vim.diagnostic.severity.ERROR] = '󰧞', -- ● •
@@ -69,6 +54,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 })
 return {{
+    "neovim/nvim-lspconfig",
+    event = {"BufReadPre", "BufNewFile"},
+    config = function()
+
+        vim.lsp.config('vtsls', require('lsp.vtsls'))
+        vim.lsp.config('vue_ls', require('lsp.vue_ls'))
+
+        vim.lsp.enable 'jsonls'
+        vim.lsp.enable 'cssls'
+        vim.lsp.enable 'lua_ls'
+        vim.lsp.enable 'rust_analyzer'
+        vim.lsp.enable 'vtsls'
+        vim.lsp.enable 'vue_ls'
+
+    end
+}, {
     'esmuellert/nvim-eslint',
     ft = {"javascript", "typescript", "javascriptreact", "typescriptreact", "vue"},
     event = {"BufReadPre", "BufNewFile"},
@@ -84,14 +85,8 @@ return {{
             return
         end
 
-        local config_root = vim.fs.root(bufnr, {
-            ".eslintrc.js", 
-            ".eslintrc.cjs", 
-            ".eslintrc.json", 
-            ".eslintrc",
-            "eslint.config.js", 
-            "eslint.config.mjs"})
-
+        local config_root = vim.fs.root(bufnr, {".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json", ".eslintrc",
+                                                "eslint.config.js", "eslint.config.mjs"})
 
         if config_root then
             local config_git_check = vim.fs.root(config_root, ".git")
