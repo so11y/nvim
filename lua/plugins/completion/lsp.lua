@@ -3,13 +3,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local bufnr = args.buf
         local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-        if client and client.name == 'rust_analyzer' then
-            if client.server_capabilities.inlayHintProvider then
-                vim.lsp.inlay_hint.enable(true, {
-                    bufnr = bufnr
-                })
-            end
-        end
+        -- if client and client.name == 'rust_analyzer' then
+        --     if client.server_capabilities.inlayHintProvider then
+        --         vim.lsp.inlay_hint.enable(true, {
+        --             bufnr = bufnr
+        --         })
+        --     end
+        -- end
 
         vim.diagnostic.config({
             virtual_text = false,
@@ -67,14 +67,61 @@ return {{
         vim.lsp.enable('stylua', false)
         vim.lsp.config('vtsls', require('lsp.vtsls'))
         vim.lsp.config('vue_ls', require('lsp.vue_ls'))
-        vim.lsp.config('rust_analyzer', require('lsp.rust_analyzer'))
+        -- vim.lsp.config('rust_analyzer', require('lsp.rust_analyzer'))
 
         vim.lsp.enable('jsonls')
         vim.lsp.enable('cssls')
         vim.lsp.enable('lua_ls')
-        vim.lsp.enable('rust_analyzer')
+        -- vim.lsp.enable('rust_analyzer')
         vim.lsp.enable('vtsls')
         vim.lsp.enable('vue_ls')
+    end
+}, {
+    'mrcjkb/rustaceanvim',
+    version = '^7',
+    ft = {'rust'},
+    event = {'BufReadPre', 'BufNewFile'},
+    config = function()
+        vim.g.rustaceanvim = {
+            server = {
+                on_attach = function(client, bufnr)
+                    vim.lsp.inlay_hint.enable(true, {
+                        bufnr = bufnr
+                    })
+                end,
+                default_settings = {
+                    ['rust-analyzer'] = {
+                        inlayHints = {
+                            bindingModeHints = {
+                                enable = true
+                            },
+                            chainingHints = {
+                                enable = true
+                            },
+                            closingBraceHints = {
+                                enable = true,
+                                minLines = 25
+                            },
+                            closureReturnTypeHints = {
+                                enable = "always"
+                            },
+                            lifetimeElisionHints = {
+                                enable = "never"
+                            },
+                            parameterHints = {
+                                enable = true
+                            },
+                            reborrowHints = {
+                                enable = "never"
+                            },
+                            typeHints = {
+                                enable = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
     end
 }, {
     'esmuellert/nvim-eslint',
