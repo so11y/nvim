@@ -1,21 +1,24 @@
 return {{
-    "catppuccin/nvim",
-    name = "catppuccin",
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000,
     opts = {
         -- -- transparent_background = true,
         -- flavour = "latte",
         float = {
-            transparent = true -- enable transparent floating windows
+            transparent = true
         },
         custom_highlights = function(colors)
             return {
-                Visual = { 
+                LspInlayHint = {
+                    bg = "NONE" -- colors.base,
+                },
+                Visual = {
                     bg = colors.surface2,
-                    style = {} 
-                }, 
+                    style = {}
+                },
                 Folded = {
-                    bg = "#242535",
+                    bg = '#242535'
                     -- style = {"italic"}
                 },
                 BlinkCmpMenu = {
@@ -29,36 +32,36 @@ return {{
                 },
                 -- 1. 新增
                 GitSignsAdd = {
-                    fg = "#78A97A",
-                    bg = "NONE"
+                    fg = '#78A97A',
+                    bg = 'NONE'
                 },
-                -- 2. 修改 
+                -- 2. 修改
                 GitSignsChange = {
-                    fg = "#B5A480",
-                    bg = "NONE"
+                    fg = '#B5A480',
+                    bg = 'NONE'
                 },
                 -- 3. 删除
                 GitSignsDelete = {
-                    fg = "#AC7A7D",
-                    bg = "NONE"
+                    fg = '#AC7A7D',
+                    bg = 'NONE'
                 },
                 -- 4. 其它同步
                 GitSignsTopdelete = {
-                    fg = "#AC7A7D",
-                    bg = "NONE"
+                    fg = '#AC7A7D',
+                    bg = 'NONE'
                 },
                 GitSignsChangedelete = {
-                    fg = "#B5A480",
-                    bg = "NONE"
+                    fg = '#B5A480',
+                    bg = 'NONE'
                 },
-                -- 5. 未追踪 (Untracked): 
+                -- 5. 未追踪 (Untracked):
                 GitSignsUntracked = {
-                    fg = "#7F849C",
-                    bg = "NONE"
+                    fg = '#7F849C',
+                    bg = 'NONE'
                 },
                 -- 当前行 Git Blame
                 GitSignsCurrentLineBlame = {
-                    fg = "#585B70",
+                    fg = '#585B70',
                     italic = true
                 },
                 SnacksIndent = {
@@ -85,14 +88,14 @@ return {{
                 },
                 DiagnosticUnderlineHint = {
                     undercurl = true
-                },
+                }
             }
         end,
         integrations = {}
     },
     config = function(_, opts)
-        require("catppuccin").setup(opts)
+        require('catppuccin').setup(opts)
 
-        vim.cmd.colorscheme("catppuccin")
+        vim.cmd.colorscheme('catppuccin')
     end
 }}

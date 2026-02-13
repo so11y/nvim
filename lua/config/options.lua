@@ -1,18 +1,18 @@
 -- 1. 基础设置 (对应 vim.json 中的 settings)
-vim.env.CC = "gcc"
-vim.g.maplocalleader = " "
-vim.g.mapleader = " " -- "vim.leader": "<space>"
-vim.opt.clipboard = "unnamedplus" -- "vim.useSystemClipboard": true
+vim.env.CC = 'gcc'
+vim.g.maplocalleader = ' '
+vim.g.mapleader = ' ' -- "vim.leader": "<space>"
+vim.opt.clipboard = 'unnamedplus' -- "vim.useSystemClipboard": true
 vim.opt.number = true -- 显示绝对行号
 vim.opt.relativenumber = true -- 显示相对行号
 vim.wo.cursorline = true -- 高亮当前光标所在的行（方便定位）
 vim.opt.list = true -- 显示不可见字符（如空格、Tab）
 
 vim.g.loaded_matchparen = 1
-vim.o.signcolumn = "yes:1" -- 左侧“符号栏”始终显示，宽度固定为1。防止 Git 符号或错误提示出现时屏幕抖动。
+vim.o.signcolumn = 'yes:1' -- 左侧“符号栏”始终显示，宽度固定为1。防止 Git 符号或错误提示出现时屏幕抖动。
 vim.wo.wrap = false -- 关闭自动换行（长行会超出屏幕，需水平滚动）
 vim.opt.conceallevel = 0 -- 开启隐藏模式（主要用于 Markdown/JSON）。例如 `**bold**` 会直接显示为加粗的 **bold**，而不显示星号。
-vim.o.winborder = "rounded" -- 设置浮动窗口的边框默认为圆角。
+vim.o.winborder = 'rounded' -- 设置浮动窗口的边框默认为圆角。
 
 vim.opt.undofile = true
 vim.opt.ignorecase = true -- 搜索时忽略大小写
@@ -37,7 +37,8 @@ vim.opt.cmdheight = 0
 vim.opt.swapfile = false
 vim.opt.updatetime = 200
 vim.opt.shada = "!,'100,<500,s50,h"
-vim.opt.guicursor = "n-v-c:block,i-ci-ve:ver25,a:blinkwait1000-blinkoff600-blinkon600"
-vim.opt.jumpoptions = { "stack", "view", "clean" }
+vim.opt.guicursor =
+    'n-v-c:block,i-ci-ve:ver25,a:blinkwait1000-blinkoff600-blinkon600'
+vim.opt.jumpoptions = { 'stack', 'view', 'clean' }
 vim.lsp.log.set_level(vim.log.levels.OFF)
 -- vim.opt.termguicolors = true

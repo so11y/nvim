@@ -1,67 +1,89 @@
 return {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
-    event = "VeryLazy",
-    dependencies = {"nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim"},
-    keys = {{
-        "<A-b>",
-        "<cmd>Neotree toggle<cr>",
-        desc = "Toggle Explorer"
-    }, {
-        "<A-e>",
-        "<cmd>Neotree reveal<cr>",
-        desc = "Reveal File"
-    }},
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    event = 'VeryLazy',
+    dependencies = {
+        'nvim-lua/plenary.nvim',
+        'nvim-tree/nvim-web-devicons',
+        'MunifTanjim/nui.nvim',
+    },
+    keys = {
+        {
+            '<A-b>',
+            '<cmd>Neotree toggle<cr>',
+            desc = 'Toggle Explorer',
+        },
+        {
+            '<A-e>',
+            '<cmd>Neotree reveal<cr>',
+            desc = 'Reveal File',
+        },
+    },
     config = function()
-        require("neo-tree").setup({
-            log_level = "fatal",
+        require('neo-tree').setup({
+            log_level = 'fatal',
             window = {
-                position = "left",
+                position = 'left',
                 width = 30,
                 mappings = {
-                    ["<space>"] = "open",
-                    ["<cr>"] = "open",
-                    ["<tab>"] = "set_root",
-                    ["<bs>"] = "navigate_up",
-                    ["O"] = function(state)
+                    ['<space>'] = 'open',
+                    ['<cr>'] = 'open',
+                    ['<tab>'] = 'set_root',
+                    ['<bs>'] = 'navigate_up',
+                    ['O'] = function(state)
                         local node = state.tree:get_node()
                         local path = node:get_id()
-                        if node.type == "directory" then
-                            os.execute(string.format([[start explorer "%s"]], path))
+                        if node.type == 'directory' then
+                            os.execute(
+                                string.format([[start explorer "%s"]], path)
+                            )
                         else
-                            os.execute(string.format([[start explorer /select,"%s"]], path))
+                            os.execute(
+                                string.format(
+                                    [[start explorer /select,"%s"]],
+                                    path
+                                )
+                            )
                         end
-                    end
-                }
+                    end,
+                },
             },
             default_component_configs = {
                 indent = {
                     with_expanders = true, -- 加上这个，文件夹展开会有箭头感
-                    expander_collapsed = "",
-                    expander_expanded = ""
-                }
+                    expander_collapsed = '',
+                    expander_expanded = '',
+                },
             },
             renderers = {
-                file = {{"indent"}, {"icon"}, {
-                    "name",
-                    use_git_status_colors = true
-                }},
-                directory = {{"indent"}, {"icon"}, {
-                    "name",
-                    use_git_status_colors = true
-                }}
+                file = {
+                    { 'indent' },
+                    { 'icon' },
+                    {
+                        'name',
+                        use_git_status_colors = true,
+                    },
+                },
+                directory = {
+                    { 'indent' },
+                    { 'icon' },
+                    {
+                        'name',
+                        use_git_status_colors = true,
+                    },
+                },
             },
             filesystem = {
                 bind_to_cwd = true,
                 use_libuv_file_watcher = true, -- 文件夹变动自动刷新
                 filtered_items = {
                     visible = true, -- 显示隐藏文件 (.gitignore 等)
-                    hide_dotfiles = false
+                    hide_dotfiles = false,
                 },
                 follow_current_file = {
-                    enabled = true -- 打开文件时自动在树中定位
-                }
-            }
+                    enabled = true, -- 打开文件时自动在树中定位
+                },
+            },
         })
-    end
+    end,
 }

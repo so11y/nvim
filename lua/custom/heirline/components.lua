@@ -1,6 +1,6 @@
-local palette = require('catppuccin.palettes').get_palette 'mocha'
-local utils = require 'heirline.utils'
-local conditions = require 'heirline.conditions'
+local palette = require('catppuccin.palettes').get_palette('mocha')
+local utils = require('heirline.utils')
+local conditions = require('heirline.conditions')
 local devicons = require('nvim-web-devicons')
 
 local icons = {}
@@ -8,7 +8,7 @@ icons.diagnostics = {
     Error = '●',
     Warn = '●',
     Info = '●',
-    Hint = ''
+    Hint = '',
 }
 local colors = {
     diag_warn = utils.get_highlight('DiagnosticWarn').fg,
@@ -17,23 +17,23 @@ local colors = {
     diag_info = utils.get_highlight('DiagnosticInfo').fg,
     git_del = utils.get_highlight('diffDeleted').fg,
     git_add = utils.get_highlight('diffAdded').fg,
-    git_change = utils.get_highlight('diffChanged').fg
+    git_change = utils.get_highlight('diffChanged').fg,
 }
 local dim_color = palette.surface1
 
 local M = {}
 M.Spacer = {
-    provider = ' '
+    provider = ' ',
 }
 M.Fill = {
-    provider = '%='
+    provider = '%=',
 }
 M.Ruler = {
-    provider = '%4l,%-3c %P'
+    provider = '%4l,%-3c %P',
 }
 M.ScrollBar = {
     static = {
-        sbar = {'▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
+        sbar = { '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█' },
     },
     provider = function(self)
         local curr_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -43,15 +43,15 @@ M.ScrollBar = {
     end,
     hl = {
         fg = palette.yellow,
-        bg = palette.surface0
-    }
+        bg = palette.surface0,
+    },
 }
 
 -- Spacing providers
 M.RightPadding = function(child, num_space)
     local result = {
         condition = child.condition,
-        child
+        child,
     }
     if num_space ~= nil then
         for _ = 1, num_space do
@@ -99,7 +99,7 @@ M.Mode = {
             rm = 'M',
             ['r?'] = '?',
             ['!'] = '!',
-            t = 'TERM'
+            t = 'TERM',
         },
         mode_colors = {
             n = palette.lavender,
@@ -115,8 +115,8 @@ M.Mode = {
             R = palette.peach,
             r = palette.peach,
             ['!'] = palette.red,
-            t = palette.green
-        }
+            t = palette.green,
+        },
     },
     provider = function(self)
         local name = self.mode_names[self.mode] or self.mode:upper()
@@ -127,7 +127,7 @@ M.Mode = {
         return {
             fg = palette.base,
             bg = self.mode_colors[mode],
-            bold = true
+            bold = true,
         }
     end,
     update = {
@@ -135,8 +135,8 @@ M.Mode = {
         pattern = '*:*',
         callback = vim.schedule_wrap(function()
             pcall(vim.cmd, 'redrawstatus')
-        end)
-    }
+        end),
+    },
 }
 
 M.MacroRecording = {
@@ -157,8 +157,8 @@ M.MacroRecording = {
         {
             provider = '󰻃 ',
             hl = {
-                fg = palette.maroon
-            }
+                fg = palette.maroon,
+            },
         },
         {
             provider = function(self)
@@ -167,15 +167,15 @@ M.MacroRecording = {
             hl = {
                 fg = palette.maroon,
                 italic = false,
-                bold = true
-            }
+                bold = true,
+            },
         },
         hl = {
             fg = palette.text,
-            bg = palette.base
-        }
+            bg = palette.base,
+        },
     },
-    update = {'RecordingEnter', 'RecordingLeave'}
+    update = { 'RecordingEnter', 'RecordingLeave' },
 }
 
 M.Formatters = {
@@ -184,7 +184,7 @@ M.Formatters = {
         self.conform = conform
         return ok
     end,
-    update = {'BufEnter', 'FileType', 'BufWritePost'},
+    update = { 'BufEnter', 'FileType', 'BufWritePost' },
     provider = function(self)
         local ft_entry = self.conform.formatters_by_ft[vim.bo.filetype]
         local ft_formatters
@@ -197,36 +197,36 @@ M.Formatters = {
     end,
     hl = {
         fg = dim_color,
-        bold = false
-    }
+        bold = false,
+    },
 }
 
 M.LSPActive = {
     condition = conditions.lsp_attached,
-    update = {'LspAttach', 'LspDetach'},
+    update = { 'LspAttach', 'LspDetach' },
     provider = function()
         local names = {}
         local clients = vim.lsp.get_clients({
-            bufnr = 0
+            bufnr = 0,
         })
         for _, server in pairs(clients) do
             table.insert(names, server.name)
         end
         if #names == 0 then
-            return ""
+            return ''
         end
-        return "  " .. table.concat(names, ", ")
+        return '  ' .. table.concat(names, ', ')
     end,
     hl = {
         fg = dim_color,
-        bold = false
+        bold = false,
     },
     on_click = {
         name = 'heirline_lsp',
         callback = function()
             vim.cmd('LspInfo')
-        end
-    }
+        end,
+    },
 }
 
 M.FileType = {
@@ -235,8 +235,8 @@ M.FileType = {
     end,
     hl = {
         fg = utils.get_highlight('Type').fg,
-        bold = true
-    }
+        bold = true,
+    },
 }
 
 -- Git
@@ -244,11 +244,13 @@ M.Git = {
     condition = conditions.is_git_repo,
     init = function(self)
         self.status_dict = vim.b.gitsigns_status_dict
-        self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
+        self.has_changes = self.status_dict.added ~= 0
+            or self.status_dict.removed ~= 0
+            or self.status_dict.changed ~= 0
     end,
     hl = function(self)
         return {
-            fg = self.has_changes and palette.maroon or dim_color
+            fg = self.has_changes and palette.maroon or dim_color,
         }
     end,
     provider = function(self)
@@ -257,7 +259,7 @@ M.Git = {
         else
             return '󰘬 ' .. self.status_dict.head
         end
-    end
+    end,
 }
 
 -- Dianostics
@@ -267,55 +269,57 @@ M.Diagnostics = {
         error_icon = icons.diagnostics.Error .. ' ',
         warn_icon = icons.diagnostics.Warn .. ' ',
         info_icon = icons.diagnostics.Info .. ' ',
-        hint_icon = icons.diagnostics.Hint .. ' '
+        hint_icon = icons.diagnostics.Hint .. ' ',
     },
     init = function(self)
         self.errors = #vim.diagnostic.get(0, {
-            severity = vim.diagnostic.severity.ERROR
+            severity = vim.diagnostic.severity.ERROR,
         }) or 0
         self.warnings = #vim.diagnostic.get(0, {
-            severity = vim.diagnostic.severity.WARN
+            severity = vim.diagnostic.severity.WARN,
         }) or 0
         self.hints = #vim.diagnostic.get(0, {
-            severity = vim.diagnostic.severity.HINT
+            severity = vim.diagnostic.severity.HINT,
         }) or 0
         self.info = #vim.diagnostic.get(0, {
-            severity = vim.diagnostic.severity.INFO
+            severity = vim.diagnostic.severity.INFO,
         }) or 0
     end,
-    update = {'DiagnosticChanged', 'BufEnter'},
+    update = { 'DiagnosticChanged', 'BufEnter' },
     {
         provider = function(self)
-            return (self.errors or 0) > 0 and (self.error_icon .. self.errors .. ' ')
+            return (self.errors or 0) > 0
+                and (self.error_icon .. self.errors .. ' ')
         end,
         hl = {
-            fg = colors.diag_error
-        }
+            fg = colors.diag_error,
+        },
     },
     {
         provider = function(self)
-            return (self.warnings or 0) > 0 and (self.warn_icon .. self.warnings .. ' ')
+            return (self.warnings or 0) > 0
+                and (self.warn_icon .. self.warnings .. ' ')
         end,
         hl = {
-            fg = colors.diag_warn
-        }
+            fg = colors.diag_warn,
+        },
     },
     {
         provider = function(self)
             return (self.info or 0) > 0 and (self.info_icon .. self.info .. ' ')
         end,
         hl = {
-            fg = colors.diag_info
-        }
+            fg = colors.diag_info,
+        },
     },
     {
         provider = function(self)
             return (self.hints or 0) > 0 and (self.hint_icon .. self.hints)
         end,
         hl = {
-            fg = colors.diag_hint
-        }
-    }
+            fg = colors.diag_hint,
+        },
+    },
 }
 
 M.FileIcon = {
@@ -324,18 +328,18 @@ M.FileIcon = {
     end,
     init = function(self)
         self.is_modified = vim.api.nvim_get_option_value('modified', {
-            buf = self.bufnr
+            buf = self.bufnr,
         })
         local filename = self.filename
         local extension = vim.fn.fnamemodify(filename, ':e')
 
         local icon, icon_hl_name = devicons.get_icon(filename, extension, {
-            default = true
+            default = true,
         })
 
         -- 特殊处理 Terminal
         local bt = vim.api.nvim_get_option_value('buftype', {
-            buf = self.bufnr
+            buf = self.bufnr,
         }) or nil
         if bt and bt == 'terminal' then
             icon = ''
@@ -347,7 +351,7 @@ M.FileIcon = {
         -- 获取高亮颜色
         if icon_hl_name then
             local hl = vim.api.nvim_get_hl(0, {
-                name = icon_hl_name
+                name = icon_hl_name,
             })
             if hl and hl.fg then
                 self.icon_color = string.format('#%06x', hl.fg)
@@ -363,28 +367,28 @@ M.FileIcon = {
     end,
     hl = function(self)
         return {
-            fg = self.is_modified and self.icon_color or dim_color
+            fg = self.is_modified and self.icon_color or dim_color,
         }
-    end
+    end,
 }
 
 -- === 修改 2: 使用 nvim-web-devicons 获取颜色 ===
 M.FileName = {
     init = function(self)
         self.is_modified = vim.api.nvim_get_option_value('modified', {
-            buf = self.bufnr
+            buf = self.bufnr,
         })
         local filename = self.filename
         local extension = vim.fn.fnamemodify(filename, ':e')
 
         -- 获取颜色逻辑
         local _, icon_hl_name = devicons.get_icon(filename, extension, {
-            default = true
+            default = true,
         })
 
         if icon_hl_name then
             local hl = vim.api.nvim_get_hl(0, {
-                name = icon_hl_name
+                name = icon_hl_name,
             })
             if hl and hl.fg then
                 self.icon_color = string.format('#%06x', hl.fg)
@@ -397,7 +401,8 @@ M.FileName = {
     end,
     provider = function(self)
         local filename = self.filename
-        filename = filename == '' and vim.bo.filetype or vim.fn.fnamemodify(filename, ':t')
+        filename = filename == '' and vim.bo.filetype
+            or vim.fn.fnamemodify(filename, ':t')
         return '' .. filename .. ''
     end,
     hl = function(self)
@@ -405,7 +410,7 @@ M.FileName = {
             fg = self.is_modified and self.icon_color or dim_color,
             -- italic = self.is_modified
         }
-    end
+    end,
 }
 
 M.FilePath = {
@@ -420,74 +425,80 @@ M.FilePath = {
         return {
             fg = self.is_active and palette.text or palette.subtext0,
             bold = self.is_active or self.is_visible,
-            italic = self.is_active
+            italic = self.is_active,
         }
-    end
+    end,
 }
 
-M.FileFlags = {{
-    init = function(self)
-        local filename = self.filename
-        local extension = vim.fn.fnamemodify(filename, ':e')
+M.FileFlags = {
+    {
+        init = function(self)
+            local filename = self.filename
+            local extension = vim.fn.fnamemodify(filename, ':e')
 
-        local _, icon_hl_name = devicons.get_icon(filename, extension, {
-            default = true
-        })
-
-        if icon_hl_name then
-            local hl = vim.api.nvim_get_hl(0, {
-                name = icon_hl_name
+            local _, icon_hl_name = devicons.get_icon(filename, extension, {
+                default = true,
             })
-            if hl and hl.fg then
-                self.icon_color = string.format('#%06x', hl.fg)
+
+            if icon_hl_name then
+                local hl = vim.api.nvim_get_hl(0, {
+                    name = icon_hl_name,
+                })
+                if hl and hl.fg then
+                    self.icon_color = string.format('#%06x', hl.fg)
+                else
+                    self.icon_color = dim_color
+                end
             else
                 self.icon_color = dim_color
             end
-        else
-            self.icon_color = dim_color
-        end
-    end,
-    condition = function(self)
-        local ignored_filetypes = {'dap-repl'}
-        local result = vim.fn.fnamemodify(self.filename, ':.') ~= '' and vim.api.nvim_get_option_value('modified', {
-            buf = self.bufnr
-        })
-        local ft = vim.api.nvim_get_option_value('buftype', {
-            buf = self.bufnr
-        })
-        if vim.tbl_contains(ignored_filetypes, ft) then
-            result = false
-        end
-        return result
-    end,
-    provider = ' 󰏫 ', 
-    hl = function(self)
-        return {
-            fg = self.icon_color,
-            bold = self.is_active
-        }
-    end
-}, {
-    condition = function(self)
-        return not vim.api.nvim_get_option_value('modifiable', {
-            buf = self.bufnr
-        }) or vim.api.nvim_get_option_value('readonly', {
-            buf = self.bufnr
-        })
-    end,
-    provider = function(self)
-        if vim.api.nvim_get_option_value('buftype', {
-            buf = self.bufnr
-        }) == 'terminal' then
-            return ''
-        else
-            return ' [+] '
-        end
-    end,
-    hl = {
-        fg = palette.text
-    }
-}}
+        end,
+        condition = function(self)
+            local ignored_filetypes = { 'dap-repl' }
+            local result = vim.fn.fnamemodify(self.filename, ':.') ~= ''
+                and vim.api.nvim_get_option_value('modified', {
+                    buf = self.bufnr,
+                })
+            local ft = vim.api.nvim_get_option_value('buftype', {
+                buf = self.bufnr,
+            })
+            if vim.tbl_contains(ignored_filetypes, ft) then
+                result = false
+            end
+            return result
+        end,
+        provider = ' 󰏫 ',
+        hl = function(self)
+            return {
+                fg = self.icon_color,
+                bold = self.is_active,
+            }
+        end,
+    },
+    {
+        condition = function(self)
+            return not vim.api.nvim_get_option_value('modifiable', {
+                buf = self.bufnr,
+            }) or vim.api.nvim_get_option_value('readonly', {
+                buf = self.bufnr,
+            })
+        end,
+        provider = function(self)
+            if
+                vim.api.nvim_get_option_value('buftype', {
+                    buf = self.bufnr,
+                }) == 'terminal'
+            then
+                return ''
+            else
+                return ' [+] '
+            end
+        end,
+        hl = {
+            fg = palette.text,
+        },
+    },
+}
 
 M.FileNameBlock = {
     init = function(self)
@@ -495,7 +506,7 @@ M.FileNameBlock = {
         self.filename = vim.api.nvim_buf_get_name(bufnr)
     end,
     hl = {
-        fg = palette.text
+        fg = palette.text,
     },
     M.FileIcon,
     M.FileName,
@@ -508,11 +519,11 @@ M.FilePathBlock = {
         self.filename = vim.api.nvim_buf_get_name(bufnr)
     end,
     hl = {
-        fg = palette.text
+        fg = palette.text,
     },
     M.FileIcon,
     M.FileName,
-    M.FileFlags
+    M.FileFlags,
 }
 
 M.TablineFileNameBlock = vim.tbl_extend('force', M.FileNameBlock, {
@@ -521,7 +532,7 @@ M.TablineFileNameBlock = vim.tbl_extend('force', M.FileNameBlock, {
             if button == 'm' then
                 vim.schedule(function()
                     vim.api.nvim_buf_delete(minwid, {
-                        force = false
+                        force = false,
                     })
                 end)
             else
@@ -531,8 +542,8 @@ M.TablineFileNameBlock = vim.tbl_extend('force', M.FileNameBlock, {
         minwid = function(self)
             return self.bufnr
         end,
-        name = 'heirline_tabline_buffer_callback'
-    }
+        name = 'heirline_tabline_buffer_callback',
+    },
 })
 
 M.SearchOccurrence = {
@@ -540,12 +551,12 @@ M.SearchOccurrence = {
         return vim.v.hlsearch == 1 and vim.fn.getreg('/') ~= ''
     end,
     hl = {
-        fg = palette.sky
+        fg = palette.sky,
     },
     provider = function()
-        local sinfo = vim.fn.searchcount {
-            maxcount = 0
-        }
+        local sinfo = vim.fn.searchcount({
+            maxcount = 0,
+        })
         local incomplete = sinfo.incomplete or 0
         local total = sinfo.total or 0
         local current = sinfo.current or 0
@@ -556,7 +567,7 @@ M.SearchOccurrence = {
         else
             return ''
         end
-    end
+    end,
 }
 
 M.SimpleIndicator = {
@@ -564,14 +575,14 @@ M.SimpleIndicator = {
         return vim.g.simple_indicator_on
     end,
     hl = {
-        fg = palette.sky
+        fg = palette.sky,
     },
-    provider = ''
+    provider = '',
 }
 
 M.LspProgress = {
     provider = function()
-        return require('lsp-progress').progress {
+        return require('lsp-progress').progress({
             format = function(messages)
                 local active_clients = vim.lsp.get_clients()
                 local client_count = #active_clients
@@ -584,25 +595,28 @@ M.LspProgress = {
                     local client_names = {}
                     for i, client in ipairs(active_clients) do
                         if client and client.name ~= '' then
-                            table.insert(client_names, '[' .. client.name .. ']')
+                            table.insert(
+                                client_names,
+                                '[' .. client.name .. ']'
+                            )
                         end
                     end
                     return table.concat(client_names, ' ')
                 end
-            end
-        }
+            end,
+        })
     end,
     update = {
         'User',
         pattern = 'LspProgressStatusUpdated',
         callback = vim.schedule_wrap(function()
-            vim.cmd 'redrawstatus'
-        end)
+            vim.cmd('redrawstatus')
+        end),
     },
     hl = {
         fg = dim_color,
-        bold = false
-    }
+        bold = false,
+    },
 }
 
 return M
