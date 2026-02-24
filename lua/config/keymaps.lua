@@ -225,6 +225,28 @@ map('n', '<A-Right>', '<C-w>>', {
     desc = '增加窗口宽度',
 })
 
+map({ 'o', 'x' }, 'i%', function()
+    local line = vim.api.nvim_get_current_line()
+    local col = vim.fn.col('.')
+    local char = line:sub(col, col)
+    local mask = {
+        ['('] = 'i(',
+        [')'] = 'i(',
+        ['{'] = 'i{',
+        ['}'] = 'i{',
+        ['['] = 'i[',
+        [']'] = 'i[',
+        ['<'] = 'i<',
+        ['>'] = 'i<',
+    }
+    local target = mask[char]
+    if target then
+        return target
+    else
+        return ''
+    end
+end, { expr = true, silent = true, desc = '匹配符号内部内容' })
+
 -- =======================================================
 -- 7. 输入体验优化 (Undo Breakpoints)
 -- =======================================================
