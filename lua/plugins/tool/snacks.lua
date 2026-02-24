@@ -175,7 +175,7 @@ return {
                 enabled = true,
                 win = {
                     position = 'bottom',
-                    height = 0.35,
+                    height = 0.45,
                     fixed = true, -- 面板模式（可选，推荐）
                 },
             },

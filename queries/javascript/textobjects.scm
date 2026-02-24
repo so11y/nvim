@@ -2,11 +2,8 @@
 
 ; --- 函数 ---
 (function_declaration) @function.outer
-(function_declaration) @function.inner
 (method_definition) @function.outer
-(method_definition) @function.inner
 (arrow_function) @function.outer
-(arrow_function) @function.inner
 
 ; --- 循环 (包含 for 和 while) ---
 (for_statement) @loop.outer
@@ -23,7 +20,7 @@
 (call_expression arguments: (arguments) @call.inner)
 
 
-; 1. 先写带大括号的结构（保证跳转 ]s 能跳到 if/for 的开头）
+; 1. 先写带大括号的结构
 (if_statement) @statement.outer
 (for_statement) @statement.outer
 (for_in_statement) @statement.outer
@@ -32,6 +29,9 @@
 (switch_case) @statement.outer
 (switch_statement) @statement.outer
 (try_statement) @statement.outer
+(function_declaration) @statement.outer
+(method_definition) @statement.outer
+(arrow_function) @statement.outer
 (import_statement) @statement.outer
 
 ; 2. 再写变量定义

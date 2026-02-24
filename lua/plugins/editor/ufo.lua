@@ -64,12 +64,6 @@ return {
             config = function(_, opts)
                 require('ufo').setup(opts)
 
-                -- vim.api.nvim_create_autocmd("BufReadPre", {
-                --     callback = function()
-                --         vim.b.ufo_foldlevel = 0
-                --     end
-                -- })
-
                 local peek_winid = nil
                 vim.keymap.set('n', '<leader>k', function()
                     if peek_winid and vim.api.nvim_win_is_valid(peek_winid) then

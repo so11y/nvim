@@ -26,7 +26,7 @@ return {
 
                             prefills = {
                                 paths = vim.fn.expand('%'),
-                                flags = '--fixed-strings',
+                                flags = '--fixed-strings -i',
                             },
                         })
                     end
