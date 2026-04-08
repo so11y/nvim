@@ -357,14 +357,14 @@ return {
                 desc = '重命名',
             }, -- 2. 诊断跳转 (保持你习惯的 gdj / gdk)
             {
-                'gdk',
+                'gkx',
                 function()
                     vim.diagnostic.goto_prev()
                 end,
                 desc = '上一个诊断',
             },
             {
-                'gdj',
+                'gjx',
                 function()
                     vim.diagnostic.goto_next()
                 end,
