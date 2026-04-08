@@ -380,7 +380,6 @@ return {{
     config = function(_, opts)
         require('snacks').setup(opts)
 
-        -- 获取 treesitter-textobjects 的重复移动引擎
         local repeat_move = require('nvim-treesitter.textobjects.repeatable_move')
 
         local jump_diag = repeat_move.make_repeatable_move(function(args)
@@ -400,7 +399,6 @@ return {{
             end
         end)
 
-        -- 2. 批量绑定快捷键 (gjx: 下一个, gkx: 上一个)
         local nxo = {'n', 'x', 'o'}
 
         vim.keymap.set(nxo, 'gjx', function()
