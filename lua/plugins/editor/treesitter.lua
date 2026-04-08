@@ -4,7 +4,7 @@ return {
             'nvim-treesitter/nvim-treesitter',
             branch = 'master',
             build = ':TSUpdate',
-            event = { 'BufReadPost', 'BufNewFile' },
+            event = { 'BufReadPost', 'BufNewFile', 'BufEnter' },
             dependencies = {
                 {
                     'nvim-treesitter/nvim-treesitter-textobjects',
@@ -204,8 +204,6 @@ return {
             },
 
             config = function(_, opts)
-                require('nvim-treesitter.configs').setup(opts)
-
                 require('nvim-treesitter.configs').setup(opts)
 
                 local function move(capture, forward)
