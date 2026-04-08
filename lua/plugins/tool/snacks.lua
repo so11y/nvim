@@ -380,41 +380,9 @@ return {{
     config = function(_, opts)
         require('snacks').setup(opts)
 
-        local repeat_move = require('nvim-treesitter.textobjects.repeatable_move')
-
-        local jump_diag = repeat_move.make_repeatable_move(function(args)
-            if vim.g.vscode then
-                local vscode = require('vscode')
-                if args.forward then
-                    vscode.action('editor.action.marker.next')
-                else
-                    vscode.action('editor.action.marker.prev')
-                end
-            else
-                if args.forward then
-                    vim.diagnostic.goto_next()
-                else
-                    vim.diagnostic.goto_prev()
-                end
-            end
-        end)
-
-        local nxo = {'n', 'x', 'o'}
-
-        vim.keymap.set(nxo, 'gjx', function()
-            jump_diag({
-                forward = true
-            })
-        end, {
-            desc = '下一个诊断'
-        })
-
-        vim.keymap.set(nxo, 'gkx', function()
-            jump_diag({
-                forward = false
-            })
-        end, {
-            desc = '上一个诊断'
-        })
+        require('utils.repeatable').map_jump('gjx', 'gkx',
+            vim.diagnostic.goto_next,
+            vim.diagnostic.goto_prev,
+            '下一个诊断', '上一个诊断')
     end
 }}

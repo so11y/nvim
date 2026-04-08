@@ -4,7 +4,6 @@ return {
             'kevinhwang91/nvim-ufo',
             dependencies = { 'kevinhwang91/promise-async' },
             event = { 'BufReadPost', 'BufNewFile' },
-            cond = not vim.g.vscode,
             opts = {
                 provider_selector = function(_, _, _)
                     return { 'treesitter', 'indent' }

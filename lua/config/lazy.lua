@@ -12,6 +12,11 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local disabled = {}
+for _, v in ipairs(vim.g.vscode_disabled_plugins or {}) do
+    disabled[v] = true
+end
+
 require('lazy').setup({
     spec = {
         {
@@ -26,6 +31,11 @@ require('lazy').setup({
         {
             import = 'plugins.ui',
         },
+    },
+    defaults = {
+        cond = function(plugin)
+            return not disabled[plugin[1]]
+        end,
     },
     change_detection = {
         notify = false,

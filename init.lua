@@ -1,5 +1,5 @@
 require('config.options')
 require('config.keymaps')
+require('config.vscode')
 require('config.lazy')
 require('config.command')
-require('config.vscode')
