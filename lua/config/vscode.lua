@@ -33,16 +33,4 @@ if vim.g.vscode then
         vscode.action('editor.toggleFold')
     end)
 
-    map.set('n', 'gkx', function()
-        vscode.action('editor.action.marker.prev')
-    end, {
-        desc = 'VS Code: 上一个诊断'
-    })
-
-    map.set('n', 'gjx', function()
-        vscode.action('editor.action.marker.next')
-    end, {
-        desc = 'VS Code: 下一个诊断'
-    })
-
 end
