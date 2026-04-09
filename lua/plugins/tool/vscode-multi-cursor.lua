@@ -7,6 +7,7 @@ return {{
     },
     config = function(_, opts)
         local mc = require('vscode-multi-cursor')
+        local vsc = require('vscode')
         mc.setup(opts)
 
         local map = vim.keymap.set
@@ -17,12 +18,16 @@ return {{
             desc = '选中下一个相同的词'
         })
 
-        -- 2. 向上/下添加光标 -> gk / gj
-        -- 调用 VSCode 原生命令
-        -- k({'n', 'x', 'i'}, 'gj', [[<Cmd>call VSCodeCall('editor.action.insertCursorBelow')<CR>]])
-
-        -- Alt + Shift + k 向上添加光标 (建议配套加上)
-        -- k({'n', 'x', 'i'}, 'gk', [[<Cmd>call VSCodeCall('editor.action.insertCursorAbove')<CR>]])
+        map({'n', 'x', 'i'}, '<A-J>', function()
+            vsc.action('editor.action.insertCursorBelow')
+        end, {
+            desc = '向下添加光标'
+        })
+        map({'n', 'x', 'i'}, '<A-K>', function()
+            vsc.action('editor.action.insertCursorAbove')
+        end, {
+            desc = '向上添加光标'
+        })
 
         -- 3. 其他默认映射提醒：
         -- mc : 在当前位置手动创建光标/选择
