@@ -23,7 +23,7 @@ local vscode = require('vscode')
 local map = vim.keymap.set
 
 vim.opt.shortmess:append('sS')
---https://github.com/vscode-neovim/vscode-neovim/issues/2507
+-- https://github.com/vscode-neovim/vscode-neovim/issues/2507
 vim.o.cmdheight = 50
 
 map("n", "j", function()
@@ -49,6 +49,12 @@ end, {
 })
 
 -- LSP
+map('n', '<leader>cr', function()
+    vscode.action('editor.action.rename')
+end, {
+    desc = '代码重命名'
+})
+
 map({'n', 'v'}, '<leader>ca', function()
     vscode.action('editor.action.quickFix')
 end, {
