@@ -91,24 +91,36 @@ end, {
     desc = '全局搜索'
 })
 
--- 符号 / 终端
-map({'n', 't'}, '<A-t>', function()
-    vscode.action('workbench.action.terminal.toggleTerminal')
+-- 分屏（垂直/水平）
+map('n', '<leader>sv', function()
+    vscode.action('workbench.action.splitEditorRight')
 end, {
-    desc = '切换终端'
+    desc = '垂直分屏'
+})
+map('n', '<leader>sh', function()
+    vscode.action('workbench.action.splitEditorDown')
+end, {
+    desc = '水平分屏'
 })
 
+-- 符号 / 终端
+-- map({'n', 't'}, '<A-t>', function()
+--     vscode.action('workbench.action.terminal.toggleTerminal')
+-- end, {
+--     desc = '切换终端'
+-- })
+
 -- 窗口大小
-map('n', '<A-Up>', function()
-    vscode.action('workbench.action.increaseViewSize')
-end, {
-    desc = '增加窗口大小'
-})
-map('n', '<A-Down>', function()
-    vscode.action('workbench.action.decreaseViewSize')
-end, {
-    desc = '减少窗口大小'
-})
+-- map('n', '<A-Up>', function()
+--     vscode.action('workbench.action.increaseViewSize')
+-- end, {
+--     desc = '增加窗口大小'
+-- })
+-- map('n', '<A-Down>', function()
+--     vscode.action('workbench.action.decreaseViewSize')
+-- end, {
+--     desc = '减少窗口大小'
+-- })
 
 -- 可重复诊断跳转
 vim.api.nvim_create_autocmd('User', {
