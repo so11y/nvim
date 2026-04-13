@@ -14,7 +14,7 @@ return {
 
         keys = {
             {
-                '<leader>r',
+                '<leader>fg',
                 function()
                     local grug = require('grug-far')
                     local ext = vim.bo.buftype
