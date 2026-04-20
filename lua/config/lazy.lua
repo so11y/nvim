@@ -12,26 +12,20 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local env = require('environment')
+
 local disabled = {}
-for _, v in ipairs(vim.g.vscode_disabled_plugins or {}) do
+for _, v in ipairs(env.disabled) do
     disabled[v] = true
 end
 
 require('lazy').setup({
-    spec = {
-        {
-            import = 'plugins.completion',
-        },
-        {
-            import = 'plugins.editor',
-        },
-        {
-            import = 'plugins.tool',
-        },
-        {
-            import = 'plugins.ui',
-        },
-    },
+    spec = vim.list_extend({
+        { import = 'plugins.completion' },
+        { import = 'plugins.editor' },
+        { import = 'plugins.tool' },
+        { import = 'plugins.ui' },
+    }, env.specs),
     defaults = {
         cond = function(plugin)
             return not disabled[plugin[1]]
