@@ -23,8 +23,9 @@ vim.opt.scrolloff = 5 -- 垂直滚动时，光标上下保留 5 行预留空间�
 vim.opt.sidescrolloff = 10 -- 水平滚动时，光标左右保留 10 列预留空间。
 vim.opt.startofline = false -- 光标移动（如翻页）时，不要强制回到行首，尽量保持在同一列。
 
-vim.opt.softtabstop = 2 -- 按退格键时一次删除 2 个空格
-vim.opt.shiftwidth = 2 -- 自动缩进（>> 或 <<）的宽度为 2 个空格
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4 -- 按退格键时一次删除 4 个空格
+vim.opt.shiftwidth = 4 -- 自动缩进（>> 或 <<）的宽度为 4 个空格
 vim.opt.expandtab = true -- 将 Tab 键转换为空格
 vim.opt.smartindent = true -- 开启智能缩进（换行时自动对齐）
 
@@ -37,8 +38,7 @@ vim.opt.cmdheight = 0
 vim.opt.swapfile = false
 vim.opt.updatetime = 200
 vim.opt.shada = "!,'100,<500,s50,h"
-vim.opt.guicursor =
-    'n-v-c:block,i-ci-ve:ver25,a:blinkwait1000-blinkoff600-blinkon600'
-vim.opt.jumpoptions = { 'stack', 'view', 'clean' }
+vim.opt.guicursor = 'n-v-c:block,i-ci-ve:ver25,a:blinkwait1000-blinkoff600-blinkon600'
+vim.opt.jumpoptions = {'stack', 'view', 'clean'}
 vim.lsp.log.set_level(vim.log.levels.OFF)
 -- vim.opt.termguicolors = true

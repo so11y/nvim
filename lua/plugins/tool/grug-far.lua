@@ -14,7 +14,7 @@ return {
 
         keys = {
             {
-                '<leader>fg',
+                '<leader>r',
                 function()
                     local grug = require('grug-far')
                     local ext = vim.bo.buftype
@@ -26,7 +26,7 @@ return {
 
                             prefills = {
                                 paths = vim.fn.expand('%'),
-                                flags = '--fixed-strings -i',
+                                flags = '--fixed-strings',
                             },
                         })
                     end
