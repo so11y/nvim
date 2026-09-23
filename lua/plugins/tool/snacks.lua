@@ -169,9 +169,7 @@ return {{
         terminal = {
             enabled = true,
             win = {
-                position = 'bottom',
-                height = 0.45,
-                fixed = true -- 面板模式（可选，推荐）
+                position = 'float' -- 终端也走浮窗，样式同 styles.terminal（90% + 圆角）
             }
         },
         styles = {
@@ -278,6 +276,13 @@ return {{
             require('snacks').terminal()
         end,
         desc = '切换终端',
+        mode = {'n', 't'}
+    }, {
+        '<A-g>',
+        function()
+            require('snacks').terminal('opencode')
+        end,
+        desc = 'opencode（浮窗）',
         mode = {'n', 't'}
     }, -- Notification
     {
