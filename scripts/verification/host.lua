@@ -14,6 +14,7 @@ end
 for _, mapping in ipairs({
     { 'n', '<A-F>' },
     { 'n', '<A-o>' },
+    { 'n', 'za' },
     { 'x', '<CR>' },
     { 'x', '<BS>' },
 }) do

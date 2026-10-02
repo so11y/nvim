@@ -1,3 +1,28 @@
+-- vtsls advertises folding for Vue but returns no ranges in hybrid mode.
+-- Request the Vue server directly, independent of client attachment order.
+local function vue_folds(bufnr)
+    return require('promise')(function(resolve, reject)
+        local client = vim.lsp.get_clients({
+            bufnr = bufnr,
+            name = 'vue_ls',
+            method = 'textDocument/foldingRange',
+        })[1]
+        if not client then
+            reject('UfoFallbackException')
+            return
+        end
+        client:request('textDocument/foldingRange', {
+            textDocument = vim.lsp.util.make_text_document_params(bufnr),
+        }, function(err, ranges)
+            if err then
+                reject(err)
+            else
+                resolve(ranges or {})
+            end
+        end, bufnr)
+    end)
+end
+
 return {
     {
         {
@@ -5,10 +30,13 @@ return {
             dependencies = { 'kevinhwang91/promise-async' },
             event = { 'BufReadPost', 'BufNewFile' },
             opts = {
-                provider_selector = function(bufnr)
+                provider_selector = function(bufnr, filetype)
                     local parser =
                         vim.treesitter.get_parser(bufnr, nil, { error = false })
-                    return { 'lsp', parser and 'treesitter' or 'indent' }
+                    return {
+                        filetype == 'vue' and vue_folds or 'lsp',
+                        parser and 'treesitter' or 'indent',
+                    }
                 end,
 
                 open_fold_hl_timeout = 0,
@@ -64,7 +92,27 @@ return {
             end,
 
             config = function(_, opts)
-                require('ufo').setup(opts)
+                local ufo = require('ufo')
+                ufo.setup(opts)
+                vim.api.nvim_create_autocmd('LspAttach', {
+                    group = vim.api.nvim_create_augroup(
+                        'config.folding',
+                        { clear = true }
+                    ),
+                    callback = function(ev)
+                        local client =
+                            vim.lsp.get_client_by_id(ev.data.client_id)
+                        if
+                            client:supports_method(
+                                'textDocument/foldingRange',
+                                ev.buf
+                            )
+                            and ufo.hasAttached(ev.buf)
+                        then
+                            ufo.enableFold(ev.buf)
+                        end
+                    end,
+                })
 
                 local peek_winid = nil
                 vim.keymap.set('n', '<leader>h', function()

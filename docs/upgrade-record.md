@@ -11,7 +11,7 @@
 - efm 稳定源码加 Windows 命令引用及格式错误传播补丁。干净源码应用补丁后重编译 SHA 与已安装文件一致；安装脚本校验源提交、补丁、编译器与产物。
 - 系统 Neovide MSI 安装退出 0，Program Files 可执行文件报告 0.16.2；真实 GUI 使用用户默认 NVIM_APPNAME / NEOVIM_BIN 启动 0.12.5，配置/数据均为新 profile。
 - 已切换用户 PATH / NVIM_APPNAME / NEOVIM_BIN、PowerShell nvim/neovide 函数及 VSCode 两个官方设置键。VSCode 配置以 JSONC 定点修改，其余内容保留。无需额外 init 引导。
-- 三个旧 VSCode-Neovim 用户进程保留，未强制重启；现有窗口保存后执行 VSCode-Neovim: Restart 才使用新核心。项目依赖锁、全局 Node 22.22 与默认 Rust 1.93.1 保留。
+- 三个旧 VSCode-Neovim 用户进程保留，未强制重启；现有窗口保存后执行 Neovim: Restart Extension 才使用新核心。项目依赖锁、全局 Node 22.22 与默认 Rust 1.93.1 保留。
 
 ## 验收结果
 
@@ -23,10 +23,11 @@
 | 格式风格/故障 | 两根不同 Prettier 风格、默认 VSCode 风格、空格/中文/单引号文件名；非法 JS 显示 SyntaxError，原内容不变，ANSI 颜色码移除 | [format-failure.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/format-failure.json)、[efm-build.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/efm-build.json) |
 | 原生选区/语法树 | 真实 v/CR/CR/BS 展开收缩；Vue 注入函数、;/,；同一嵌套参数列表的交换与正反点重复；修改后缓存失效 | [lsp-selection.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/lsp-selection.json)、[parameter-repeat.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/parameter-repeat.json)、[performance.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/performance.json) |
 | UI/片段/会话 | 中文 emoji 与同行多函数 Outline 选中 narrow；五类文件自定义片段、原生展开与跳转；UFO 浮窗；会话保存/恢复 | [ui-interactions.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/ui-interactions.json) |
+| Vue 折叠 | 先开 TS 与先开 Vue 均通过；JS/TS SFC 各 8 种区块/函数/条件/模板/样式范围；预览、展开、Vue LSP 缺席时的语法后备及普通 TS 折叠通过 | [vue-folding.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/vue-folding.json) |
 | 空响应 | 真实 JSON-RPC null 的 hover/highlight/大纲路径，errmsg/messages 为空；无需修改 Noice/Dropbar 仓库 | [wire-null.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/wire-null.json) |
 | Node/Rust 调试 | Node 原生继续菜单后命中第 4 行断点，再继续正常终止；Cargo 真正 run target 就绪后 CodeLLDB 命中断点并终止 | [node-debug.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/node-debug.json)、[rust-debug.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/rust-debug.json) |
 | TypeScript 重构 | extract.function 真实 resolve/edit，客户端 editor.action.rename 提示并应用 sumValue 重命名 | [typescript-refactor.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/typescript-refactor.json) |
-| VSCode 宿主 | 扩展 1.20.0 真实运行时 + 原生 APPNAME；0 个原生 LSP 客户端；格式化/Outline/选区 RPC 送宿主，语言/调试插件未加载 | [vscode-boundary.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/vscode-boundary.json) |
+| VSCode 宿主 | 扩展 1.20.0 真实运行时 + 原生 APPNAME；0 个原生 LSP 客户端；格式化/Outline/选区/za 折叠 RPC 送宿主，语言/调试插件未加载 | [vscode-boundary.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/vscode-boundary.json) |
 | Neovide | 系统 GUI 实际 multi-grid attach；核心/新 config/data 正确；messages/errmsg 为空 | [neovide.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/neovide.json) |
 | 性能 | 热文件缓存下交替 5 轮真实 UI：40.28 → 28.75 ms，23 → 10 启动插件；2 万行重复 AST 914.67 → 0.097 ms；搜索 4.954 → 0.034 ms | [startup-performance.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/startup-performance.json)、[performance.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/performance.json) |
 
@@ -39,6 +40,7 @@
 - Lua：StyLua 2.5.2 格式化/检查；loadfile 全量语法检查，结果见 [syntax.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/syntax.json)。这项只证明语法，功能由上表真实 UI/客户端验证。
 - PowerShell：全部安装/启动/回退/样例脚本经 Parser.ParseFile 检查；启动脚本使用原始 @args，实际 -i NONE / -c 参数通过，避免高级参数绑定把 -i 解释成 InformationAction/InformationVariable。
 - efm：格式器失败测试、根标记与 CRLF 测试通过。Windows 上执行 go test ./... -skip '^TestLintMultipleFilesWithCancel$' -timeout 60s 通过。未删改被跳过的上游测试；它的 POSIX touch/sleep 启动标记在 Windows cmd 环境中无法完成，且不属于本次使用的格式功能。
+- Vue 折叠补充：复现 UFO 选择已有 vtsls 后得到空范围、所有 foldlevel 为 0；明确请求 vue_ls 并在连接后刷新。真实 UI 验收保留两种打开顺序，失败时 RPC 工具也保存结构化结果，便于复查。
 - 安装网络：Git/下载经既有本机代理；curl 的 TLS 1.2 上限、Node 安装命令的临时 TLS 上限解决连接复位，没有关闭证书校验或写入永久 TLS 设置。
 - MinGW：Chocolatey 下载/校验/解包已成功，安装元数据步骤因调用环境失败；实际工具按校验后的目录安装到 C:/tools/mingw-v16.1.0，编辑器 PATH 固定该目录，解析器重建通过。未把 Chocolatey 元数据成功作为事实。
 - Neovide MSI 首次使用正斜线路径失败，改用绝对反斜线路径后退出 0；最终可执行版本及 GUI 均实测。

@@ -42,10 +42,11 @@ try{
  }else{
   const lua=suite==='workflows'?"return dofile(vim.fn.stdpath('config')..'/scripts/check-workflows.lua')":readFileSync(resolve(dirname(fileURLToPath(import.meta.url)),suite==='host'?'host.lua':suite),'utf8');
   result=await rpc('nvim_exec_lua',[lua,[]]);
+  writeFileSync(output,JSON.stringify(result,null,2)+'\n');
   if(result.failures && Object.keys(result.failures).length)throw new Error(JSON.stringify(result.failures));
   if(result.error || result.errmsg)throw new Error(result.error || result.errmsg);
  }
- if(host){result.hostActions=hostActions;for(const name of ['editor.action.formatDocument','outline.focus','editor.action.smartSelect.expand','editor.action.smartSelect.shrink']){if(!hostActions.some(a=>a.method==='vscode-action' && a.params[0]===name))throw new Error('Host action was not emitted: '+name);}}
+ if(host){result.hostActions=hostActions;for(const name of ['editor.action.formatDocument','outline.focus','editor.toggleFold','editor.action.smartSelect.expand','editor.action.smartSelect.shrink']){if(!hostActions.some(a=>a.method==='vscode-action' && a.params[0]===name))throw new Error('Host action was not emitted: '+name);}}
  writeFileSync(output,JSON.stringify(result,null,2)+'\n');
  await rpc('nvim_exec_lua',["vim.schedule(function() vim.cmd('qa!') end)",[]]);
  console.log('PASS '+suite+' -> '+output);

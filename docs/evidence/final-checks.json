@@ -6,7 +6,7 @@
   "stylua": "2.5.2 --check lua scripts: passed",
   "lua_syntax": {
     "failures": [],
-    "checked": 66
+    "checked": 67
   },
   "powershell_scripts": 7,
   "powershell_errors": 0,
@@ -21,5 +21,21 @@
   "plugins_checked": 45,
   "efm_reproducible": true,
   "required_mason_packages": 12,
-  "commit_message": "Upgrade Neovim 0.12 with native LSP and measured performance fixes"
+  "commit_message": "Upgrade Neovim 0.12 with native LSP and measured performance fixes",
+  "vue_folding": {
+    "orders": [
+      "typescript-first",
+      "vue-first"
+    ],
+    "files": [
+      "Fold.vue",
+      "FoldJs.vue"
+    ],
+    "spans_per_file": 8,
+    "preview": true,
+    "syntax_fallback": true,
+    "typescript_regression": true,
+    "evidence": "docs/evidence/vue-folding.json"
+  },
+  "followup_commit_message": "Fix Vue folding client selection and refresh on LSP attach"
 }

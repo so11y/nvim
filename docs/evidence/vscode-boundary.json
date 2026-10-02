@@ -1,4 +1,8 @@
 {
+  "errmsg": "",
+  "appname": "nvim-upgrade",
+  "native_clients": 0,
+  "extension_runtime": "C:/Users/Administrator/.vscode/extensions/asvetliakov.vscode-neovim-1.20.0/runtime",
   "blocked": [
     "nvim-lspconfig",
     "mason.nvim",
@@ -8,11 +12,7 @@
     "nvim-dap"
   ],
   "messages": "",
-  "errmsg": "",
   "config": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade",
-  "appname": "nvim-upgrade",
-  "native_clients": 0,
-  "extension_runtime": "C:/Users/Administrator/.vscode/extensions/asvetliakov.vscode-neovim-1.20.0/runtime",
   "hostActions": [
     {
       "kind": "request",
@@ -20,10 +20,10 @@
       "params": [
         "get_config",
         {
+          "restore_selection": true,
           "args": [
             "vscode-neovim.highlightGroups.highlights"
-          ],
-          "restore_selection": true
+          ]
         }
       ]
     },
@@ -42,6 +42,16 @@
       "method": "vscode-action",
       "params": [
         "outline.focus",
+        {
+          "restore_selection": true
+        }
+      ]
+    },
+    {
+      "kind": "notification",
+      "method": "vscode-action",
+      "params": [
+        "editor.toggleFold",
         {
           "restore_selection": true
         }

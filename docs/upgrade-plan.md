@@ -11,7 +11,7 @@
 | P2 LSP 生命周期 | P1 | config/lsp.lua；lsp/vtsls.lua、vue_ls.lua；Rust 唯一入口；诊断/高亮按 buffer 管理 | JS/TS/Vue/Rust 原生请求；双根隔离；ESLint 修复；提取函数后重命名 | 完成 |
 | P3 格式化 | P2 | config/format.lua、format/prettier.json；efm 引号/失败传播补丁 | 保存和手动唯一客户端；项目风格；Unicode 文件名；失败提示且不改内容 | 完成 |
 | P4 语法树/编辑 | P1、P2 | config/treesitter.lua、ast_move.lua、parameter_swap.lua；main API 与解析器 DLL | queries/注入树、选择展开收缩、交换/点重复、;/,、缓存失效 | 完成 |
-| P5 UI/宿主/调试 | P2—P4 | Snacks 公共 outline 钩子、UFO、Blink 片段、会话、按需 DAP；environment/vscode | 真实 UI/Unicode/null；Node/Rust 断点；VSCode 原生扩展运行时发宿主动作且无 LSP 客户端 | 完成 |
+| P5 UI/宿主/调试 | P2—P4 | Snacks 公共 outline 钩子、UFO、Blink 片段、会话、按需 DAP；environment/vscode | 真实 UI/Unicode/null；Vue JS/TS 的区块/函数折叠及预览；Node/Rust 断点；VSCode 原生扩展运行时发宿主动作且无 LSP 客户端 | 完成 |
 | P6 性能 | P4、P5 | 启动按需加载；heirline 搜索计数；AST 索引 | 相同样例前后测量；保留首次开销和指标范围 | 完成 |
 | P7 日常入口 | P1—P6 | scripts/nvim.ps1、neovide.ps1、activate.ps1；VSCode 原生 NVIM_APPNAME；系统 Neovide | 未来 CLI/GUI/VSCode 使用相同锁和 profile，旧用户会话继续运行 | 已切换；现有 VSCode 窗口由用户保存后重启 |
 | P8 收尾/回退 | P7 | 中文分析/约定/计划/记录、证据、验收工具；scripts/rollback.ps1 | 格式/语法/diff 检查、旧环境可启动、代码提交和备份路径完整 | 完成，最终检查见执行记录 |
@@ -56,6 +56,10 @@ $env:NVIM_VSCODE_RUNTIME = 'C:\Users\Administrator\.vscode\extensions\asvetliako
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs selection
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs parameter-repeat.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs interactions.lua
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs vue-folding.lua
+$env:NVIM_TEST_VUE_FIRST = '1'
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs vue-folding.lua
+Remove-Item Env:NVIM_TEST_VUE_FIRST
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs typescript-refactor.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs format-failure.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs node-debug.lua
@@ -82,7 +86,7 @@ VSCode 用户设置已更新两个官方键：
 }
 ~~~
 
-新 PowerShell 窗口直接运行 nvim 或 neovide。已有终端也可显式运行 C:/Users/Administrator/AppData/Local/nvim-upgrade/scripts/nvim.ps1 或 neovide.ps1。已有 VSCode 窗口先保存文件，再执行 VSCode-Neovim: Restart；不强制中断运行中的三个会话。
+新 PowerShell 窗口直接运行 nvim 或 neovide。已有终端也可显式运行 C:/Users/Administrator/AppData/Local/nvim-upgrade/scripts/nvim.ps1 或 neovide.ps1。已有 VSCode 窗口先保存文件，再执行 Neovim: Restart Extension；不强制中断运行中的三个会话。
 
 打开文件后，用 :LspInfo / :checkhealth vim.lsp 查看实际客户端与根；状态栏查看格式器是否已就绪。按需入口首次启动服务器/调试器仍需等待；先用常用真实项目各完成一次编辑、保存、重命名和调试再长期使用。
 
