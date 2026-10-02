@@ -1,5 +1,7 @@
 # Neovim 配置快捷键文档
 
+升级已部署到 `nvim-upgrade` profile：新终端使用 `nvim` / `neovide`，现有 VSCode 窗口保存后执行 **VSCode-Neovim: Restart**。完整[升级分析](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-analysis.md)、[执行计划与回退](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-plan.md)、[验收记录](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-record.md)已保存。
+
 ## 目录
 
 - [核心快捷键](#核心快捷键)
@@ -44,7 +46,7 @@
 | n, i, v | `<A-z>` | 撤销 |
 | n, i, v | `<A-y>` | 重做 |
 | n | `<A-u>` | 后退跳转位置 |
-| n | `<A-o>` | 前进跳转位置 |
+| n | `<A-o>` | 代码大纲 |
 
 ---
 
@@ -151,7 +153,9 @@
 
 | 按键 | 功能 |
 |------|------|
-| `<A-F>` | 格式化代码 |
+| `<A-F>` | 普通/插入模式格式化代码（Alt+Shift+F） |
+
+保存和手动格式化使用同一原生 LSP 入口；独立编辑器由 efm / rust-analyzer 执行，VSCode 使用宿主格式器。失败显示通知并保留原内容。
 
 ### 折叠代码预览
 
@@ -163,7 +167,7 @@
 
 ## 代码搜索与跳转
 
-### Hop (快速跳转)
+### Flash (快速跳转)
 
 | 按键 | 功能 |
 |------|------|
@@ -202,7 +206,17 @@
 |------|------|
 | `<A-t>` | 打开终端 |
 
-### 补全 (nvim-cmp)
+### 调试
+
+| 按键 | 功能 |
+|------|------|
+| `<F5>` | 启动/继续；Rust 首次打开 Cargo 调试目标 |
+| `<F10>` / `<F11>` / `<F12>` | 单步越过 / 进入 / 跳出 |
+| `<leader>b` | 切换断点 |
+
+Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
+
+### 补全 (Blink)
 
 | 按键 | 功能 |
 |------|------|
@@ -227,15 +241,15 @@
 | `A-j` | 向下移动 / 下一补全 |
 | `A-k` | 向上移动 / 上一补全 |
 | `A-i` | 后退跳转 |
-| `A-o` | 前进跳转 |
+| `A-o` | 代码大纲 |
 | `A-c` | 复制到剪贴板 |
-| `A-v` | 前进跳转 |粘贴 |
+| `A-v` | 粘贴 |
 | `A-x` | 剪切 |
 | `A-/` | 注释/取消注释 |
 | `A-b` | 切换文件树 |
 | `A-e` | 定位当前文件 |
 | `A-w` | 关闭 buffer |
-| `A-t` | 前进跳转 |打开终端 |
+| `A-t` | 打开终端 |
 | `A-p` | Pin buffer |
 | `A-h/l` | 上/下一 buffer |
 | `A-</>` | 移动 buffer 位置 |
@@ -254,8 +268,8 @@
 |------|------|
 | `<leader>sv` | 垂直分屏 |
 | `<leader>sh` | 水平分屏 |
-| `<leader>jw` | Hop 跳单词 |
-| `<leader>sw` | Hop 选单词 |
+| `<leader>jw` | Flash 跳转 |
+| `<leader>sw` | Flash 选区 |
 | `<leader>fp` | 项目选择器 |
 | `<leader>k` | 折叠预览 |
 | `<leader>n` | 通知历史 |
@@ -278,20 +292,20 @@
 
 | 模式 | 按键 | 功能 |
 |:---:|:---|:---|
-| nxo | `af` | 选中 **整个** 函数/方法 (Around Function) |
-| nxo | `if` | 选中 函数/方法 **内部** (Inside Function) |
-| nxo | `al` | 选中 **整个** 循环 (for/while) |
-| nxo | `il` | 选中 循环 **内部** |
-| nxo | `ad` | 选中 **整个** 条件分支 (if/switch) |
-| nxo | `id` | 选中 条件分支 **内部** |
-| nxo | `ac` | 选中 **整个** 方法调用 |
-| nxo | `ic` | 选中 方法调用的 **参数区域** |
-| nxo | `aa` | 选中 **整个** 参数 (包含逗号) |
-| nxo | `ia` | 选中 参数 **内容** |
-| nxo | `as` | 选中 **整个** 语句/声明 |
-| nxo | `is` | 选中 语句/声明 **内容** |
-| nxo | `aq` | 选中 **整个** 字符串 (含引号) |
-| nxo | `iq` | 选中 字符串 **内容** (不含引号) |
+| xo | `af` | 选中 **整个** 函数/方法 (Around Function) |
+| xo | `if` | 选中 函数/方法 **内部** (Inside Function) |
+| xo | `al` | 选中 **整个** 循环 (for/while) |
+| xo | `il` | 选中 循环 **内部** |
+| xo | `ad` | 选中 **整个** 条件分支 (if/switch) |
+| xo | `id` | 选中 条件分支 **内部** |
+| xo | `ac` | 选中 **整个** 方法调用 |
+| xo | `ic` | 选中 方法调用的 **参数区域** |
+| xo | `aa` | 选中 **整个** 参数 (包含逗号) |
+| xo | `ia` | 选中 参数 **内容** |
+| xo | `as` | 选中 **整个** 语句/声明 |
+| xo | `is` | 选中 语句/声明 **内容** |
+| xo | `aq` | 选中 **整个** 字符串 (含引号) |
+| xo | `iq` | 选中 字符串 **内容** (不含引号) |
 
 ### 2. 代码跳转 (Move)
 *支持在普通模式快速跳转，或在可视模式下扩展选区。*

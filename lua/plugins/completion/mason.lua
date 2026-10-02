@@ -1,22 +1,12 @@
 return {
+    { 'mason-org/mason.nvim', version = '^2', cmd = 'Mason', opts = {} },
     {
-        'williamboman/mason.nvim',
-        cmd = 'Mason',
-        opts = {},
-    },
-    {
-        'williamboman/mason-lspconfig.nvim',
-        dependencies = { 'williamboman/mason.nvim' },
-        event = 'VeryLazy',
+        'mason-org/mason-lspconfig.nvim',
+        version = '^2',
+        lazy = true,
+        dependencies = { 'mason-org/mason.nvim' },
         opts = {
-            ensure_installed = { -- "eslint",
-                'html',
-                'cssls',
-                'vue_ls',
-                'vtsls',
-                'jsonls',
-            },
-            automatic_installation = true,
+            automatic_enable = false,
         },
     },
 }

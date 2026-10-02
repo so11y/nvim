@@ -1,0 +1,15 @@
+{
+  "refactor_applied": true,
+  "rename_prompted": true,
+  "text": [
+    "export function demo(a: number, b: number) {",
+    "  const result = sumValue();",
+    "  return result;",
+    "",
+    "    function sumValue() {",
+    "        return a + b;",
+    "    }",
+    "}"
+  ],
+  "errmsg": ""
+}

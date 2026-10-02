@@ -4,7 +4,7 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 local M = {
     disabled = {}, -- 需要禁用的插件名列表
-    specs = {}     -- 需要追加的 lazy spec（import 形式）
+    specs = {}, -- 需要追加的 lazy spec（import 形式）
 }
 
 local function register(env)

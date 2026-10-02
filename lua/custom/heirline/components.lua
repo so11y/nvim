@@ -179,31 +179,20 @@ M.MacroRecording = {
 }
 
 M.Formatters = {
-    condition = function(self)
-        local ok, conform = pcall(require, 'conform')
-        self.conform = conform
-        return ok
+    condition = function()
+        return require('config.format').label() ~= ''
     end,
-    update = { 'BufEnter', 'FileType', 'BufWritePost' },
-    provider = function(self)
-        local ft_entry = self.conform.formatters_by_ft[vim.bo.filetype]
-        local ft_formatters
-        if type(ft_entry) == 'function' then
-            ft_formatters = ft_entry()
-        else
-            ft_formatters = ft_entry
-        end
-        return ft_formatters and table.concat(ft_formatters, ',') or ''
+    update = { 'BufEnter', 'FileType', 'LspAttach', 'LspDetach' },
+    provider = function()
+        local format = require('config.format')
+        return format.label() .. (format.client() and '' or '?')
     end,
-    hl = {
-        fg = dim_color,
-        bold = false,
-    },
+    hl = { fg = dim_color, bold = false },
 }
 
 M.LSPActive = {
     condition = conditions.lsp_attached,
-    update = { 'LspAttach', 'LspDetach' },
+    update = { 'BufEnter', 'LspAttach', 'LspDetach' },
     provider = function()
         local names = {}
         local clients = vim.lsp.get_clients({
@@ -224,7 +213,7 @@ M.LSPActive = {
     on_click = {
         name = 'heirline_lsp',
         callback = function()
-            vim.cmd('LspInfo')
+            vim.cmd('checkhealth vim.lsp')
         end,
     },
 }
@@ -272,18 +261,11 @@ M.Diagnostics = {
         hint_icon = icons.diagnostics.Hint .. ' ',
     },
     init = function(self)
-        self.errors = #vim.diagnostic.get(0, {
-            severity = vim.diagnostic.severity.ERROR,
-        }) or 0
-        self.warnings = #vim.diagnostic.get(0, {
-            severity = vim.diagnostic.severity.WARN,
-        }) or 0
-        self.hints = #vim.diagnostic.get(0, {
-            severity = vim.diagnostic.severity.HINT,
-        }) or 0
-        self.info = #vim.diagnostic.get(0, {
-            severity = vim.diagnostic.severity.INFO,
-        }) or 0
+        local count = vim.diagnostic.count(0)
+        self.errors = count[vim.diagnostic.severity.ERROR] or 0
+        self.warnings = count[vim.diagnostic.severity.WARN] or 0
+        self.hints = count[vim.diagnostic.severity.HINT] or 0
+        self.info = count[vim.diagnostic.severity.INFO] or 0
     end,
     update = { 'DiagnosticChanged', 'BufEnter' },
     {
@@ -553,10 +535,22 @@ M.SearchOccurrence = {
     hl = {
         fg = palette.sky,
     },
-    provider = function()
-        local sinfo = vim.fn.searchcount({
-            maxcount = 0,
-        })
+    provider = function(self)
+        local key = {
+            vim.api.nvim_get_current_buf(),
+            vim.api.nvim_buf_get_changedtick(0),
+            vim.api.nvim_win_get_cursor(0),
+            vim.fn.getreg('/'),
+            vim.o.ignorecase,
+            vim.o.smartcase,
+            vim.o.magic,
+        }
+        if not vim.deep_equal(key, self.search_key) then
+            self.search_key = key
+            self.search_count =
+                vim.fn.searchcount({ maxcount = 0, recompute = 1 })
+        end
+        local sinfo = self.search_count
         local incomplete = sinfo.incomplete or 0
         local total = sinfo.total or 0
         local current = sinfo.current or 0

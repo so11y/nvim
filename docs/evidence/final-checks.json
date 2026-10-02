@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "branch": "codex/upgrade-nvim-0.12",
+  "original_baseline": "cde7e723b57aac4edbd957e4b2d1a16668b00b91",
+  "original_worktree_clean": true,
+  "stylua": "2.5.2 --check lua scripts: passed",
+  "lua_syntax": {
+    "failures": [],
+    "checked": 66
+  },
+  "powershell_scripts": 7,
+  "powershell_errors": 0,
+  "git_diff_check": "passed with repository line-ending settings",
+  "jsonc_other_settings_preserved": true,
+  "backups": {
+    "manifest": true,
+    "profile": true,
+    "settings": true,
+    "old_gui": "neovide 0.13.3"
+  },
+  "plugins_checked": 45,
+  "efm_reproducible": true,
+  "required_mason_packages": 12,
+  "commit_message": "Upgrade Neovim 0.12 with native LSP and measured performance fixes"
+}

@@ -1,5 +1,6 @@
+require('config.runtime').setup()
+
 -- 1. 基础设置 (对应 vim.json 中的 settings)
-vim.env.CC = 'gcc'
 vim.g.maplocalleader = ' '
 vim.g.mapleader = ' ' -- "vim.leader": "<space>"
 vim.opt.clipboard = 'unnamedplus' -- "vim.useSystemClipboard": true
@@ -38,7 +39,8 @@ vim.opt.cmdheight = 0
 vim.opt.swapfile = false
 vim.opt.updatetime = 200
 vim.opt.shada = "!,'100,<500,s50,h"
-vim.opt.guicursor = 'n-v-c:block,i-ci-ve:ver25,a:blinkwait1000-blinkoff600-blinkon600'
-vim.opt.jumpoptions = {'stack', 'view', 'clean'}
-vim.lsp.log.set_level(vim.log.levels.OFF)
+vim.opt.guicursor =
+    'n-v-c:block,i-ci-ve:ver25,a:blinkwait1000-blinkoff600-blinkon600'
+vim.opt.jumpoptions = { 'stack', 'view', 'clean' }
+vim.lsp.log.set_level(vim.log.levels.WARN)
 -- vim.opt.termguicolors = true

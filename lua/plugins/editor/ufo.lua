@@ -5,8 +5,10 @@ return {
             dependencies = { 'kevinhwang91/promise-async' },
             event = { 'BufReadPost', 'BufNewFile' },
             opts = {
-                provider_selector = function(_, _, _)
-                    return { 'treesitter', 'indent' }
+                provider_selector = function(bufnr)
+                    local parser =
+                        vim.treesitter.get_parser(bufnr, nil, { error = false })
+                    return { 'lsp', parser and 'treesitter' or 'indent' }
                 end,
 
                 open_fold_hl_timeout = 0,
