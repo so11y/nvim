@@ -1,0 +1,138 @@
+{
+  "phases": [
+    {
+      "wins": [
+        1004
+      ],
+      "errmsg": "",
+      "details": [
+        {
+          "ft": "typescript",
+          "relative": "",
+          "win": 1000
+        },
+        {
+          "ft": "markdown",
+          "relative": "win",
+          "win": 1004,
+          "source": 2
+        },
+        {
+          "ft": "noice",
+          "relative": "win",
+          "win": 1003
+        },
+        {
+          "ft": "noice",
+          "relative": "editor",
+          "win": 1002
+        }
+      ],
+      "current": 1000
+    },
+    {
+      "wins": [],
+      "errmsg": "",
+      "details": [
+        {
+          "ft": "typescript",
+          "relative": "",
+          "win": 1000
+        },
+        {
+          "ft": "noice",
+          "relative": "win",
+          "win": 1003
+        },
+        {
+          "ft": "noice",
+          "relative": "editor",
+          "win": 1002
+        }
+      ],
+      "current": 1000
+    },
+    {
+      "wins": [
+        1005
+      ],
+      "errmsg": "",
+      "details": [
+        {
+          "ft": "typescript",
+          "relative": "",
+          "win": 1000
+        },
+        {
+          "ft": "markdown",
+          "relative": "win",
+          "win": 1005,
+          "source": 2
+        },
+        {
+          "ft": "noice",
+          "relative": "win",
+          "win": 1003
+        },
+        {
+          "ft": "noice",
+          "relative": "editor",
+          "win": 1002
+        }
+      ],
+      "current": 1000
+    },
+    {
+      "wins": [
+        1005
+      ],
+      "errmsg": "",
+      "details": [
+        {
+          "ft": "typescript",
+          "relative": "",
+          "win": 1000
+        },
+        {
+          "ft": "markdown",
+          "relative": "win",
+          "win": 1005,
+          "source": 2
+        },
+        {
+          "ft": "noice",
+          "relative": "win",
+          "win": 1003
+        },
+        {
+          "ft": "noice",
+          "relative": "editor",
+          "win": 1002
+        }
+      ],
+      "current": 1005
+    },
+    {
+      "wins": [],
+      "errmsg": "",
+      "details": [
+        {
+          "ft": "typescript",
+          "relative": "",
+          "win": 1000
+        },
+        {
+          "ft": "noice",
+          "relative": "win",
+          "win": 1003
+        },
+        {
+          "ft": "noice",
+          "relative": "editor",
+          "win": 1002
+        }
+      ],
+      "current": 1000
+    }
+  ]
+}

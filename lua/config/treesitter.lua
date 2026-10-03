@@ -43,24 +43,14 @@ function M.setup()
     if vim.g.vscode then
         return
     end
-    local function select(direction)
-        if
-            #vim.lsp.get_clients({
-                bufnr = 0,
-                method = 'textDocument/selectionRange',
-            }) > 0
-        then
-            vim.lsp.buf.selection_range(direction)
-        else
-            vim.cmd.normal({ direction > 0 and 'an' or 'in', bang = false })
-        end
-    end
-    vim.keymap.set('x', '<CR>', function()
-        select(1)
-    end, { desc = 'Expand syntax selection' })
-    vim.keymap.set('x', '<BS>', function()
-        select(-1)
-    end, { desc = 'Shrink syntax selection' })
+    vim.keymap.set('x', '<CR>', 'an', {
+        remap = true,
+        desc = 'Expand syntax selection',
+    })
+    vim.keymap.set('x', '<BS>', 'in', {
+        remap = true,
+        desc = 'Shrink syntax selection',
+    })
 end
 
 return M

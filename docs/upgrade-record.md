@@ -72,3 +72,19 @@
 Rust 首轮回归曾在 rust-analyzer 仍建立 Cargo 模型时请求调试项，未显示选择菜单；测试还把同步 RPC 放在 vim.wait 谓词中，导致内部事件反复触发请求。测试现在等待 rustaceanvim 既有 on_initialized/quiescent 信号、顺序检查 run target，最终[真实 CodeLLDB 回归](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/config-audit-rust-debug.json)命中断点并结束。一次顺序回归在 Rust 断言全通过后被验收驱动 60 秒总时限中断；驱动对 Rust 调整为 120 秒后整轮通过。没有据此修改 Rust 生产配置或声称初次超时的唯一根因已证明。
 
 Syntax/format/diff 全量检查与原配置保护结果保存在[本轮最终检查](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/config-audit-final-checks.json)。组件测量仅说明组件渲染耗时，未作为整机启动或所有真实项目的延迟承诺。
+
+## 升级后交互修复（2026-10-03）
+
+按 D7—D9，独立 Neovim/Neovide 的 `Enter`/`Backspace` 调用原生 `an`/`in`；Noice 不再覆盖 Hover，由原生浮窗负责显示且 Esc 可关闭；Code Action 配置层标明禁用原因、禁止执行、规范化预览行；Dropbar 默认不加载且不显示，`<Leader>wd` 切换，`<Leader>;` 按需打开。VSCode 的宿主语言路径保持。
+
+| 验收 | 已执行结果和证据 |
+| --- | --- |
+| Vue/TS 选区与文本对象 | [真实按键选区](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/post-upgrade-selection.json)覆盖 TypeScript、Vue script/function/template 的第一次选中、再次扩展、Backspace 回缩、函数/标签层级及全文根；[Vue 文本对象](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/post-upgrade-vue-textobjects.json)验证函数内外、调用、语句、模板标签内外。 |
+| Hover | [真实浮窗](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/post-upgrade-hover.json)在编辑窗口和已聚焦浮窗均可用 Esc 关闭，errmsg 为空。 |
+| Code Action | [实际 UI](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/post-upgrade-code-action-ui.json)标示禁用原因，禁用动作不能修改文件，可用动作仍可执行；[18 个真实 vtsls 动作](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/post-upgrade-code-action-previews.json)逐项预览，含 14 个禁用动作，缓冲区错误为 0。 |
+| 面包屑 | [真实 UI](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/post-upgrade-breadcrumbs.json)启动时 winbar 为空且插件未加载，`<Leader>wd` 可开启并再次关闭。 |
+| Vue 折叠/宿主 | [先开 TS](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/post-upgrade-vue-fold-ts-first.json)、[先开 Vue](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/post-upgrade-vue-fold-vue-first.json)均通过 JS/TS SFC 区块、函数、模板、样式、预览及后备；原生 LSP 工作流、UI 交互与 VSCode 宿主回归通过。 |
+
+本轮使用已有隔离临时工程及固定工具/插件锁；原配置、项目文件和既有用户编辑器进程未修改。旧[选区证据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/lsp-selection.json)仍是当时 LSP 优先映射的历史结果，以本节选区证据代表当前配置。
+
+最终 StyLua 检查、74 个 Lua 文件语法检查、验收驱动 JavaScript 语法检查、Git staged diff 检查均通过；旧 `nvim` 工作树保持干净。已安装 tiny-code-action 的 main 与锁定提交同为 `91a9c32228e9a7761d241023d9ebb9d11d8fb10d`，本轮无需更新其依赖锁。

@@ -1,0 +1,11 @@
+{
+  "selected": {
+    "statement": "return count.value + 1;",
+    "template-inner": "你好😀{{ count }}",
+    "function-inner": "return count.value + 1;",
+    "template-tag": "<button @click=\"greet\">你好😀{{ count }}</button>",
+    "function": "function greet() { return count.value + 1; }",
+    "call": "ref(0)"
+  },
+  "errmsg": ""
+}

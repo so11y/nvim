@@ -84,7 +84,7 @@ Rust 只有 rustaceanvim 启动 RA；可执行文件固定在 1.99.0 工具链�
 
 main 移除旧 configs/highlight/indent/incremental_selection/textobjects 集成，改用 setup、vim.treesitter.start、indentexpr 与新 textobjects API。先 install 缺少的解析器，再 update；单独 update 会跳过缺失语言。
 
-保留自定义 queries、af/if 等文本对象、gj*/gk*、;/,、参数交换及折叠预览。补齐 tsx、rust、markdown_inline，12 个语言及其查询依赖均已重建。语义选区优先 native selectionRange；无服务能力时用 0.12 的 an/in 语法树文本对象。
+保留自定义 queries、af/if 等文本对象、gj*/gk*、;/,、参数交换及折叠预览。补齐 tsx、rust、markdown_inline，12 个语言及其查询依赖均已重建。后续 Vue 交互复现表明，优先调用 LSP `selectionRange` 会使 `<script>` 内第一次扩选直接跳到全文；按 D7 改用 0.12 原生 `an`/`in`，由语法树处理 Vue 注入树，缺少解析器时由原生动作回退 LSP。
 
 textobjects main 的移动/交换只查主语言树，直接替换会漏 Vue 内嵌 TS。C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/ast_move.lua 遍历主树和注入树，按文本版本建索引，再二分跳转；修改/filetype 改变重建，BufWipeout 清理。参数交换显式访问注入树，限制同一参数列表，保留相邻交换及点重复。
 
@@ -154,11 +154,20 @@ VSCode 的 cmdheight=50 保留：已安装 1.20.0 包含旧问题修复，但当
 
 这些是组件/路径源成本，不是整机启动或每次按键的总耗时。无文件、修改文件、未命名和终端状态栏也逐项比较了显示结果；详细功能回归和失败处理以执行记录为准。
 
+## 9. 升级后交互问题定位
+
+Vue 选区复现路径是可视模式 `v` 后第一次 `Enter`：旧映射只要发现任一 LSP 声明 `selectionRange` 就调用原生 LSP 请求，结果随客户端选择及服务器返回变化，`<script>` 中可直接变为全文。0.12 的原生 `an`/`in` 会沿 Tree-sitter 节点及注入树扩展、按历史回缩；Vue `<script>`、`<template>` 的真实按键测试均从当前节点逐级到根。
+
+Hover 实际由 Noice 接管 `vim.lsp.buf.hover`，因此 Neovim 原生浮窗变量不在原路径上。为 D8 的可预测 Esc 行为，关闭 Noice 的 Hover 覆盖，保留其消息 UI；用 Neovim 原生浮窗的 `textDocument/hover` 标识精确关闭 Hover，不影响其他浮窗。
+
+Code Action 的 `Buffer operation failed` 在 18 个真实 vtsls 动作中定位到插件预览写入：14 个动作被服务器标为 `disabled`，其错误内容可能包含换行，插件把它作为单个 `nvim_buf_set_lines` 元素，触发 `'replacement string' item contains newlines`。插件当前 main 与本地锁定提交相同；配置层在预览前处理禁用动作，并对其他预览行拆分换行。执行入口也阻止禁用动作，列表显示原因。面包屑原插件按文件自动附着，现将自动附着关闭，按键仍可按需显示。
+
 ## 官方依据
 
 - [Neovim 0.12.5](https://github.com/neovim/neovim/releases/tag/v0.12.5)：运行时与 Windows 包。
 - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)：原生 config/enable 与服务器定义。
 - [Tree-sitter main](https://github.com/nvim-treesitter/nvim-treesitter/tree/main)、[textobjects main](https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/main)：API 断点。
+- [Neovim Tree-sitter 选区](https://neovim.io/doc/user/treesitter/)：`an`/`in` 的节点扩展与回缩。
 - [Mason-lspconfig](https://github.com/mason-org/mason-lspconfig.nvim)：automatic_enable。
 - [Vue Neovim 集成](https://github.com/vuejs/language-tools/wiki/Neovim)：Vue/vtsls 组合。
 - [vtsls](https://github.com/yioneko/vtsls)：SDK、设置、客户端命令。

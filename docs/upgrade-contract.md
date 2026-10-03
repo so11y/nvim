@@ -8,6 +8,9 @@
 - D4（DERIVED）：Mason 负责安装；原生配置负责启用。Rust 客户端由 rustaceanvim 独占启动。一个 buffer 的一次格式化由一个选定客户端负责，手动与保存入口一致。
 - D5（DERIVED）：保留精确 AST 文本对象、注入语言行为、既有快捷键、片段和折叠预览。语法编辑由 Tree-sitter 提供，调试由 DAP 提供；语言语义能力遵循 D1。
 - D6（DERIVED）：独立配置/数据目录验收后再切换日常启动入口；保留旧二进制、配置和数据，可恢复旧入口。正在运行的旧编辑会话由用户保存后重启，迁移不得强制终止。
+- D7（LOCKED）：独立 Neovim/Neovide 的可视模式 `Enter` 从当前语法节点开始逐级扩选至全文，`Backspace` 按原路径逐级回缩；Vue 的 `<script>` 与 `<template>` 同样适用。保留现有键位，VSCode-Neovim 继续调用宿主选区。
+- D8（LOCKED）：Hover 在编辑窗口及已进入浮窗时均可用 `Esc` 关闭；Code Action 应显示服务器给出的禁用原因，并阻止执行禁用动作，自动预览不得产生缓冲区错误。
+- D9（LOCKED）：面包屑默认隐藏，需要时可手动开启与关闭。
 
 ## 验收条件
 

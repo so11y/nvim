@@ -1,6 +1,5 @@
 return {
     'Bekaboo/dropbar.nvim',
-    event = { 'BufReadPost', 'BufNewFile' },
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
         local dropbar = require('dropbar')
@@ -21,6 +20,7 @@ return {
             },
             sources = { path = { max_depth = 1 } },
             bar = {
+                enable = false,
                 -- 鼠标悬停高亮
                 hover = true,
                 sources = function(buf, _)
@@ -49,6 +49,10 @@ return {
         {
             '<Leader>;', -- 按下这个键，面包屑里的每个层级会变成字母
             function()
+                if vim.wo.winbar == '' then
+                    vim.wo.winbar = '%{%v:lua.dropbar()%}'
+                    vim.cmd.redraw()
+                end
                 require('dropbar.api').pick()
             end,
             desc = 'Winbar 快速跳转 (Dropbar)',
@@ -56,11 +60,10 @@ return {
         {
             '<Leader>wd',
             function()
-                if vim.wo.winbar ~= '' then
-                    vim.wo.winbar = ''
-                end
+                vim.wo.winbar = vim.wo.winbar == '' and '%{%v:lua.dropbar()%}'
+                    or ''
             end,
-            desc = '关面包屑',
+            desc = '切换面包屑',
         },
     },
 }

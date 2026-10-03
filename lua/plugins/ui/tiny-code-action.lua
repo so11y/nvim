@@ -4,6 +4,8 @@ return {
     event = 'LspAttach',
     opts = {
         backend = 'vim',
+        format_title = require('config.code_action').format_title,
+        sort = require('config.code_action').sort,
         picker = {
             'buffer',
             opts = {
@@ -20,4 +22,8 @@ return {
         },
         lsp_timeout = 3000,
     },
+    config = function(_, opts)
+        require('tiny-code-action').setup(opts)
+        require('config.code_action').setup()
+    end,
 }

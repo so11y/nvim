@@ -16,6 +16,7 @@
 | P7 日常入口 | P1—P6 | scripts/nvim.ps1、neovide.ps1、activate.ps1；VSCode 原生 NVIM_APPNAME；系统 Neovide | 未来 CLI/GUI/VSCode 使用相同锁和 profile，旧用户会话继续运行 | 已切换；现有 VSCode 窗口由用户保存后重启 |
 | P8 收尾/回退 | P7 | 中文分析/约定/计划/记录、证据、验收工具；scripts/rollback.ps1 | 格式/语法/diff 检查、旧环境可启动、代码提交和备份路径完整 | 完成，最终检查见执行记录 |
 | P9 升级后审计 | P8 | 清理重复/失效配置、安装命令所有权、项目 SDK、Vue 多根上下文、状态栏与路径栏 | 实际 SDK 路径；双 Vue 根/自动导入/未保存编辑；管理命令；组件等效性能；原日常回归 | 完成；证据见执行记录 |
+| P10 升级后交互修复 | P9 | 按 D7—D9 修正语法选区、Hover、Code Action 预览/禁用状态和面包屑默认状态；复验 Vue 折叠与文本对象 | 真实 UI 的 Vue script/template 展开回缩、浮窗 Esc、真实禁用动作预览/执行、双顺序折叠、宿主边界 | 完成；证据见执行记录 |
 
 阶段编号用于执行依赖，不另行定义约定。P2/P3 与 P4 可在隔离数据中分别推进；P7 依赖所有日常功能验收出口。
 
@@ -23,7 +24,7 @@
 
 - 原生 LSP：Mason 负责安装；config/lsp.lua 负责普通服务器启用、能力、诊断和事件；rustaceanvim 负责 Rust。删除 Conform 与独立 nvim-eslint 实现。状态栏读取同一个格式客户端选择规则。
 - 格式化：config/format.lua 通过原生客户端同步请求与 apply_text_edits；同时处理 RPC 错误和超时。efm 通过 prettierd/StyLua，Rust 经 RA 调用项目 rustfmt。ESLint 不参与文档格式化。
-- Tree-sitter：从 master 集成迁移到 main，显式高亮/缩进/新文本对象；自定义跳转和参数交换保留 Vue 注入树。选择范围优先 LSP；其他精确文本对象保持语法树职责。
+- Tree-sitter：从 master 集成迁移到 main，显式高亮/缩进/新文本对象；自定义跳转和参数交换保留 Vue 注入树。选区按 D7 使用原生语法节点；其他精确文本对象保持语法树职责。
 - 启动：Rust、DAP、Neo-tree、GrugFar、Showkeys、Flash、opencode 按使用入口加载；Mason 与 mason-lspconfig 按安装管理命令加载，工具 PATH 由 runtime 设置；日常启动不安装工具。
 - 宿主：独立编辑器/GUI 使用新 profile；VSCode 语言、格式化、折叠、选区和大纲交给宿主。未增加额外 init/RTP 引导文件。
 
@@ -55,6 +56,11 @@ $env:NVIM_TEST_ROOT = $fixtureDestination
 $env:NVIM_VSCODE_RUNTIME = 'C:\Users\Administrator\.vscode\extensions\asvetliakov.vscode-neovim-1.20.0\runtime'
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs workflows
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs selection
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs hover
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs action-ui
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs code-action-previews.lua
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs breadcrumbs
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs vue-textobjects.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs parameter-repeat.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs interactions.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs vue-folding.lua
