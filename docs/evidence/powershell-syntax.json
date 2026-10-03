@@ -1,0 +1,30 @@
+[
+  {
+    "file": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade\\scripts\\activate.ps1",
+    "errors": []
+  },
+  {
+    "file": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade\\scripts\\build-efm.ps1",
+    "errors": []
+  },
+  {
+    "file": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade\\scripts\\neovide.ps1",
+    "errors": []
+  },
+  {
+    "file": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade\\scripts\\notify-environment.ps1",
+    "errors": []
+  },
+  {
+    "file": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade\\scripts\\nvim.ps1",
+    "errors": []
+  },
+  {
+    "file": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade\\scripts\\rollback.ps1",
+    "errors": []
+  },
+  {
+    "file": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade\\scripts\\verification\\create-fixtures.ps1",
+    "errors": []
+  }
+]

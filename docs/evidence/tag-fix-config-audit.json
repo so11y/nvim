@@ -1,0 +1,27 @@
+{
+  "status_empty_restored": true,
+  "dropbar": {
+    "filename": "outline.ts",
+    "icon": " ",
+    "symbols": 1
+  },
+  "sass_rgb_variable": "ff0000",
+  "errmsg": "",
+  "path_config": 1,
+  "status_cache": {
+    "count_calls": 0,
+    "evaluations": 200,
+    "get_calls": 0
+  },
+  "path_names": [
+    "outline.ts"
+  ],
+  "diagnostic_jump": {
+    "repeat_next": 7,
+    "repeat_prev": 3,
+    "next": 3,
+    "float_count": 4,
+    "wrapped_prev": 7
+  },
+  "messages": ""
+}

@@ -12,8 +12,29 @@ return {
         'vue',
     },
 
+    commands = {
+        ['editor.action.rename'] = function(command, ctx)
+            local client = vim.lsp.get_client_by_id(ctx.client_id)
+            local target = command.arguments[1]
+            local location = {
+                uri = target[1],
+                range = { start = target[2], ['end'] = target[2] },
+            }
+            if
+                vim.lsp.util.show_document(
+                    location,
+                    client.offset_encoding,
+                    { focus = true }
+                )
+            then
+                vim.lsp.buf.rename()
+            end
+        end,
+    },
+
     settings = {
         vtsls = {
+            autoUseWorkspaceTsdk = true,
             tsserver = {
                 globalPlugins = {
                     {
@@ -28,8 +49,4 @@ return {
             },
         },
     },
-    on_attach = function(client, bufnr)
-        client.server_capabilities.documentFormattingProvider = false
-        client.server_capabilities.documentRangeFormattingProvider = false
-    end,
 }

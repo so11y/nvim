@@ -1,0 +1,33 @@
+{
+  "neovim": "0.12.5",
+  "node": "24.21.0",
+  "tree-sitter": "0.27.0",
+  "mason": {
+    "codelldb": "v1.12.3",
+    "css-lsp": "4.10.0",
+    "eslint-lsp": "4.10.0",
+    "html-lsp": "4.10.0",
+    "js-debug-adapter": "v1.140.0",
+    "json-lsp": "4.10.0",
+    "lua-language-server": "3.19.1",
+    "prettierd": "0.29.0",
+    "stylua": "v2.5.2",
+    "vtsls": "0.3.0",
+    "vue-language-server": "3.3.12",
+    "efm": "v0.0.57"
+  },
+  "mingw": "16.1.0",
+  "rust": "1.99.0",
+  "typescript_sdk": "5.9.3",
+  "neovide": "0.16.2",
+  "efm_patch": {
+    "source_commit": "740a66b453977d9fd7c391f57977bdc7d95a6179",
+    "patch_sha256": "0c066691c6c3491f00583678a51c7f2aaaa999617125459a296e55f6e1a1395d",
+    "binary_sha256": "47bf953d9af31855528668d55d9c14d96eada10ee462095de22ee3b12e42d6d8",
+    "compiler": {
+      "version": "go1.27.1",
+      "filename": "go1.27.1.windows-amd64.zip",
+      "sha256": "a3911b5e0e1b1053f25ed0675f4c1c6aad1e2bfcf253df2b9be4caabd2edd95d"
+    }
+  }
+}

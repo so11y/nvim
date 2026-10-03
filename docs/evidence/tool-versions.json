@@ -1,0 +1,118 @@
+{
+  "core": "0.12.5",
+  "node": "24.21.0",
+  "mason": {
+    "codelldb": {
+      "wanted": "v1.12.3",
+      "installed": "v1.12.3",
+      "match": true
+    },
+    "css-lsp": {
+      "wanted": "4.10.0",
+      "installed": "4.10.0",
+      "match": true
+    },
+    "eslint-lsp": {
+      "wanted": "4.10.0",
+      "installed": "4.10.0",
+      "match": true
+    },
+    "html-lsp": {
+      "wanted": "4.10.0",
+      "installed": "4.10.0",
+      "match": true
+    },
+    "js-debug-adapter": {
+      "wanted": "v1.140.0",
+      "installed": "v1.140.0",
+      "match": true
+    },
+    "json-lsp": {
+      "wanted": "4.10.0",
+      "installed": "4.10.0",
+      "match": true
+    },
+    "lua-language-server": {
+      "wanted": "3.19.1",
+      "installed": "3.19.1",
+      "match": true
+    },
+    "prettierd": {
+      "wanted": "0.29.0",
+      "installed": "0.29.0",
+      "match": true
+    },
+    "stylua": {
+      "wanted": "v2.5.2",
+      "installed": "v2.5.2",
+      "match": true
+    },
+    "vtsls": {
+      "wanted": "0.3.0",
+      "installed": "0.3.0",
+      "match": true
+    },
+    "vue-language-server": {
+      "wanted": "3.3.12",
+      "installed": "3.3.12",
+      "match": true
+    },
+    "efm": {
+      "wanted": "v0.0.57",
+      "installed": "v0.0.57",
+      "match": true
+    }
+  },
+  "typescript_sdk": "5.9.3",
+  "vue_plugin": "3.3.12",
+  "executables": [
+    {
+      "name": "node",
+      "exe": "C:/Users/Administrator/AppData/Local/nvim-upgrade-data/tools/node-v24.21.0-win-x64/node.exe",
+      "output": "v24.21.0"
+    },
+    {
+      "name": "gcc",
+      "exe": "C:/tools/mingw-v16.1.0/bin/gcc.exe",
+      "output": "gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-Builds project) 16.1.0\r"
+    },
+    {
+      "name": "tree_sitter",
+      "exe": "C:/ProgramData/chocolatey/bin/tree-sitter.exe",
+      "output": "tree-sitter 0.27.0"
+    },
+    {
+      "name": "rust_analyzer",
+      "exe": "C:/Users/Administrator/.cargo/bin/rustup.exe",
+      "output": "rust-analyzer 1.99.0 (b940084d 2026-09-28)"
+    },
+    {
+      "name": "go",
+      "exe": "C:/Users/Administrator/AppData/Local/nvim-upgrade-data/tools/go1.27.1/go/bin/go.exe",
+      "output": "go version go1.27.1 windows/amd64"
+    },
+    {
+      "name": "neovide",
+      "exe": "C:/Program Files/Neovide/neovide.exe",
+      "output": "neovide 0.16.2"
+    }
+  ],
+  "launcher": {
+    "config": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade",
+    "data": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade-data",
+    "executable": "C:\\tools\\neovim\\nvim-v0.12.5\\nvim-win64\\bin\\nvim.exe",
+    "version": {
+      "minor": 12,
+      "major": 0,
+      "api_prerelease": false,
+      "api_compatible": 0,
+      "build": "v0.12.5",
+      "api_level": 14,
+      "patch": 5
+    },
+    "errmsg": "",
+    "appname": "nvim-upgrade",
+    "node": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade-data\\tools\\node-v24.21.0-win-x64\\node.EXE",
+    "gcc": "C:\\tools\\mingw-v16.1.0\\bin\\gcc.EXE"
+  }
+}

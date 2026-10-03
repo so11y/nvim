@@ -1,0 +1,10 @@
+{
+  "name": "upgrade-alpha",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "eslint": "10.11.0",
+    "typescript": "5.9.3",
+    "vue": "3.5.43"
+  }
+}

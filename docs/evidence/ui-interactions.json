@@ -1,0 +1,19 @@
+{
+  "snippets": {
+    "vue": 2,
+    "javascript": 2,
+    "javascriptreact": 2,
+    "typescript": 2,
+    "typescriptreact": 2
+  },
+  "snippet_expansion": true,
+  "messages": "",
+  "fold_preview": true,
+  "errmsg": "",
+  "session_restore": true,
+  "outline": {
+    "name": "narrow",
+    "count": 2,
+    "encoding": "utf-16"
+  }
+}

@@ -16,7 +16,6 @@ map({ 'n', 'i', 'v' }, '<PageDown>', '<Nop>', {
 })
 
 -- 替换默认删除行为：不污染剪贴板 (Blackhole Register)
--- 注意：这里覆盖了上面对 x 的禁用，x 变成了 "删除字符但不复制"
 map({ 'n', 'v' }, 'x', '"_x')
 map({ 'n', 'v' }, 'c', '"_c')
 map({ 'n', 'v' }, 'C', '"_C')
@@ -67,20 +66,20 @@ map('n', '<A-i>', '<C-i>', {
 map('n', '<CR>', 'a', {
     desc = '进入插入模式 (Append)',
 })
-map('i', '<CR>', '<CR>', {
-    desc = '换行',
-})
 
 -- 取消搜索高亮
 map('n', '<Esc>', function()
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+        if vim.w[win]['textDocument/hover'] then
+            vim.api.nvim_win_close(win, false)
+            return
+        end
+    end
     vim.cmd('nohlsearch')
     vim.fn.setreg('/', '')
-    if vim.snippet then
-        vim.snippet.stop()
-    end
-    return '<Esc>'
+    vim.snippet.stop()
 end, {
-    expr = true,
+    desc = 'Close hover or clear search',
 })
 
 -- 全选
@@ -182,12 +181,8 @@ map('n', 'k', [[v:count > 1 ? "m'" . v:count . "k" : "k"]], {
 -- 保存与搜索
 map({ 'n', 'i', 'v' }, '<A-s>', '<Esc>:w<CR>', {
     silent = true,
-    desc = '保存并保持插入',
+    desc = '保存文件',
 })
-
--- map({'n', 'i', 'v'}, "<A-f>", "/", {
---     desc = "文件中搜索"
--- })
 
 -- 分屏
 map('n', '<leader>sv', ':vsplit<CR>', {
@@ -254,11 +249,9 @@ end, { expr = true, silent = true, desc = '匹配符号内部内容' })
 local rules = { ',', '.', '!', '?', '=', '[', ']', '{', '}', '(', ')' }
 for _, rule in ipairs(rules) do
     map('i', rule, rule .. '<C-g>u', {
-        noremap = true,
         silent = true,
     })
 end
 map('i', '<space>', '<space><C-g>u', {
-    noremap = true,
     silent = true,
 })

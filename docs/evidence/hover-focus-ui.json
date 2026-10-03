@@ -1,0 +1,170 @@
+{
+  "foldState": {
+    "errmsg": "",
+    "buftype": "nofile",
+    "filetype": "markdown",
+    "messages": ""
+  },
+  "phases": [
+    {
+      "current": 1000,
+      "wins": [
+        1004
+      ],
+      "errmsg": "",
+      "details": [
+        {
+          "win": 1000,
+          "ft": "typescript",
+          "relative": ""
+        },
+        {
+          "win": 1004,
+          "source": 2,
+          "ft": "markdown",
+          "relative": "win"
+        },
+        {
+          "win": 1003,
+          "ft": "noice",
+          "relative": "win"
+        },
+        {
+          "win": 1002,
+          "ft": "noice",
+          "relative": "editor"
+        }
+      ],
+      "hover": {
+        "conceallevel": 2,
+        "concealcursor": "",
+        "first": "```typescript"
+      }
+    },
+    {
+      "current": 1000,
+      "wins": [],
+      "errmsg": "",
+      "details": [
+        {
+          "win": 1000,
+          "ft": "typescript",
+          "relative": ""
+        },
+        {
+          "win": 1003,
+          "ft": "noice",
+          "relative": "win"
+        },
+        {
+          "win": 1002,
+          "ft": "noice",
+          "relative": "editor"
+        }
+      ]
+    },
+    {
+      "current": 1000,
+      "wins": [
+        1005
+      ],
+      "errmsg": "",
+      "details": [
+        {
+          "win": 1000,
+          "ft": "typescript",
+          "relative": ""
+        },
+        {
+          "win": 1005,
+          "source": 2,
+          "ft": "markdown",
+          "relative": "win"
+        },
+        {
+          "win": 1003,
+          "ft": "noice",
+          "relative": "win"
+        },
+        {
+          "win": 1002,
+          "ft": "noice",
+          "relative": "editor"
+        }
+      ],
+      "hover": {
+        "conceallevel": 2,
+        "concealcursor": "",
+        "first": "```typescript"
+      }
+    },
+    {
+      "current": 1005,
+      "wins": [
+        1005
+      ],
+      "errmsg": "",
+      "details": [
+        {
+          "win": 1000,
+          "ft": "typescript",
+          "relative": ""
+        },
+        {
+          "win": 1005,
+          "source": 2,
+          "ft": "markdown",
+          "relative": "win"
+        },
+        {
+          "win": 1003,
+          "ft": "noice",
+          "relative": "win"
+        },
+        {
+          "win": 1002,
+          "ft": "noice",
+          "relative": "editor"
+        }
+      ],
+      "hover": {
+        "conceallevel": 2,
+        "concealcursor": "n",
+        "first": "```typescript"
+      }
+    },
+    {
+      "current": 1000,
+      "wins": [],
+      "errmsg": "",
+      "details": [
+        {
+          "win": 1000,
+          "ft": "typescript",
+          "relative": ""
+        },
+        {
+          "win": 1003,
+          "ft": "noice",
+          "relative": "win"
+        },
+        {
+          "win": 1002,
+          "ft": "noice",
+          "relative": "editor"
+        }
+      ]
+    }
+  ],
+  "rendered": {
+    "rows": [
+      " demo(a: number, b: number) {                 ",
+      "=╭───────────────────────────────────────────╮",
+      ";│function demo(a: number, b: number): number│",
+      " ╰───────────────────────────────────────────╯",
+      "                                              ",
+      "                                              "
+    ],
+    "errmsg": ""
+  }
+}

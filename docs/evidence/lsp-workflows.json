@@ -1,0 +1,30 @@
+{
+  "checks": {
+    "javascript_and_eslint": {
+      "eslint_root": "C:/Users/Administrator/AppData/Local/Temp/nvim-upgrade-UCa5mH/fixtures/alpha",
+      "text": "var unused = 1;\nexport function isOne(x) {\n  return x == 1;\n}\nconst object = { a: 1, b: \"你好😀\" };\nconsole.log(object.a);",
+      "actions": 13,
+      "vts_root": "C:/Users/Administrator/AppData/Local/Temp/nvim-upgrade-UCa5mH/fixtures/alpha"
+    },
+    "typescript_navigation_and_rename": {
+      "definition_count": 1,
+      "diagnostics": 2,
+      "rename": true
+    },
+    "vue_hybrid_and_unicode": {
+      "formatted": true,
+      "symbols": 3,
+      "diagnostics": 2
+    },
+    "windows_space_and_unicode_filename": true,
+    "multiple_roots_and_highlights": {
+      "alpha": "C:/Users/Administrator/AppData/Local/Temp/nvim-upgrade-UCa5mH/fixtures/alpha",
+      "text": "const unused = 1\nexport function isOne(x) {\n  return x == 1\n}\nconst object = { a: 1, b: '你好😀' }\nconsole.log(object.a)",
+      "beta": "C:/Users/Administrator/AppData/Local/Temp/nvim-upgrade-UCa5mH/fixtures/beta",
+      "hooks": 4
+    }
+  },
+  "failures": [],
+  "messages": "\"~/AppData/Local/Temp/nvim-upgrade-UCa5mH/fixtures/alpha/test.js\" [unix] 6L, 127B written",
+  "errmsg": ""
+}

@@ -1,0 +1,20 @@
+{
+  "checked": 46,
+  "head_mismatch": [],
+  "tracked_dirty": [],
+  "generated_untracked": {
+    "bufferline.nvim": [
+      "doc/tags"
+    ],
+    "colorful-winsep.nvim": [
+      "doc/tags"
+    ],
+    "nvim-treesitter": [
+      "parser-info/",
+      "parser/"
+    ],
+    "tiny-inline-diagnostic.nvim": [
+      "doc/tags"
+    ]
+  }
+}

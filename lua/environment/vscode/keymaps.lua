@@ -5,7 +5,7 @@ local vscode = require('vscode')
 local map = vim.keymap.set
 
 vim.opt.shortmess:append('sS')
--- https://github.com/vscode-neovim/vscode-neovim/issues/2507
+-- 扩展按 cmdheight 判断是否自动展开多行消息，保留当前输出面板行为。
 vim.o.cmdheight = 50
 
 map('n', 'j', function()
@@ -16,7 +16,7 @@ map('n', 'j', function()
     end
 end, {
     expr = true,
-    silent = true
+    silent = true,
 })
 
 map('n', 'k', function()
@@ -27,62 +27,62 @@ map('n', 'k', function()
     end
 end, {
     expr = true,
-    silent = true
+    silent = true,
 })
 
 -- LSP
 map('n', '<leader>cr', function()
     vscode.action('editor.action.rename')
 end, {
-    desc = '代码重命名'
+    desc = '代码重命名',
 })
 
-map({'n', 'v'}, '<leader>ca', function()
+map({ 'n', 'v' }, '<leader>ca', function()
     vscode.action('editor.action.quickFix')
 end, {
-    desc = 'Code Action'
+    desc = 'Code Action',
 })
 
 map('n', 'gr', function()
     vscode.action('editor.action.goToReferences')
 end, {
-    desc = '转到引用'
+    desc = '转到引用',
 })
 
 map('n', '<leader>h', function()
     vscode.action('editor.action.showHover')
 end, {
-    desc = '悬停提示'
+    desc = '悬停提示',
 })
 
 map('n', 'za', function()
     vscode.action('editor.toggleFold')
 end, {
-    desc = '折叠切换'
+    desc = '折叠切换',
 })
 
 -- 查找
 map('n', '<leader>fs', function()
     vscode.action('workbench.action.quickOpen')
 end, {
-    desc = '文件查找'
+    desc = '文件查找',
 })
 map('n', '<leader>fg', function()
     vscode.action('workbench.action.findInFiles')
 end, {
-    desc = '全局搜索'
+    desc = '全局搜索',
 })
 
 -- 分屏（垂直/水平）
 map('n', '<leader>sv', function()
     vscode.action('workbench.action.splitEditorRight')
 end, {
-    desc = '垂直分屏'
+    desc = '垂直分屏',
 })
 map('n', '<leader>sh', function()
     vscode.action('workbench.action.splitEditorDown')
 end, {
-    desc = '水平分屏'
+    desc = '水平分屏',
 })
 
 -- 可重复诊断跳转
@@ -95,5 +95,18 @@ vim.api.nvim_create_autocmd('User', {
         end, function()
             vscode.action('editor.action.marker.prev')
         end, '下一个诊断', '上一个诊断')
-    end
+    end,
 })
+
+map({ 'n', 'i' }, '<A-F>', function()
+    vscode.action('editor.action.formatDocument')
+end, { desc = 'Format buffer' })
+map('n', '<A-o>', function()
+    vscode.action('outline.focus')
+end, { desc = 'Outline' })
+map('x', '<CR>', function()
+    vscode.action('editor.action.smartSelect.expand')
+end, { desc = 'Expand syntax selection' })
+map('x', '<BS>', function()
+    vscode.action('editor.action.smartSelect.shrink')
+end, { desc = 'Shrink syntax selection' })

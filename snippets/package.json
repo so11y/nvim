@@ -8,11 +8,19 @@
       },
       {
         "language": "vue",
-        "path": "./javascript.json" 
+        "path": "./javascript.json"
       },
       {
         "language": "typescript",
-        "path": "./javascript.json" 
+        "path": "./javascript.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./javascript.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./javascript.json"
       }
     ]
   }

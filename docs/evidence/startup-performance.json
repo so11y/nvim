@@ -1,0 +1,287 @@
+{
+  "method": "Five paired runs with an attached RPC UI; Lazy stats startuptime, filesystem caches warm.",
+  "samples": {
+    "old": [
+      {
+        "errmsg": "",
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "flash.nvim",
+          "grug-far.nvim",
+          "heirline.nvim",
+          "lazy.nvim",
+          "mason-lspconfig.nvim",
+          "mason.nvim",
+          "neo-tree.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-dap",
+          "nvim-dap-ui",
+          "nvim-dap-virtual-text",
+          "nvim-nio",
+          "nvim-treesitter",
+          "nvim-treesitter-textobjects",
+          "nvim-web-devicons",
+          "opencode.nvim",
+          "plenary.nvim",
+          "showkeys",
+          "snacks.nvim",
+          "which-key.nvim"
+        ],
+        "version": 11,
+        "startup_ms": 104.7709
+      },
+      {
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "flash.nvim",
+          "grug-far.nvim",
+          "heirline.nvim",
+          "lazy.nvim",
+          "mason-lspconfig.nvim",
+          "mason.nvim",
+          "neo-tree.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-dap",
+          "nvim-dap-ui",
+          "nvim-dap-virtual-text",
+          "nvim-nio",
+          "nvim-treesitter",
+          "nvim-treesitter-textobjects",
+          "nvim-web-devicons",
+          "opencode.nvim",
+          "plenary.nvim",
+          "showkeys",
+          "snacks.nvim",
+          "which-key.nvim"
+        ],
+        "version": 11,
+        "errmsg": "",
+        "startup_ms": 40.4722
+      },
+      {
+        "version": 11,
+        "startup_ms": 40.1208,
+        "errmsg": "",
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "flash.nvim",
+          "grug-far.nvim",
+          "heirline.nvim",
+          "lazy.nvim",
+          "mason-lspconfig.nvim",
+          "mason.nvim",
+          "neo-tree.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-dap",
+          "nvim-dap-ui",
+          "nvim-dap-virtual-text",
+          "nvim-nio",
+          "nvim-treesitter",
+          "nvim-treesitter-textobjects",
+          "nvim-web-devicons",
+          "opencode.nvim",
+          "plenary.nvim",
+          "showkeys",
+          "snacks.nvim",
+          "which-key.nvim"
+        ]
+      },
+      {
+        "startup_ms": 38.6497,
+        "version": 11,
+        "errmsg": "",
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "flash.nvim",
+          "grug-far.nvim",
+          "heirline.nvim",
+          "lazy.nvim",
+          "mason-lspconfig.nvim",
+          "mason.nvim",
+          "neo-tree.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-dap",
+          "nvim-dap-ui",
+          "nvim-dap-virtual-text",
+          "nvim-nio",
+          "nvim-treesitter",
+          "nvim-treesitter-textobjects",
+          "nvim-web-devicons",
+          "opencode.nvim",
+          "plenary.nvim",
+          "showkeys",
+          "snacks.nvim",
+          "which-key.nvim"
+        ]
+      },
+      {
+        "version": 11,
+        "startup_ms": 40.2806,
+        "errmsg": "",
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "flash.nvim",
+          "grug-far.nvim",
+          "heirline.nvim",
+          "lazy.nvim",
+          "mason-lspconfig.nvim",
+          "mason.nvim",
+          "neo-tree.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-dap",
+          "nvim-dap-ui",
+          "nvim-dap-virtual-text",
+          "nvim-nio",
+          "nvim-treesitter",
+          "nvim-treesitter-textobjects",
+          "nvim-web-devicons",
+          "opencode.nvim",
+          "plenary.nvim",
+          "showkeys",
+          "snacks.nvim",
+          "which-key.nvim"
+        ]
+      }
+    ],
+    "new": [
+      {
+        "startup_ms": 38.9699,
+        "errmsg": "",
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "heirline.nvim",
+          "lazy.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-treesitter",
+          "nvim-web-devicons",
+          "snacks.nvim",
+          "which-key.nvim"
+        ],
+        "version": 12
+      },
+      {
+        "startup_ms": 28.2547,
+        "errmsg": "",
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "heirline.nvim",
+          "lazy.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-treesitter",
+          "nvim-web-devicons",
+          "snacks.nvim",
+          "which-key.nvim"
+        ],
+        "version": 12
+      },
+      {
+        "startup_ms": 28.7545,
+        "version": 12,
+        "errmsg": "",
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "heirline.nvim",
+          "lazy.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-treesitter",
+          "nvim-web-devicons",
+          "snacks.nvim",
+          "which-key.nvim"
+        ]
+      },
+      {
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "heirline.nvim",
+          "lazy.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-treesitter",
+          "nvim-web-devicons",
+          "snacks.nvim",
+          "which-key.nvim"
+        ],
+        "errmsg": "",
+        "startup_ms": 30.4016,
+        "version": 12
+      },
+      {
+        "startup_ms": 28.1065,
+        "loaded": [
+          "bufferline.nvim",
+          "catppuccin",
+          "heirline.nvim",
+          "lazy.nvim",
+          "noice.nvim",
+          "nui.nvim",
+          "nvim-treesitter",
+          "nvim-web-devicons",
+          "snacks.nvim",
+          "which-key.nvim"
+        ],
+        "errmsg": "",
+        "version": 12
+      }
+    ]
+  },
+  "median": {
+    "old": 40.2806,
+    "new": 28.7545
+  },
+  "loaded": {
+    "old": [
+      "bufferline.nvim",
+      "catppuccin",
+      "flash.nvim",
+      "grug-far.nvim",
+      "heirline.nvim",
+      "lazy.nvim",
+      "mason-lspconfig.nvim",
+      "mason.nvim",
+      "neo-tree.nvim",
+      "noice.nvim",
+      "nui.nvim",
+      "nvim-dap",
+      "nvim-dap-ui",
+      "nvim-dap-virtual-text",
+      "nvim-nio",
+      "nvim-treesitter",
+      "nvim-treesitter-textobjects",
+      "nvim-web-devicons",
+      "opencode.nvim",
+      "plenary.nvim",
+      "showkeys",
+      "snacks.nvim",
+      "which-key.nvim"
+    ],
+    "new": [
+      "bufferline.nvim",
+      "catppuccin",
+      "heirline.nvim",
+      "lazy.nvim",
+      "noice.nvim",
+      "nui.nvim",
+      "nvim-treesitter",
+      "nvim-web-devicons",
+      "snacks.nvim",
+      "which-key.nvim"
+    ]
+  }
+}

@@ -10,8 +10,6 @@ return {
             close_icon = '',
             always_show_bufferline = false,
             show_buffer_close_icons = true,
-            show_buffer_numbers = false,
-            animation = true,
             offsets = {
                 {
                     filetype = 'neo-tree',

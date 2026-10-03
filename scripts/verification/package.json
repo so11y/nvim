@@ -1,0 +1,8 @@
+{
+  "name": "nvim-upgrade-verification",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@msgpack/msgpack": "3.1.3"
+  }
+}

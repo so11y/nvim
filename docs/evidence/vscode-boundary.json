@@ -1,0 +1,81 @@
+{
+  "errmsg": "",
+  "appname": "nvim-upgrade",
+  "native_clients": 0,
+  "extension_runtime": "C:/Users/Administrator/.vscode/extensions/asvetliakov.vscode-neovim-1.20.0/runtime",
+  "blocked": [
+    "nvim-lspconfig",
+    "mason.nvim",
+    "mason-lspconfig.nvim",
+    "rustaceanvim",
+    "blink.cmp",
+    "nvim-dap"
+  ],
+  "messages": "",
+  "config": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade",
+  "hostActions": [
+    {
+      "kind": "request",
+      "method": "vscode-action",
+      "params": [
+        "get_config",
+        {
+          "restore_selection": true,
+          "args": [
+            "vscode-neovim.highlightGroups.highlights"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "notification",
+      "method": "vscode-action",
+      "params": [
+        "editor.action.formatDocument",
+        {
+          "restore_selection": true
+        }
+      ]
+    },
+    {
+      "kind": "notification",
+      "method": "vscode-action",
+      "params": [
+        "outline.focus",
+        {
+          "restore_selection": true
+        }
+      ]
+    },
+    {
+      "kind": "notification",
+      "method": "vscode-action",
+      "params": [
+        "editor.toggleFold",
+        {
+          "restore_selection": true
+        }
+      ]
+    },
+    {
+      "kind": "notification",
+      "method": "vscode-action",
+      "params": [
+        "editor.action.smartSelect.expand",
+        {
+          "restore_selection": true
+        }
+      ]
+    },
+    {
+      "kind": "notification",
+      "method": "vscode-action",
+      "params": [
+        "editor.action.smartSelect.shrink",
+        {
+          "restore_selection": true
+        }
+      ]
+    }
+  ]
+}

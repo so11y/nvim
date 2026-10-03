@@ -1,0 +1,992 @@
+{
+  "results": [
+    {
+      "name": "typescript",
+      "phases": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            2,
+            17
+          ],
+          "start": [
+            0,
+            2,
+            18,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            2,
+            21
+          ],
+          "start": [
+            0,
+            2,
+            18,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            2,
+            21
+          ],
+          "start": [
+            0,
+            2,
+            9,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            2,
+            21
+          ],
+          "start": [
+            0,
+            2,
+            18,
+            0
+          ]
+        }
+      ],
+      "growth": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            2,
+            22
+          ],
+          "start": [
+            0,
+            2,
+            3,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            4,
+            0
+          ],
+          "start": [
+            0,
+            1,
+            44,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            4,
+            0
+          ],
+          "start": [
+            0,
+            1,
+            8,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            4,
+            0
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            4,
+            1
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        }
+      ],
+      "shrink": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            4,
+            0
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            4,
+            0
+          ],
+          "start": [
+            0,
+            1,
+            8,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            4,
+            0
+          ],
+          "start": [
+            0,
+            1,
+            44,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            2,
+            22
+          ],
+          "start": [
+            0,
+            2,
+            3,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            2,
+            21
+          ],
+          "start": [
+            0,
+            2,
+            9,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            2,
+            21
+          ],
+          "start": [
+            0,
+            2,
+            18,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "vue-script",
+      "phases": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            14
+          ],
+          "start": [
+            0,
+            3,
+            15,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            16
+          ],
+          "start": [
+            0,
+            3,
+            15,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            19
+          ],
+          "start": [
+            0,
+            3,
+            15,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            16
+          ],
+          "start": [
+            0,
+            3,
+            15,
+            0
+          ]
+        }
+      ],
+      "growth": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            19
+          ],
+          "start": [
+            0,
+            3,
+            7,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            20
+          ],
+          "start": [
+            0,
+            3,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            44
+          ],
+          "start": [
+            0,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            44
+          ],
+          "start": [
+            0,
+            1,
+            25,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            6,
+            8
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            8,
+            41
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        }
+      ],
+      "shrink": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            6,
+            8
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            44
+          ],
+          "start": [
+            0,
+            1,
+            25,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            44
+          ],
+          "start": [
+            0,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            20
+          ],
+          "start": [
+            0,
+            3,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            19
+          ],
+          "start": [
+            0,
+            3,
+            7,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            19
+          ],
+          "start": [
+            0,
+            3,
+            15,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            3,
+            16
+          ],
+          "start": [
+            0,
+            3,
+            15,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "vue-function",
+      "phases": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            26
+          ],
+          "start": [
+            0,
+            5,
+            27,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            30
+          ],
+          "start": [
+            0,
+            5,
+            27,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            36
+          ],
+          "start": [
+            0,
+            5,
+            27,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            30
+          ],
+          "start": [
+            0,
+            5,
+            27,
+            0
+          ]
+        }
+      ],
+      "growth": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            40
+          ],
+          "start": [
+            0,
+            5,
+            27,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            41
+          ],
+          "start": [
+            0,
+            5,
+            20,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            43
+          ],
+          "start": [
+            0,
+            5,
+            18,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            43
+          ],
+          "start": [
+            0,
+            5,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            44
+          ],
+          "start": [
+            0,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            44
+          ],
+          "start": [
+            0,
+            1,
+            25,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            6,
+            8
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            8,
+            41
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        }
+      ],
+      "shrink": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            6,
+            8
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            44
+          ],
+          "start": [
+            0,
+            1,
+            25,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            44
+          ],
+          "start": [
+            0,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            43
+          ],
+          "start": [
+            0,
+            5,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            43
+          ],
+          "start": [
+            0,
+            5,
+            18,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            41
+          ],
+          "start": [
+            0,
+            5,
+            20,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            40
+          ],
+          "start": [
+            0,
+            5,
+            27,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            36
+          ],
+          "start": [
+            0,
+            5,
+            27,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            5,
+            30
+          ],
+          "start": [
+            0,
+            5,
+            27,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "vue-template",
+      "phases": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            26
+          ],
+          "start": [
+            0,
+            7,
+            27,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            30
+          ],
+          "start": [
+            0,
+            7,
+            27,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            31
+          ],
+          "start": [
+            0,
+            7,
+            26,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            30
+          ],
+          "start": [
+            0,
+            7,
+            27,
+            0
+          ]
+        }
+      ],
+      "growth": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            31
+          ],
+          "start": [
+            0,
+            7,
+            19,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            32
+          ],
+          "start": [
+            0,
+            7,
+            11,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            62
+          ],
+          "start": [
+            0,
+            7,
+            11,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            73
+          ],
+          "start": [
+            0,
+            7,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            8,
+            41
+          ],
+          "start": [
+            0,
+            1,
+            1,
+            0
+          ]
+        }
+      ],
+      "shrink": [
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            73
+          ],
+          "start": [
+            0,
+            7,
+            1,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            62
+          ],
+          "start": [
+            0,
+            7,
+            11,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            32
+          ],
+          "start": [
+            0,
+            7,
+            11,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            31
+          ],
+          "start": [
+            0,
+            7,
+            19,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            31
+          ],
+          "start": [
+            0,
+            7,
+            26,
+            0
+          ]
+        },
+        {
+          "mode": "v",
+          "errmsg": "",
+          "cursor": [
+            7,
+            30
+          ],
+          "start": [
+            0,
+            7,
+            27,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

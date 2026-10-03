@@ -1,0 +1,38 @@
+{
+  "notifications": [
+    {
+      "level": "info",
+      "msg": "Compiling a debug build for debugging. This might take some time..."
+    }
+  ],
+  "errmsg": "",
+  "runnables": [
+    {
+      "label": "cargo check --workspace",
+      "args": {
+        "cwd": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\nvim-upgrade-UCa5mH\\fixtures\\rust\\src",
+        "cargoArgs": [
+          "check",
+          "--workspace"
+        ],
+        "overrideCargo": null,
+        "executableArgs": []
+      },
+      "kind": "cargo"
+    }
+  ],
+  "program": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\nvim-upgrade-UCa5mH\\fixtures\\rust\\target\\debug\\nvim_upgrade_smoke.exe",
+  "adapter": "codelldb",
+  "stopped": {
+    "threadId": 66068,
+    "allThreadsStopped": true,
+    "hitBreakpointIds": [
+      1
+    ],
+    "reason": "breakpoint"
+  },
+  "client": {
+    "name": "rust-analyzer",
+    "root": "c:\\Users\\Administrator\\AppData\\Local\\Temp\\nvim-upgrade-UCa5mH\\fixtures\\rust"
+  }
+}

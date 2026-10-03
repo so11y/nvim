@@ -1,0 +1,105 @@
+diff --git a/langserver/format_command_other.go b/langserver/format_command_other.go
+new file mode 100644
+index 0000000..f6b24b3
+--- /dev/null
++++ b/langserver/format_command_other.go
+@@ -0,0 +1,9 @@
++//go:build !windows
++
++package langserver
++
++import "os/exec"
++
++func formattingCommand(command string) *exec.Cmd {
++	return exec.Command("sh", "-c", command)
++}
+diff --git a/langserver/format_command_windows.go b/langserver/format_command_windows.go
+new file mode 100644
+index 0000000..4bec099
+--- /dev/null
++++ b/langserver/format_command_windows.go
+@@ -0,0 +1,12 @@
++package langserver
++
++import (
++	"os/exec"
++	"syscall"
++)
++
++func formattingCommand(command string) *exec.Cmd {
++	cmd := exec.Command("cmd.exe")
++	cmd.SysProcAttr = &syscall.SysProcAttr{CmdLine: `cmd.exe /d /s /c "` + command + `"`}
++	return cmd
++}
+diff --git a/langserver/handle_text_document_formatting.go b/langserver/handle_text_document_formatting.go
+index 0f241c4..2ccaca1 100644
+--- a/langserver/handle_text_document_formatting.go
++++ b/langserver/handle_text_document_formatting.go
+@@ -6,7 +6,6 @@ import (
+ 	"encoding/json"
+ 	"fmt"
+ 	"os"
+-	"os/exec"
+ 	"path/filepath"
+ 	"regexp"
+ 	"runtime"
+@@ -183,12 +182,7 @@ Configs:
+ 		command = re.ReplaceAllString(command, "")
+ 
+ 		// Execute the command
+-		var cmd *exec.Cmd
+-		if runtime.GOOS == "windows" {
+-			cmd = exec.Command("cmd", "/c", command)
+-		} else {
+-			cmd = exec.Command("sh", "-c", command)
+-		}
++		cmd := formattingCommand(command)
+ 		cmd.Dir = h.findRootPath(fname, config)
+ 		cmd.Env = append(os.Environ(), config.Env...)
+ 		if config.FormatStdin {
+@@ -202,8 +196,7 @@ Configs:
+ 		// Some do not.
+ 		// To handle a formatter that exits with non-zero value, use format-ignore-exit-code.
+ 		if err != nil && !config.FormatIgnoreExitCode {
+-			h.logger.Println(command+":", buf.String())
+-			continue
++			return nil, fmt.Errorf("%s: %w\n%s", command, err, strings.TrimSpace(buf.String()+"\n"+string(b)))
+ 		}
+ 
+ 		formatted = true
+diff --git a/langserver/format_command_errors_test.go b/langserver/format_command_errors_test.go
+new file mode 100644
+--- /dev/null
++++ b/langserver/format_command_errors_test.go
+@@ -0,0 +1,31 @@
++package langserver
++
++import (
++	"log"
++	"os"
++	"path/filepath"
++	"runtime"
++	"strings"
++	"testing"
++)
++
++func TestFormattingCommandFailure(t *testing.T) {
++	base, _ := os.Getwd()
++	uri := toURI(filepath.Join(base, "format-failure.js"))
++	command := "echo formatter-failed 1>&2; exit 1"
++	if runtime.GOOS == "windows" {
++		command = "echo formatter-failed 1>&2 & exit /b 1"
++	}
++	handler := &langHandler{
++		logger: log.New(log.Writer(), "", 0), rootPath: base,
++		configs: map[string][]Language{"javascript": {{FormatCommand: command, FormatStdin: true}}},
++		files:   map[DocumentURI]*File{uri: {LanguageID: "javascript", Text: "const value = 1;"}},
++	}
++	edits, err := handler.rangeFormatting(uri, Range{Position{-1, -1}, Position{-1, -1}}, FormattingOptions{})
++	if err == nil || !strings.Contains(err.Error(), "formatter-failed") {
++		t.Fatalf("formatter failure should reach the client with stderr; got %v", err)
++	}
++	if len(edits) != 0 {
++		t.Fatalf("failed formatting must not edit the document: %v", edits)
++	}
++}
