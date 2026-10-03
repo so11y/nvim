@@ -162,6 +162,8 @@ Hover 实际由 Noice 接管 `vim.lsp.buf.hover`，因此 Neovim 原生浮窗变
 
 Code Action 的 `Buffer operation failed` 在 18 个真实 vtsls 动作中定位到插件预览写入：14 个动作被服务器标为 `disabled`，其错误内容可能包含换行，插件把它作为单个 `nvim_buf_set_lines` 元素，触发 `'replacement string' item contains newlines`。插件当前 main 与本地锁定提交相同；配置层在预览前处理禁用动作，并对其他预览行拆分换行。执行入口也阻止禁用动作，列表显示原因。面包屑原插件按文件自动附着，现将自动附着关闭，按键仍可按需显示。
 
+主树后续复现出另一类未标 `disabled` 的动作：vtsls 在 `.vue` 文件中返回 `refactor.move.newFile`，但对其发起 `codeAction/resolve` 时 TypeScript 5.9.3 报文件扩展名未知。它与前述含换行的禁用原因无关；仅按 `disabled` 过滤无法阻止菜单显示或预览报错。配置层现按客户端 `vtsls`、源 buffer 为 Vue、动作类型 `refactor.move.newFile` 判定不可用，并把同一判定用于菜单、预览及直接执行入口。TypeScript 文件的同名动作仍可成功 resolve 为编辑，因而没有全局禁用该类型。
+
 ## 10. 导航与编辑性能复核
 
 2026-10-03 在同一 Neovim 0.12.5、插件和合成 JavaScript 样本中，交替运行 5 轮旧索引与当前索引。每轮先解析语法树，只计首次跳转回调；重复跳转仍取 7 次中位数。旧实现一次扫描整个文件：2 万行产生 57 万条查询捕获，遍历约 684 ms、排序约 138 ms。当前实现按光标附近的 256 行窗口查询，单窗口约 7296 条捕获、约 6 ms；只有找不到目标时才继续向相邻窗口搜索。

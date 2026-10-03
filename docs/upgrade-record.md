@@ -187,3 +187,7 @@ Neovim 0.12.5 原生 Hover 为 Markdown 浮窗设置 `conceallevel=2`，但默�
 ## 主树窗口行为修复（2026-10-04）
 
 修复 `<A-w>` 对 help 分屏的误判：当前窗口与分屏计数使用相同的编辑窗口条件，并用整数计数代替临时窗口列表。删除已经禁用的 precognition 插件规格及 VSCode 禁用列表中的对应项。隔离主树会话的映射回调验收覆盖编辑窗口配 help/quickfix、help/quickfix 当前、两个编辑分屏、Neo-tree 当前、浮窗当前七种场景，全部通过；StyLua、77 个 Lua 文件语法检查通过。VSCode-Neovim 的真实扩展运行时宿主验收通过，`NVIM_APPNAME=nvim`、原生 LSP 客户端数为 0、`errmsg` 为空。
+
+## Vue Code Action 不可用操作修复（2026-10-04）
+
+用户截图中的 `Move to a new file` 是 vtsls 对 Vue 文件返回的 `refactor.move.newFile`。在独立复制的 Vue 项目中，服务器未标记它为禁用，但 `codeAction/resolve` 可复现 TypeScript 5.9.3 的 `App.vue has unknown extension`。现由 [Code Action 集成](C:/Users/Administrator/AppData/Local/nvim/lua/config/code_action.lua)在菜单前过滤该精确组合，并拦截预览与直接执行。[真实服务器回归](C:/Users/Administrator/AppData/Local/nvim/scripts/verification/code-action-previews.lua)通过：18 个原有 TypeScript 动作预览无缓冲区错误，Vue 动作的三条执行路径均被阻止、`resolve` 请求数为 0；原有禁用动作 UI 回归也通过。真实 Vue 菜单只显示可用的 `Remove unused declaration for: 'wrong'`，`errmsg` 为空；同名动作在 `.ts` 文件中 resolve 成功并返回编辑。修改文件的 StyLua 检查及全量 Lua 语法检查通过。验收项目位于独立临时目录，未修改工作区样例。

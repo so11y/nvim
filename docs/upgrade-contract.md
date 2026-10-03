@@ -9,7 +9,7 @@
 - D5（DERIVED）：保留精确 AST 文本对象、注入语言行为、既有快捷键、片段和折叠预览。语法编辑由 Tree-sitter 提供，调试由 DAP 提供；语言语义能力遵循 D1。
 - D6（DERIVED，按用户最新指令修订）：独立配置/数据目录验收后切换日常启动入口，以主树为唯一日常配置；不保留旧版 0.11.5 的二进制、独立数据及旧 GUI 备份。当前 0.12.5 的入口设置备份可用于恢复本版本环境；运行中的编辑会话按用户明确授权处理。
 - D7（LOCKED）：独立 Neovim/Neovide 的可视模式 `Enter` 从当前语法节点开始逐级扩选至全文，`Backspace` 按原路径逐级回缩；Vue 的 `<script>` 与 `<template>` 同样适用。保留现有键位，VSCode-Neovim 继续调用宿主选区。
-- D8（LOCKED）：Hover 在编辑窗口及已进入浮窗时均可用 `Esc` 关闭，进入浮窗后仍按首次打开时的 Markdown 效果显示；Code Action 菜单不显示服务器标为禁用的动作，其他入口也不得执行禁用动作，自动预览不得产生缓冲区错误。
+- D8（LOCKED）：Hover 在编辑窗口及已进入浮窗时均可用 `Esc` 关闭，进入浮窗后仍按首次打开时的 Markdown 效果显示；Code Action 菜单不显示服务器标为禁用或已确认在当前文件类型无法执行的动作，其他入口也不得执行这些动作，自动预览不得产生缓冲区错误。
 - D9（LOCKED）：面包屑默认隐藏，需要时可手动开启与关闭。
 - D10（LOCKED）：独立 Neovim/Neovide 的 HTML 与 Vue `<template>` 标签操作由进程内 `tag_fix` Lua LSP 提供，复用现有 Tree-sitter 与 Emmet；只提供 Code Action。`<leader>ca` 沿用 Tiny 光标旁菜单，固定的删除、去外层、合法的空标签展开／合并动作可预览；包裹元素或可视选区只在执行时询问 Emmet 缩写，取消不改文本，确认后核对目标 buffer 和文本版本。Vue `<script>`/`<style>` 交给原有服务器；菜单使用 Blink 配色、圆角边框和 Enter/Tab 选择，并保持紧凑可调的尺寸。
 - D11（LOCKED）：`<leader>cr` 使用 Neovim 原生 LSP 重命名；Vue 标签由 `vue_ls` 处理，代码符号仍由对应语言服务器处理。HTML/Vue 配对标签在插入模式实时同步，`ciw`/`caw` 清空标签名后的继续输入也须保持关联；不保留未使用的 IncRename 命令。VSCode-Neovim 沿用宿主语言能力。

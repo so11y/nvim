@@ -1,9 +1,21 @@
 local M = {}
 
-local function disabled_reason(action)
-    return action
-        and action.disabled
-        and (action.disabled.reason or 'No reason given by language server')
+local function unavailable_reason(action, client, bufnr)
+    if not action then
+        return
+    end
+    if action.disabled then
+        return action.disabled.reason or 'No reason given by language server'
+    end
+    if
+        action.kind == 'refactor.move.newFile'
+        and client
+        and client.name == 'vtsls'
+        and bufnr
+        and vim.bo[bufnr].filetype == 'vue'
+    then
+        return '当前 vtsls 对 Vue 文件的“移动到新文件”操作不可用'
+    end
 end
 
 local function one_line(text)
@@ -138,9 +150,9 @@ function M.setup()
     setup_buffer_picker()
     local picker = require('tiny-code-action.pickers.buffer')
     local create = picker.create
-    picker.create = function(config, results, ...)
+    picker.create = function(config, results, bufnr, ...)
         local enabled = vim.tbl_filter(function(item)
-            return item.action.disabled == nil
+            return unavailable_reason(item.action, item.client, bufnr) == nil
         end, results)
         if #enabled == 0 then
             if
@@ -152,46 +164,46 @@ function M.setup()
             end
             return
         end
-        return create(config, enabled, ...)
+        return create(config, enabled, bufnr, ...)
     end
     local apply_action = picker.apply_action
-    picker.apply_action = function(action, ...)
-        local reason = disabled_reason(action)
+    picker.apply_action = function(action, client, context, bufnr, ...)
+        local reason = unavailable_reason(action, client, bufnr)
         if reason then
             vim.notify(one_line(reason), vim.log.levels.WARN)
             return
         end
-        return apply_action(action, ...)
+        return apply_action(action, client, context, bufnr, ...)
     end
 
     local actions = require('tiny-code-action.action')
     local apply = actions.apply
-    actions.apply = function(action, ...)
-        local reason = disabled_reason(action)
+    actions.apply = function(action, client, context, bufnr, ...)
+        local reason = unavailable_reason(action, client, bufnr)
         if reason then
             vim.notify(one_line(reason), vim.log.levels.WARN)
             return
         end
-        return apply(action, ...)
+        return apply(action, client, context, bufnr, ...)
     end
     local apply_with_resolve = actions.apply_with_resolve
-    actions.apply_with_resolve = function(action, ...)
-        local reason = disabled_reason(action)
+    actions.apply_with_resolve = function(action, client, context, bufnr, ...)
+        local reason = unavailable_reason(action, client, bufnr)
         if reason then
             vim.notify(one_line(reason), vim.log.levels.WARN)
             return
         end
-        return apply_with_resolve(action, ...)
+        return apply_with_resolve(action, client, context, bufnr, ...)
     end
 
     local previewer = require('tiny-code-action.previewers.buffer')
     local preview_with_resolve = previewer.preview_with_resolve
-    previewer.preview_with_resolve = function(action, ...)
-        local reason = disabled_reason(action)
+    previewer.preview_with_resolve = function(action, bufnr, client, ...)
+        local reason = unavailable_reason(action, client, bufnr)
         if reason then
             return { 'Unavailable: ' .. one_line(reason) }
         end
-        local lines = preview_with_resolve(action, ...)
+        local lines = preview_with_resolve(action, bufnr, client, ...)
         local normalized = {}
         for _, line in ipairs(lines or {}) do
             vim.list_extend(normalized, vim.split(line, '\n', { plain = true }))
