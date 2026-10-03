@@ -31,7 +31,6 @@ return {
     -- editor
     'kevinhwang91/nvim-ufo',
     'mfussenegger/nvim-dap',
-    'smjonas/inc-rename.nvim',
     'windwp/nvim-autopairs',
     'windwp/nvim-ts-autotag',
     'catppuccin/nvim',

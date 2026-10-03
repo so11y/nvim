@@ -4,16 +4,18 @@ return {
     event = 'LspAttach',
     opts = {
         backend = 'vim',
-        format_title = require('config.code_action').format_title,
         sort = require('config.code_action').sort,
         picker = {
             'buffer',
             opts = {
                 auto_preview = true,
-                height = 5,
+                height = 7,
+                min_width = 28,
+                max_width = 52,
+                winborder = 'rounded',
                 keymaps = {
                     preview = 'K',
-                    select = '<Tab>',
+                    select = { '<CR>', '<Tab>' },
                     close = { 'q', '<Esc>' },
                     preview_close = { 'q', '<Esc>' },
                 },

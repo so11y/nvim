@@ -16,7 +16,9 @@
 | P7 日常入口 | P1—P6 | scripts/nvim.ps1、neovide.ps1、activate.ps1；VSCode 原生 NVIM_APPNAME；系统 Neovide | 未来 CLI/GUI/VSCode 使用相同锁和 profile，旧用户会话继续运行 | 已切换；现有 VSCode 窗口由用户保存后重启 |
 | P8 收尾/回退 | P7 | 中文分析/约定/计划/记录、证据、验收工具；scripts/rollback.ps1 | 格式/语法/diff 检查、旧环境可启动、代码提交和备份路径完整 | 完成，最终检查见执行记录 |
 | P9 升级后审计 | P8 | 清理重复/失效配置、安装命令所有权、项目 SDK、Vue 多根上下文、状态栏与路径栏 | 实际 SDK 路径；双 Vue 根/自动导入/未保存编辑；管理命令；组件等效性能；原日常回归 | 完成；证据见执行记录 |
-| P10 升级后交互修复 | P9 | 按 D7—D9 修正语法选区、Hover、Code Action 预览/禁用状态和面包屑默认状态；复验 Vue 折叠与文本对象 | 真实 UI 的 Vue script/template 展开回缩、浮窗 Esc、真实禁用动作预览/执行、双顺序折叠、宿主边界 | 完成；证据见执行记录 |
+| P10 升级后交互修复 | P9 | 按 D7—D9 修正语法选区、Hover、Code Action 预览/禁用状态和面包屑默认状态；复验 Vue 折叠与文本对象 | 真实 UI 的 Vue script/template 展开回缩、浮窗 Esc 与聚焦后的 Markdown 显示、真实禁用动作预览/执行、双顺序折叠、宿主边界 | 完成；证据见执行记录 |
+| P11 标签 Code Action | P10 | 按 D8、D10 接入进程内 tag_fix、Emmet 包裹和 Tiny 紧凑菜单；可视模式扩展 `<leader>ca` | 固定动作预览与一次撤销；取消/过期输入无改动；Vue/HTML/UTF-8/多行选区；真实菜单过滤与边缘布局；旧工作流/宿主回归和大文件测量 | 完成；证据见执行记录 |
+| P12 重命名与折叠配色 | P11 | 按 D11、D12 改用 LSP linked ranges 同步 HTML/Vue 标签，保留原生重命名；删除 IncRename，限定 Sass 扫描，统一 `gra`/`<leader>ca`，清理 Noice 重复覆盖，修正 Folded/UFO 配色 | Vue/HTML `ciw`、`caw`、结束标签编辑、Esc 前同步与一次撤销；标签/代码原生重命名、自动闭合；HTML/Vue `<ul>` 与 JSX/TSX `<f-div>` 折叠后的配对标签同色；Hover/Code Action/折叠/宿主回归及 Colorizer 对照 | 完成；证据见执行记录 |
 
 阶段编号用于执行依赖，不另行定义约定。P2/P3 与 P4 可在隔离数据中分别推进；P7 依赖所有日常功能验收出口。
 
@@ -50,7 +52,7 @@ install-tools.lua 按工具锁安装 Mason 包，并为 Vue 显式固定全局 T
 $nodeUpgrade = 'C:\Users\Administrator\AppData\Local\nvim-upgrade-data\tools\node-v24.21.0-win-x64'
 $env:Path = "$nodeUpgrade;$env:Path"
 & "$nodeUpgrade\npm.cmd" ci --prefix scripts/verification --no-audit --no-fund
-$fixtureDestination = Join-Path $env:TEMP ('nvim-verification-' + [guid]::NewGuid().ToString('N'))
+$fixtureDestination = Join-Path ([IO.Path]::GetTempPath()) ('nvim-verification-' + [guid]::NewGuid().ToString('N'))
 & .\scripts\verification\create-fixtures.ps1 -Destination $fixtureDestination
 $env:NVIM_TEST_ROOT = $fixtureDestination
 $env:NVIM_VSCODE_RUNTIME = 'C:\Users\Administrator\.vscode\extensions\asvetliakov.vscode-neovim-1.20.0\runtime'
@@ -58,6 +60,12 @@ $env:NVIM_VSCODE_RUNTIME = 'C:\Users\Administrator\.vscode\extensions\asvetliako
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs selection
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs hover
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs action-ui
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs tag-actions.lua
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs tag-ui
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs linked-tags
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs fold-colors
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs colorizer-performance.lua
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs tag-performance.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs code-action-previews.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs breadcrumbs
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs navigation-performance

@@ -6,6 +6,7 @@ local M = {
         'html',
         'jsonls',
         'lua_ls',
+        'tag_fix',
         'vtsls',
         'vue_ls',
     },
@@ -16,6 +17,11 @@ function M.setup()
     vim.lsp.config('*', { capabilities = M.capabilities })
     vim.lsp.config('vtsls', require('lsp.vtsls'))
     vim.lsp.config('vue_ls', require('lsp.vue_ls'))
+    vim.lsp.config('tag_fix', {
+        cmd = require('lsp.tag_fix').cmd,
+        filetypes = { 'html', 'vue' },
+        offset_encoding = 'utf-8',
+    })
     vim.lsp.config('eslint', {
         settings = { format = false },
     })
@@ -57,10 +63,27 @@ function M.setup()
     local group = vim.api.nvim_create_augroup('config.lsp', { clear = true })
     local highlights =
         vim.api.nvim_create_augroup('config.lsp.highlights', { clear = true })
+    vim.api.nvim_create_autocmd('WinEnter', {
+        group = group,
+        callback = function()
+            local win = vim.api.nvim_get_current_win()
+            if vim.w[win]['textDocument/hover'] then
+                vim.wo[win].concealcursor = 'n'
+            end
+        end,
+    })
     vim.api.nvim_create_autocmd('LspAttach', {
         group = group,
         callback = function(ev)
             local client = vim.lsp.get_client_by_id(ev.data.client_id)
+            if
+                (client.name == 'vue_ls' or client.name == 'html')
+                and client:supports_method('textDocument/linkedEditingRange')
+            then
+                vim.schedule(function()
+                    require('config.linked_tags').attach(client, ev.buf)
+                end)
+            end
             if
                 not client:supports_method('textDocument/documentHighlight')
                 or #vim.api.nvim_get_autocmds({

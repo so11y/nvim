@@ -1,0 +1,64 @@
+{
+  "unwrap": "<script setup lang=\"ts\">\nconst sample = '<span>x</span>';\n</script>\n<template>\n  <div class=\"outer\">\n    <div v-if=\"visible\">你好😀</div>\n    <MyButton />\n    <MyButton v-if=\"visible\"></MyButton>\n    <Other>\n      <span>A</span>\n      <span>B</span>\n    </Other>\n  </div>\n</template>\n<style>div { color: red; }</style>",
+  "html_expand": "<div class=\"outer\">\n  <div><span>你好😀</span></div>\n  <MyButton></MyButton>\n  <br />\n</div>\n<script>const sample = '<div>';</script>",
+  "preview": [
+    "@@ -1,5 +1,5 @@",
+    " <div class=\"outer\">",
+    "-  <div><span>你好😀</span></div>",
+    "+  <div>你好😀</div>",
+    "   <MyButton />",
+    "   <br />",
+    " </div>",
+    ""
+  ],
+  "picker": {
+    "preview": 1003,
+    "config": {
+      "footer_pos": "center",
+      "anchor": "NW",
+      "title": [
+        [
+          " Code Actions "
+        ]
+      ],
+      "mouse": true,
+      "relative": "editor",
+      "height": 5,
+      "row": 6,
+      "width": 28,
+      "external": false,
+      "col": 0,
+      "title_pos": "center",
+      "focusable": true,
+      "border": [
+        "╭",
+        "─",
+        "╮",
+        "│",
+        "╯",
+        "─",
+        "╰",
+        "│"
+      ],
+      "footer": [
+        [
+          " Enter/Tab: apply "
+        ]
+      ],
+      "hide": false,
+      "zindex": 50,
+      "style": "minimal"
+    },
+    "lines": [
+      "##   Refactor",
+      "  • 删除整个元素",
+      "  • 去掉外层标签",
+      "  • 包裹标签…",
+      ""
+    ]
+  },
+  "collapse": "<script setup lang=\"ts\">\nconst sample = '<span>x</span>';\n</script>\n<template>\n  <div class=\"outer\">\n    <div v-if=\"visible\"><span>你好😀</span></div>\n    <MyButton />\n    <MyButton v-if=\"visible\" />\n    <Other>\n      <span>A</span>\n      <span>B</span>\n    </Other>\n  </div>\n</template>\n<style>div { color: red; }</style>",
+  "expand": "<script setup lang=\"ts\">\nconst sample = '<span>x</span>';\n</script>\n<template>\n  <div class=\"outer\">\n    <div v-if=\"visible\"><span>你好😀</span></div>\n    <MyButton></MyButton>\n    <MyButton v-if=\"visible\"></MyButton>\n    <Other>\n      <span>A</span>\n      <span>B</span>\n    </Other>\n  </div>\n</template>\n<style>div { color: red; }</style>",
+  "delete": "<script setup lang=\"ts\">\nconst sample = '<span>x</span>';\n</script>\n<template>\n  <div class=\"outer\">\n    \n    <MyButton />\n    <MyButton v-if=\"visible\"></MyButton>\n    <Other>\n      <span>A</span>\n      <span>B</span>\n    </Other>\n  </div>\n</template>\n<style>div { color: red; }</style>",
+  "wrap": "<script setup lang=\"ts\">\nconst sample = '<span>x</span>';\n</script>\n<template>\n  <div class=\"outer\">\n    <div v-if=\"visible\"><span>你好😀</span></div>\n    <MyButton />\n    <MyButton v-if=\"visible\"></MyButton>\n    <Other>\n      <section class=\"wrapper\"><span>A</span>\n      <span>B</span></section>\n    </Other>\n  </div>\n</template>\n<style>div { color: red; }</style>"
+}

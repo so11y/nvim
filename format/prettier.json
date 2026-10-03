@@ -4,6 +4,7 @@
   "trailingComma": "none",
   "printWidth": 80,
   "singleAttributePerLine": true,
+  "bracketSameLine": true,
   "vueIndentScriptAndStyle": false,
   "htmlWhitespaceSensitivity": "ignore"
 }

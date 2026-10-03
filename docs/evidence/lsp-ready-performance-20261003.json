@@ -1,0 +1,348 @@
+{
+  "date": "2026-10-03",
+  "method": "5 alternating profile pairs per scenario; each sample starts a fresh embedded Neovim with 130x40 UI and waits 1 s for initial setup; timer begins at :edit, ends after required initialized clients attach; direct vtsls hover at same fixture position measured twice; warm filesystem cache; processes run sequentially",
+  "profiles": {
+    "old": {
+      "config": "C:/Users/Administrator/AppData/Local/nvim",
+      "neovim": "0.11.5"
+    },
+    "new": {
+      "config": "C:/Users/Administrator/AppData/Local/nvim-upgrade",
+      "neovim": "0.12.5"
+    }
+  },
+  "samples": {
+    "typescript": [
+      {
+        "old": {
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls"
+          ],
+          "first_hover_ms": 622.5094,
+          "second_hover_ms": 2.064,
+          "errmsg": "",
+          "attach_ms": 393.0438
+        },
+        "new": {
+          "second_hover_ms": 1.736,
+          "attach_ms": 429.2717,
+          "clients": [
+            "efm",
+            "eslint",
+            "vtsls"
+          ],
+          "errmsg": "",
+          "first_hover_ms": 534.3999
+        }
+      },
+      {
+        "new": {
+          "first_hover_ms": 531.3117,
+          "second_hover_ms": 2.0542,
+          "errmsg": "",
+          "attach_ms": 423.0245,
+          "clients": [
+            "efm",
+            "eslint",
+            "vtsls"
+          ]
+        },
+        "old": {
+          "errmsg": "",
+          "attach_ms": 352.1848,
+          "first_hover_ms": 627.4203,
+          "second_hover_ms": 2.6439,
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls"
+          ]
+        }
+      },
+      {
+        "old": {
+          "attach_ms": 370.892,
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls"
+          ],
+          "first_hover_ms": 618.5709,
+          "second_hover_ms": 2.0288,
+          "errmsg": ""
+        },
+        "new": {
+          "attach_ms": 413.1558,
+          "clients": [
+            "efm",
+            "eslint",
+            "vtsls"
+          ],
+          "errmsg": "",
+          "first_hover_ms": 515.9254,
+          "second_hover_ms": 2.0591
+        }
+      },
+      {
+        "new": {
+          "clients": [
+            "efm",
+            "eslint",
+            "vtsls"
+          ],
+          "first_hover_ms": 530.2156,
+          "second_hover_ms": 2.1864,
+          "errmsg": "",
+          "attach_ms": 413.6969
+        },
+        "old": {
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls"
+          ],
+          "attach_ms": 387.3947,
+          "errmsg": "",
+          "first_hover_ms": 641.4145,
+          "second_hover_ms": 2.6433
+        }
+      },
+      {
+        "old": {
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls"
+          ],
+          "attach_ms": 371.6829,
+          "errmsg": "",
+          "first_hover_ms": 640.0033,
+          "second_hover_ms": 1.8812
+        },
+        "new": {
+          "first_hover_ms": 515.6797,
+          "second_hover_ms": 1.7609,
+          "errmsg": "",
+          "clients": [
+            "efm",
+            "eslint",
+            "vtsls"
+          ],
+          "attach_ms": 385.426
+        }
+      }
+    ],
+    "vue": [
+      {
+        "old": {
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls",
+            "vue_ls"
+          ],
+          "first_hover_ms": 356.9066,
+          "second_hover_ms": 2.1996,
+          "errmsg": "",
+          "attach_ms": 676.8536
+        },
+        "new": {
+          "first_hover_ms": 277.3807,
+          "second_hover_ms": 2.8608,
+          "attach_ms": 667.9576,
+          "clients": [
+            "efm",
+            "eslint",
+            "tag_fix",
+            "vtsls",
+            "vue_ls"
+          ],
+          "errmsg": ""
+        }
+      },
+      {
+        "new": {
+          "first_hover_ms": 254.8838,
+          "second_hover_ms": 2.035,
+          "errmsg": "",
+          "attach_ms": 681.1527,
+          "clients": [
+            "efm",
+            "eslint",
+            "tag_fix",
+            "vtsls",
+            "vue_ls"
+          ]
+        },
+        "old": {
+          "errmsg": "",
+          "first_hover_ms": 350.2512,
+          "second_hover_ms": 1.988,
+          "attach_ms": 676.777,
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls",
+            "vue_ls"
+          ]
+        }
+      },
+      {
+        "old": {
+          "first_hover_ms": 352.3583,
+          "second_hover_ms": 2.0892,
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls",
+            "vue_ls"
+          ],
+          "attach_ms": 699.475,
+          "errmsg": ""
+        },
+        "new": {
+          "clients": [
+            "efm",
+            "eslint",
+            "tag_fix",
+            "vtsls",
+            "vue_ls"
+          ],
+          "second_hover_ms": 2.1026,
+          "errmsg": "",
+          "attach_ms": 655.3164,
+          "first_hover_ms": 274.7255
+        }
+      },
+      {
+        "new": {
+          "attach_ms": 696.1148,
+          "clients": [
+            "efm",
+            "eslint",
+            "tag_fix",
+            "vtsls",
+            "vue_ls"
+          ],
+          "errmsg": "",
+          "first_hover_ms": 265.2602,
+          "second_hover_ms": 1.8034
+        },
+        "old": {
+          "first_hover_ms": 354.6535,
+          "second_hover_ms": 2.0928,
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls",
+            "vue_ls"
+          ],
+          "errmsg": "",
+          "attach_ms": 686.8794
+        }
+      },
+      {
+        "old": {
+          "clients": [
+            "eslint",
+            "eslint",
+            "vtsls",
+            "vue_ls"
+          ],
+          "errmsg": "",
+          "attach_ms": 716.6993,
+          "second_hover_ms": 2.1872,
+          "first_hover_ms": 343.3921
+        },
+        "new": {
+          "clients": [
+            "efm",
+            "eslint",
+            "tag_fix",
+            "vtsls",
+            "vue_ls"
+          ],
+          "attach_ms": 658.9054,
+          "errmsg": "",
+          "first_hover_ms": 274.6497,
+          "second_hover_ms": 1.7748
+        }
+      }
+    ]
+  },
+  "methodology": {
+    "typescript": "refactor.ts, vtsls initialized, hover on demo at 0:16",
+    "vue": "App.vue, both vue_ls and vtsls initialized, vtsls hover on count at 2:6"
+  },
+  "median": {
+    "typescript": {
+      "old": {
+        "attach_ms": 371.6829,
+        "first_hover_ms": 627.4203,
+        "second_hover_ms": 2.064,
+        "attach_to_first_hover_ms": 1011.6862,
+        "clients": [
+          "eslint",
+          "eslint",
+          "vtsls"
+        ]
+      },
+      "new": {
+        "attach_ms": 413.6969,
+        "first_hover_ms": 530.2156,
+        "second_hover_ms": 2.0542,
+        "attach_to_first_hover_ms": 943.9125,
+        "clients": [
+          "efm",
+          "eslint",
+          "vtsls"
+        ]
+      },
+      "new_faster_pairs": {
+        "attach": 0,
+        "first_hover": 5,
+        "total": 5
+      }
+    },
+    "vue": {
+      "old": {
+        "attach_ms": 686.8794,
+        "first_hover_ms": 352.3583,
+        "second_hover_ms": 2.0928,
+        "attach_to_first_hover_ms": 1041.5329000000002,
+        "clients": [
+          "eslint",
+          "eslint",
+          "vtsls",
+          "vue_ls"
+        ]
+      },
+      "new": {
+        "attach_ms": 667.9576,
+        "first_hover_ms": 274.6497,
+        "second_hover_ms": 2.035,
+        "attach_to_first_hover_ms": 936.0364999999999,
+        "clients": [
+          "efm",
+          "eslint",
+          "tag_fix",
+          "vtsls",
+          "vue_ls"
+        ]
+      },
+      "new_faster_pairs": {
+        "attach": 3,
+        "first_hover": 5,
+        "total": 5
+      }
+    }
+  },
+  "limits": [
+    "Warm filesystem/cache measurements; no cold boot, full project indexing, diagnostics, format, or UI rendering",
+    "Versions and plugin graphs differ, so timings compare real installed profiles rather than isolating one code change",
+    "Client initialized is an attach milestone; first hover verifies one semantic request but not all services",
+    "Vue hover probes the TypeScript script block through vtsls; template hover latency is not measured"
+  ]
+}

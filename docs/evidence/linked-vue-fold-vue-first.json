@@ -1,0 +1,117 @@
+{
+  "last_file": "FoldJs.vue",
+  "native_clients": [
+    {
+      "ranges": 9,
+      "name": "vue_ls"
+    },
+    {
+      "ranges": 0,
+      "name": "vtsls"
+    }
+  ],
+  "cases": {
+    "Fold.vue": {
+      "folds": [
+        {
+          "start": 1,
+          "finish": 8
+        },
+        {
+          "start": 4,
+          "finish": 7
+        },
+        {
+          "start": 5,
+          "finish": 6
+        },
+        {
+          "start": 11,
+          "finish": 18
+        },
+        {
+          "start": 12,
+          "finish": 17
+        },
+        {
+          "start": 14,
+          "finish": 15
+        },
+        {
+          "start": 21,
+          "finish": 24
+        },
+        {
+          "start": 22,
+          "finish": 23
+        }
+      ],
+      "clients": [
+        {
+          "ranges": 9,
+          "name": "vue_ls"
+        },
+        {
+          "ranges": 0,
+          "name": "vtsls"
+        }
+      ],
+      "preview": true
+    },
+    "FoldJs.vue": {
+      "folds": [
+        {
+          "start": 1,
+          "finish": 8
+        },
+        {
+          "start": 4,
+          "finish": 7
+        },
+        {
+          "start": 5,
+          "finish": 6
+        },
+        {
+          "start": 11,
+          "finish": 18
+        },
+        {
+          "start": 12,
+          "finish": 17
+        },
+        {
+          "start": 14,
+          "finish": 15
+        },
+        {
+          "start": 21,
+          "finish": 24
+        },
+        {
+          "start": 22,
+          "finish": 23
+        }
+      ],
+      "clients": [
+        {
+          "ranges": 9,
+          "name": "vue_ls"
+        },
+        {
+          "ranges": 0,
+          "name": "vtsls"
+        }
+      ],
+      "preview": true
+    }
+  },
+  "errmsg": "",
+  "fallback": {
+    "style": 25,
+    "script": 9,
+    "template": 19
+  },
+  "typescript": true,
+  "order": "vue-first"
+}

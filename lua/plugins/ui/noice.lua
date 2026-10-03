@@ -13,11 +13,6 @@ return {
                 hover = {
                     enabled = false,
                 },
-                override = {
-                    ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-                    ['vim.lsp.util.stylize_markdown'] = true,
-                },
-                -- 只要进入函数参数他就弹框的
                 signature = {
                     enabled = false,
                 },
@@ -26,8 +21,6 @@ return {
                 bottom_search = false, -- 搜索框也会弹在中间
                 command_palette = true, -- 命令行和提示合并到屏幕上方中央
                 long_message_to_split = true, -- 长消息进右侧分屏
-                inc_rename = true, -- ✅ 开启增量重命名预设
-                lsp_doc_border = true, -- 给文档窗加边框
             },
             popupmenu = {
                 enabled = false,

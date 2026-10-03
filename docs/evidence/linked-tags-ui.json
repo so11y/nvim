@@ -1,0 +1,90 @@
+{
+  "vue": {
+    "gra_same": true,
+    "extmarks": 2,
+    "client": "vue_ls",
+    "inc": 0
+  },
+  "empty": {
+    "mode": "i",
+    "close": "  </>",
+    "extmarks": 2,
+    "errmsg": "",
+    "open": "  < class=\"outer\">"
+  },
+  "partial": {
+    "mode": "i",
+    "close": "  </s>",
+    "errmsg": "",
+    "open": "  <s class=\"outer\">"
+  },
+  "full": {
+    "mode": "i",
+    "close": "  </section>",
+    "errmsg": "",
+    "open": "  <section class=\"outer\">"
+  },
+  "undone": {
+    "open": "  <div class=\"outer\">",
+    "errmsg": "",
+    "close": "  </div>"
+  },
+  "cawEmpty": {
+    "mode": "i",
+    "close": "    </>",
+    "errmsg": "",
+    "open": "    <>"
+  },
+  "cawFull": {
+    "mode": "i",
+    "close": "    </Panel>",
+    "errmsg": "",
+    "open": "    <Panel>"
+  },
+  "closingEdit": {
+    "mode": "i",
+    "close": "    </Aside>",
+    "errmsg": "",
+    "open": "    <Aside>"
+  },
+  "tagRename": {
+    "open": "  <article class=\"outer\">",
+    "errmsg": "",
+    "close": "  </article>"
+  },
+  "autoClose": {
+    "mode": "i",
+    "lines": [
+      "    <LiveTag></LiveTag>",
+      "  </article>",
+      "</template>"
+    ],
+    "errmsg": ""
+  },
+  "codeRename": {
+    "declaration": "const renamedCount = ref(0);",
+    "template": "<template><button @click=\"greet\">你好😀{{ renamedCount }}</button></template>",
+    "errmsg": "",
+    "body": "function greet() { return renamedCount.value + 1; }"
+  },
+  "html": {
+    "client": "html",
+    "extmarks": 2
+  },
+  "htmlPartial": {
+    "mode": "i",
+    "close": "</s>",
+    "errmsg": "",
+    "open": "<s class=\"outer\">"
+  },
+  "htmlCawEmpty": {
+    "mode": "i",
+    "line": "  <div><>你好😀</></div>",
+    "errmsg": ""
+  },
+  "htmlCawFull": {
+    "mode": "i",
+    "line": "  <div><strong>你好😀</strong></div>",
+    "errmsg": ""
+  }
+}

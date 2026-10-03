@@ -96,3 +96,72 @@ Syntax/format/diff 全量检查与原配置保护结果保存在[本轮最终检
 状态栏搜索计数改为光标/文本连续变化后 120 ms 重算；真实 UI 中 300 次 `j` 在搜索开启/关闭时，修改前中位数为 685.99/413.45 ms，修改后为 474.54/469.04 ms。真实状态栏停下后显示正确匹配序号；100 字符连续输入在搜索开启/关闭时为 27.45/30.94 ms。`j/k` 映射对原生移动无稳定额外耗时，`CursorMoved` 事件贡献小，未修改其行为。
 
 StyLua、73 个 Lua 文件的 `loadfile` 语法检查、验收驱动 JavaScript 语法检查、`scripts/check-performance.lua` 的跨窗口/Vue 大量注入树/长函数反向跳转/重复键/修改失效/延迟搜索重算，以及真实 UI 的 `navigation-performance`、`selection`、`workflows`、`breadcrumbs`、`vue-textobjects.lua`、`interactions.lua`、`parameter-repeat.lua`、`config-audit.lua` 均通过。Vue 折叠的两种打开顺序和 VSCode 宿主边界复验通过；诊断正反跳转/重复/回绕及浮窗见 UI 结果。面包屑仍默认不加载、不显示，`<Leader>wd` 可开启并关闭。旧配置目录和既有用户进程未改动。
+
+## 标签 Code Action 与紧凑菜单（2026-10-03）
+
+按 D8、D10，独立 Neovim/Neovide 的 HTML 与 Vue `<template>` 现在附着进程内 `tag_fix`。它只声明 Code Action，利用 Tree-sitter 范围生成删除、去外层和合法的空标签转换；包裹标签通过 LSP 命令在执行时询问 Emmet 缩写，再发 `workspace/applyEdit`。UTF-8 编码与 Tiny 预览的字节范围一致。`<leader>ca` 在普通/可视模式继续打开 Tiny；Tiny buffer 菜单的所有入口均过滤禁用项，最多显示 7 行，并使用 Blink 配色、圆角与 Enter/Tab 选择。第 76 节的“显示禁用原因”是当时的历史结果；本轮按更新后的 D8 隐藏禁用项，底层执行拦截仍保留。
+
+| 验收 | 已执行结果和证据 |
+| --- | --- |
+| 标签语义 | [标签动作结果](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-tag-actions.json)：嵌套同名标签、中文/emoji、Vue 指令、自闭合/空标签转换、多行包裹、取消与过期版本、一次撤销通过；Vue script/style 无标签动作，HTML void 标签不展开。固定动作预览没有改动原缓冲区。 |
+| 真实 UI | [菜单结果](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-tag-ui.json)：可视选区的 Unicode 与多行范围正确；Vue 同一菜单合并 `tag_fix` 与 vtsls 动作，`vue_ls`/ESLint 同时附着；Enter 选择包裹动作仅弹一次输入，修改可一次撤销；50×16 屏幕中菜单和预览均在边界内且不重叠。[禁用项 UI](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-action-ui.json)确认用户入口隐藏禁用动作，7 行高度生效，低层禁用动作无法执行。 |
+| 旧功能回归 | [完整预览](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-code-action-previews.json)对 18 个真实动作无预览缓冲区错误；[选区](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-selection.json)、[Vue 折叠](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-vue-folding.json)、[工作流](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-workflows.json)、[Hover](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-hover.json)、[配置审计](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-config-audit.json)通过；[VSCode 宿主](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-host.json)仍为 0 个原生语言客户端。 |
+| 大文件组件耗时 | [5,000 行 / 243,893 字节 HTML](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-performance.json)：首个 `tag_fix` 请求 0.206 ms，后续 50 次中位数 0.082 ms；Tiny 固定动作预览 10 次中位数 1.663 ms。这是隔离样例的组件测量，不代表其他语言服务器汇总后的完整菜单延迟。 |
+
+StyLua、JavaScript 语法检查、Git diff 检查以及本节验收脚本已执行。原 `nvim` 配置和现有编辑器进程未改动。
+
+## Hover 临时窗口折叠修复（2026-10-03）
+
+真实 Hover 浮窗的 Markdown buffer 为 `nofile`，此前 UFO 仍为它选择 `lsp` 和 `treesitter`；两者依次拒绝折叠请求，后者的 `UfoFallbackException` 变成截图中的未处理 Promise 错误。`provider_selector` 现对临时 buffer 停用折叠 provider，普通文件和 `acwrite` buffer 继续使用原选择。更新后的 [Hover 回归](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/tag-fix-hover.json)在真实浮窗上强制刷新折叠，并检查消息和 `errmsg` 均为空；Vue 的两种打开顺序及普通 TS 折叠预览也复验通过。
+
+## 原生重命名、标签同步与折叠配色（2026-10-03）
+
+按 D11，`<leader>cr` 继续调用 Neovim 原生 `vim.lsp.buf.rename`。Vue 光标位于标签名时指定 `vue_ls`，避免 vtsls 对该位置返回错误；脚本变量仍由 vtsls 重命名，并同步模板引用。未使用的 IncRename 配置、锁项及宿主禁用项已移除。nvim-ts-autotag 保留输入 `>` 时自动补结束标签，停用仅在退出插入模式才执行的重命名。
+
+Neovim 0.12.5 原生 linked-editing 在 `ciw`/`caw` 暂时清空标签名后，收到服务器空响应会清除关联范围，导致继续输入不再同步。`config/linked_tags.lua` 现在只从 `vue_ls`/`html` 的 `textDocument/linkedEditingRange` 获取配对范围，用本地 extmark 在短暂空名称期间保留关联；离开范围或服务器分离时清理。该模块不启动额外服务，也不接管代码符号重命名。`gra` 与 `<leader>ca` 统一经过 Tiny 的禁用动作过滤；Noice 的重复 Hover Markdown 覆盖已移除。
+
+| 验收 | 已执行结果和证据 |
+| --- | --- |
+| 标签与重命名 | [真实 UI](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/linked-tags-ui.json)验证 Vue `ciw` 清空时仍有 2 个范围，暂停后输入 `s`/`section`，结束标签在插入模式实时跟随；`caw` 和从结束标签反向编辑也通过。HTML 同行嵌套标签的 `caw`/`ciw`、一次撤销、Vue 标签与跨脚本/模板的原生重命名、`>` 自动补结束标签、IncRename 命令不存在均通过。 |
+| 折叠颜色初验（不完整） | [原 HTML/Vue 双 `<ul>` 结果](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/fold-colors-ui.json)只比较 Tree-sitter 捕获及 `Folded`/`Normal`/`UfoFoldedBg` 基础颜色，未检查 RainbowDelimiter 实际标记和最终折叠文本，不能证明 D12 的配对标签同色。主题中的特殊折叠背景已移除。 |
+| Colorizer | Sass 解析仅对 Vue/SCSS/Sass 启用，TypeScript 不再扫描；[2 万行、40 可见行交替采样](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/colorizer-scope-performance.json)中单次高亮中位数从 12.574 ms 降到 0.169 ms。数字只覆盖该组件与样例，不代表整机编辑延迟。 |
+
+StyLua、验收脚本 JavaScript 语法、Git diff 检查通过。真实 UI 的 Hover、Code Action 过滤/预览、标签菜单、选区及 VSCode 宿主边界复验通过；[带独立 `npm ci` 临时工程的语言工作流](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/linked-workflows.json)包含 13 个 ESLint 修复动作，并完成多根与 Vue 格式化。Vue 折叠按[先开 TS](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/linked-vue-fold-ts-first.json)和[先开 Vue](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/linked-vue-fold-vue-first.json)再次通过。原配置目录、项目文件和运行中的编辑器未修改。
+
+## 折叠层级配色复核（2026-10-03）
+
+截图中的 HTML `<ul>` 与 JSX `<f-div>` 色差来自 UFO 折叠文本丢失 RainbowDelimiter 高亮：UFO 枚举命名空间时未取得该插件的匿名命名空间，起始标签退回 Tree-sitter 基础色，仍可见的结束标签则保留层级色。折叠文本处理器现在读取当前行实际高亮标记，仅覆盖对应标签片段；属性及缩进的高亮保持原样。
+
+[修订后的真实 UI 验收](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/fold-colors-rainbow.json)覆盖 HTML/Vue 的 `<ul>` 和 JSX/TSX 的 `<f-div>`，逐对核对起止标签的 RainbowDelimiter 标记与最终折叠文本颜色，四类均通过，`errmsg` 为空。另以真实 JSX/TSX 折叠确认 `<f-div>` 和仍可见的 `</f-div>` 同为 `RainbowDelimiterBlue`；StyLua、验收脚本语法及 Git diff 检查通过。旧配置工作树保持干净。
+
+## 旧版与升级版当前性能对照（2026-10-03）
+
+[逐轮原始数据与方法](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/old-new-performance-20261003.json)使用旧版 Neovim 0.11.5 / `nvim` 与新版 0.12.5 / `nvim-upgrade`，交替运行并取中位数。结果只代表热文件缓存与所列样例。
+
+| 场景 | 旧版中位数 | 新版中位数 | 轮数 |
+| --- | ---: | ---: | ---: |
+| 空白 UI 的 Lazy 启动 | 78.06 ms；23 个已加载插件 | 58.97 ms；10 个已加载插件 | 7 对 |
+| 2 万行、1000 处搜索匹配，移动光标并求值状态栏 20 次 | 50.59 ms | 2.55 ms | 5 对 |
+| 2 万行 TypeScript，预解析后首次 `gjf` | 88.77 ms | 44.65 ms | 3 对 |
+| 同一缓冲区下一次 `gjf` | 72.66 ms | 0.021 ms | 3 对 |
+
+两版 `gjf` 均到达相同位置。进程至 UI attach 的墙钟中位数为 43.15 / 38.37 ms，但只有 3/7 对是新版更快，不能据此宣称该指标稳定提升。未测冷启动、LSP 初始化、诊断、格式化或大型业务项目；Lazy 启动时间也不代表编辑器全部就绪。早期 40.28 / 28.75 ms 的启动结果属于另一轮历史测量，不与本轮绝对值合并。
+
+## Hover 聚焦显示与 LSP 首次响应补测（2026-10-03）
+
+Neovim 0.12.5 原生 Hover 为 Markdown 浮窗设置 `conceallevel=2`，但默认 `concealcursor=''`，因此首次打开时隐藏的代码围栏会在焦点进入浮窗后重新出现在光标行。按 D8，仅在进入原生 Hover 浮窗时把窗口局部 `concealcursor` 设为 `n`。[真实 UI 回归](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/hover-focus-ui.json)对第二次 Hover 进入浮窗后的屏幕字符取样：缓冲区仍含 Markdown 代码围栏，屏幕显示 `function demo(...)` 而无原始围栏；Esc 关闭和 UFO 临时缓冲区检查通过。`node --check`、StyLua 与 Git diff 检查通过。
+
+[LSP 成对原始数据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/lsp-ready-performance-20261003.json)使用旧版 0.11.5 / `nvim` 与新版 0.12.5 / `nvim-upgrade`，每次新建进程并附着 130×40 UI；初始设置稳定 1 秒后从打开同一文件计时，等待所需 LSP 客户端 initialized，再通过 vtsls 在相同位置直接请求两次 Hover。TypeScript 等待 vtsls；Vue 等待 vue_ls 与 vtsls，Hover 测 `<script>` 中的变量。每个场景交替运行 5 对，取中位数。
+
+| 场景与指标 | 旧版中位数 | 新版中位数 | 新版更快的配对 |
+| --- | ---: | ---: | ---: |
+| TypeScript：打开至 LSP 附着 | 371.68 ms | 413.70 ms | 0/5 |
+| TypeScript：附着后首次 Hover | 627.42 ms | 530.22 ms | 5/5 |
+| TypeScript：打开至首次 Hover 完成 | 1011.69 ms | 943.91 ms | 5/5 |
+| Vue：打开至两个 LSP 附着 | 686.88 ms | 667.96 ms | 3/5 |
+| Vue：附着后首次 Hover | 352.36 ms | 274.65 ms | 5/5 |
+| Vue：打开至首次 Hover 完成 | 1041.53 ms | 936.04 ms | 5/5 |
+
+第二次 Hover 在两版、两个场景中的中位数都约 2 ms；这是直接 LSP 请求耗时，不含浮窗绘制。旧版在两个样例中均附着两个 `eslint` 客户端，新版只附着一个，同时新增 efm；Vue 的 `tag_fix` 为进程内客户端。此补测比较本机已安装的整套运行时和配置，不能把差异单独归因于某个插件。文件缓存为热态；未覆盖冷启动、完整索引、诊断、格式化、模板 Hover 或大型业务项目。
+
+合并前[完整回归汇总](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/release-verification-20261003.json)包含 29 项通过的真实 UI/LSP/DAP/宿主验证；全量 Lua StyLua、JavaScript 语法、PowerShell 脚本语法、项目 JSON 解析与 Git diff 检查通过。Node DAP 在将同一临时工程通过 Windows 8.3 短路径 `ADMINI~1` 打开时，两次未命中断点；改用对应的规范长路径后，断点命中并正常结束。此路径别名敏感性保留为限制，日常配置和升级计划中的测试路径使用长路径。

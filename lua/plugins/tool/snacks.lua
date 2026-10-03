@@ -363,6 +363,13 @@ return {
             {
                 '<leader>cr',
                 function()
+                    if vim.bo.filetype == 'vue' then
+                        local node = vim.treesitter.get_node()
+                        if node and node:type() == 'tag_name' then
+                            vim.lsp.buf.rename(nil, { name = 'vue_ls' })
+                            return
+                        end
+                    end
                     vim.lsp.buf.rename()
                 end,
                 desc = '重命名',
@@ -387,9 +394,14 @@ return {
             },
             {
                 '<leader>ca',
-                function()
-                    require('tiny-code-action').code_action()
-                end,
+                require('config.code_action').open,
+                mode = { 'n', 'x' },
+                desc = '代码操作',
+            },
+            {
+                'gra',
+                require('config.code_action').open,
+                mode = { 'n', 'x' },
                 desc = '代码操作',
             },
             {

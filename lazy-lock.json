@@ -47,10 +47,6 @@
     "branch": "master",
     "commit": "fae936abb5e0345b85c3a03ecf38525b0828b992"
   },
-  "inc-rename.nvim": {
-    "branch": "main",
-    "commit": "ddff8bd3eccedf043bd73f5bf89cf90d2d6d8105"
-  },
   "lazy.nvim": {
     "branch": "main",
     "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97"
