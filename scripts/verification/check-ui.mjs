@@ -25,7 +25,7 @@ editor.on('error',e=>errors.push(e.message));
 }})().catch(e=>errors.push(e.message));
 function rpc(method,params=[]){return new Promise((resolve,reject)=>{const id=++sequence;calls.set(id,{resolve,reject});editor.stdin.write(encode([0,id,method,params]));});}
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
-const deadlineMs=suite==='rust-debug.lua'?120000:60000;
+const deadlineMs=['rust-debug.lua','navigation-performance'].includes(suite)?120000:60000;
 const deadline=setTimeout(()=>{errors.push('Verification timed out after '+deadlineMs+' ms');for(const call of calls.values())call.reject(new Error('Verification timed out'));editor.kill();},deadlineMs);
 try{
  await rpc('nvim_get_api_info');
@@ -69,6 +69,111 @@ try{
   await rpc('nvim_input',[' wd']);await delay(100);phases.push(await barState());
   if(phases[0].winbar!==''||phases[0].loaded||phases[1].winbar===''||!phases[1].loaded||phases[2].winbar!==''||phases.some(p=>p.errmsg))throw new Error('Breadcrumb default-off or toggle failed: '+JSON.stringify(phases));
   result={phases};
+ }else if(suite==='navigation-performance'){
+  const setup=await rpc('nvim_exec_lua',[`vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts')
+assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=0,name='vtsls'})>0 end,50))
+local lines={}
+for i=1,600 do vim.list_extend(lines,{('export function nav%d() {'):format(i),'  const value = 1;','  return value;','}'}) end
+lines[2]='// '..string.rep('x',1500)
+vim.api.nvim_buf_set_lines(0,0,-1,false,lines)
+_G.__navigation_maps={j=vim.fn.maparg('j','n',false,true),k=vim.fn.maparg('k','n',false,true)}
+local autocmds={}
+for _,autocmd in ipairs(vim.api.nvim_get_autocmds({event='CursorMoved',buffer=0})) do
+ autocmds[#autocmds+1]={group=autocmd.group_name,desc=autocmd.desc}
+end
+return {line_count=vim.api.nvim_buf_line_count(0),filetype=vim.bo.filetype,has_motion=vim.fn.maparg('gjf','n')~='',cursor_moved=autocmds}`,[]]);
+  await delay(1500);
+  const samples=[];
+  async function measure(key,mapped,start,expected,steps=300,ignoreCursorMoved=false){
+   await rpc('nvim_exec_lua',[`local key='${key}'; local saved=_G.__navigation_maps[key]
+pcall(vim.keymap.del,'n',key)
+if ${mapped} then vim.keymap.set('n',key,saved.rhs,{expr=saved.expr==1}) end
+vim.o.eventignore=${ignoreCursorMoved ? "'CursorMoved'" : "''"}
+vim.api.nvim_win_set_cursor(0,{${start[0]},${start[1]}})
+vim.g.navigation_done=0`,[]]);
+   await delay(100);
+   const started=performance.now();
+   await rpc('nvim_input',[key.repeat(steps)+':let g:navigation_done=1<CR>']);
+   while(!(await rpc('nvim_get_var',['navigation_done'])))await delay(2);
+   const elapsed=performance.now()-started;
+   const cursor=await rpc('nvim_win_get_cursor',[0]);
+   if(JSON.stringify(cursor)!==JSON.stringify(expected))throw new Error('Navigation target failed: '+JSON.stringify({key,mapped,cursor,expected}));
+   samples.push({key,mapped,ignoreCursorMoved,elapsed_ms:elapsed,steps,per_key_ms:elapsed/steps});
+  }
+  for(let i=0;i<7;i++){
+   for(const mapped of i%2===0?[true,false]:[false,true]){
+    await measure('j',mapped,[100,0],[400,0]);
+    await measure('k',mapped,[400,0],[100,0]);
+   }
+  }
+  await measure('l',false,[2,500],[2,800]);
+  await measure('h',false,[2,800],[2,500]);
+  for(let i=0;i<5;i++)for(const ignoreCursorMoved of i%2===0?[false,true]:[true,false]){
+   await measure('j',true,[100,0],[400,0],300,ignoreCursorMoved);
+  }
+  await rpc('nvim_exec_lua',["vim.o.eventignore=''",[]]);
+  await rpc('nvim_exec_lua',[`for key,saved in pairs(_G.__navigation_maps) do vim.keymap.set('n',key,saved.rhs,{expr=saved.expr==1}) end`,[]]);
+  async function inputAndWait(keys){
+   await rpc('nvim_set_var',['navigation_done',0]);
+   const started=performance.now();
+   await rpc('nvim_input',[keys+':let g:navigation_done=1<CR>']);
+   while(!(await rpc('nvim_get_var',['navigation_done'])))await delay(2);
+   return {elapsed_ms:performance.now()-started,cursor:await rpc('nvim_win_get_cursor',[0])};
+  }
+  await rpc('nvim_win_set_cursor',[0,[1,7]]);
+  const ast=[];
+  const first=await inputAndWait('gjf');
+  if(first.cursor[0]!==5)throw new Error('AST forward jump failed: '+JSON.stringify({setup,first}));
+  ast.push({keys:'gjf',...first});
+  const counted=await inputAndWait('3gjf');
+  ast.push({keys:'3gjf',...counted});
+  await rpc('nvim_win_set_cursor',[0,first.cursor]);
+  for(let i=0;i<3;i++)ast.push({keys:'gjf repeated',...await inputAndWait('gjf')});
+  if(JSON.stringify(ast.at(-1).cursor)!==JSON.stringify(counted.cursor))throw new Error('AST count differs from three jumps: '+JSON.stringify(ast));
+  const backward=await inputAndWait('gkf');
+  const repeatNext=await inputAndWait(';');
+  const repeatPrevious=await inputAndWait(',');
+  ast.push({keys:'gkf',...backward},{keys:';',...repeatNext},{keys:',',...repeatPrevious});
+  if(JSON.stringify(repeatNext.cursor)!==JSON.stringify(counted.cursor)||JSON.stringify(repeatPrevious.cursor)!==JSON.stringify(backward.cursor))throw new Error('AST repeat direction failed: '+JSON.stringify(ast));
+  const before=await rpc('nvim_exec_lua',[
+   "vim.api.nvim_win_set_cursor(0,{2,3}); return #vim.api.nvim_get_current_line()",[]]);
+  const editing=await inputAndWait('i'+'y'.repeat(100)+'<Esc>');
+  const after=await rpc('nvim_exec_lua',["return {length=#vim.api.nvim_get_current_line(),mode=vim.fn.mode(),errmsg=vim.v.errmsg}",[]]);
+  if(after.length!==before+100||after.mode!=='n'||after.errmsg)throw new Error('Editing sequence failed: '+JSON.stringify({before,editing,after}));
+  const search=[];
+  for(let i=0;i<5;i++)for(const active of i%2===0?[true,false]:[false,true]){
+   await rpc('nvim_exec_lua',[`vim.fn.setreg('/','${active?'value':''}'); vim.o.hlsearch=true`,[]]);
+   const state=await rpc('nvim_exec_lua',["return {hlsearch=vim.v.hlsearch,condition=require('custom.heirline.components').SearchOccurrence.condition(),statusline=vim.o.statusline}",[]]);
+   if(state.condition!==active)throw new Error('Search condition mismatch: '+JSON.stringify(state));
+   await measure('j',true,[100,0],[400,0]);
+   search.push({active,...state,...samples.at(-1)});
+  }
+  const editSamples=[];
+  for(let i=0;i<5;i++)for(const active of i%2===0?[true,false]:[false,true]){
+   await rpc('nvim_exec_lua',[`vim.api.nvim_buf_set_lines(0,1,2,false,{'// '..string.rep('x',1500)}); vim.api.nvim_win_set_cursor(0,{2,3}); vim.fn.setreg('/','${active?'value':''}'); vim.o.hlsearch=true`,[]]);
+   await delay(100);
+   const phase=await inputAndWait('i'+'y'.repeat(100)+'<Esc>');
+   const length=await rpc('nvim_exec_lua',["return #vim.api.nvim_get_current_line()",[]]);
+   if(length!==1603)throw new Error('Search editing length mismatch: '+JSON.stringify({active,phase,length}));
+   editSamples.push({active,elapsed_ms:phase.elapsed_ms,length});
+   await delay(200);
+  }
+  await rpc('nvim_exec_lua',["vim.fn.setreg('/','value'); vim.api.nvim_win_set_cursor(0,{100,0})",[]]);
+  const statusline=()=>rpc('nvim_exec_lua',["return vim.api.nvim_eval_statusline(vim.o.statusline,{winid=0}).str",[]]);
+  const initialStatusline=await statusline();
+  await inputAndWait('j'.repeat(10));
+  const movingStatusline=await statusline();
+  await delay(250);
+  const settledStatusline=await statusline();
+  const expectedStatusline=await rpc('nvim_exec_lua',["local c=vim.fn.searchcount({recompute=1,maxcount=0}); return ('[%s/%s]'):format(c.current,c.total)",[]]);
+  if(!settledStatusline.includes(expectedStatusline))throw new Error('Search statusline did not catch up after movement: '+JSON.stringify({initialStatusline,movingStatusline,settledStatusline,expectedStatusline}));
+  await rpc('nvim_exec_lua',["vim.o.statusline=''; vim.fn.setreg('/','value'); vim.o.hlsearch=true; vim.api.nvim_win_set_cursor(0,{100,0}); vim.fn.searchcount({recompute=1,maxcount=0})",[]]);
+  const searchCache=[];
+  for(const steps of [1,10,100]){
+   await inputAndWait('j'.repeat(steps));
+   searchCache.push(await rpc('nvim_exec_lua',["local cached=vim.fn.searchcount({recompute=0,maxcount=0}); local fresh=vim.fn.searchcount({recompute=1,maxcount=0}); return {row=vim.api.nvim_win_get_cursor(0)[1],cached=cached,fresh=fresh}",[]]));
+  }
+  result={setup,samples,ast,editing,after,search,editSamples,searchStatusline:{initialStatusline,movingStatusline,settledStatusline,expectedStatusline},searchCache};
  }else if(suite==='action-ui'){
   const setup=await rpc('nvim_exec_lua',[`vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts')
 assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=0,name='vtsls',method='textDocument/codeAction'})>0 end,50))

@@ -60,6 +60,7 @@ $env:NVIM_VSCODE_RUNTIME = 'C:\Users\Administrator\.vscode\extensions\asvetliako
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs action-ui
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs code-action-previews.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs breadcrumbs
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs navigation-performance
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs vue-textobjects.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs parameter-repeat.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs interactions.lua

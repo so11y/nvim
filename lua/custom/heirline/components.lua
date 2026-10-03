@@ -333,27 +333,72 @@ M.FileNameBlock = {
     M.FileName,
 }
 
+local function stop_search_timer(self)
+    if self.search_timer then
+        vim.fn.timer_stop(self.search_timer)
+        self.search_timer = nil
+    end
+end
+
+local function search_context()
+    return {
+        vim.api.nvim_get_current_win(),
+        vim.api.nvim_get_current_buf(),
+        vim.fn.getreg('/'),
+        vim.o.ignorecase,
+        vim.o.smartcase,
+        vim.o.magic,
+    }
+end
+
+local function search_position()
+    return {
+        vim.api.nvim_buf_get_changedtick(0),
+        vim.api.nvim_win_get_cursor(0),
+    }
+end
+
 M.SearchOccurrence = {
-    condition = function()
-        return vim.v.hlsearch == 1 and vim.fn.getreg('/') ~= ''
+    condition = function(self)
+        local active = vim.v.hlsearch == 1 and vim.fn.getreg('/') ~= ''
+        if not active and self then
+            stop_search_timer(self)
+            self.search_context = nil
+            self.search_count = nil
+        end
+        return active
     end,
     hl = {
         fg = palette.sky,
     },
     provider = function(self)
-        local key = {
-            vim.api.nvim_get_current_buf(),
-            vim.api.nvim_buf_get_changedtick(0),
-            vim.api.nvim_win_get_cursor(0),
-            vim.fn.getreg('/'),
-            vim.o.ignorecase,
-            vim.o.smartcase,
-            vim.o.magic,
-        }
-        if not vim.deep_equal(key, self.search_key) then
-            self.search_key = key
+        local context = search_context()
+        local position = search_position()
+        if not vim.deep_equal(context, self.search_context) then
+            stop_search_timer(self)
+            self.search_context = context
+            self.search_position = position
             self.search_count =
                 vim.fn.searchcount({ maxcount = 0, recompute = 1 })
+        elseif not vim.deep_equal(position, self.search_position) then
+            -- Recount after movement/editing stops, not on every redraw.
+            stop_search_timer(self)
+            self.search_position = position
+            local current_context = self.search_context
+            self.search_timer = vim.fn.timer_start(120, function()
+                self.search_timer = nil
+                if
+                    self.search_context == current_context
+                    and self.search_position == position
+                    and M.SearchOccurrence.condition(self)
+                    and vim.deep_equal(context, search_context())
+                    and vim.deep_equal(position, search_position())
+                then
+                    self.search_count =
+                        vim.fn.searchcount({ maxcount = 0, recompute = 1 })
+                    vim.cmd.redrawstatus()
+                end
+            end)
         end
         local sinfo = self.search_count
         local incomplete = sinfo.incomplete or 0

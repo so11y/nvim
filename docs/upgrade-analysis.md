@@ -86,7 +86,7 @@ main 移除旧 configs/highlight/indent/incremental_selection/textobjects 集成
 
 保留自定义 queries、af/if 等文本对象、gj*/gk*、;/,、参数交换及折叠预览。补齐 tsx、rust、markdown_inline，12 个语言及其查询依赖均已重建。后续 Vue 交互复现表明，优先调用 LSP `selectionRange` 会使 `<script>` 内第一次扩选直接跳到全文；按 D7 改用 0.12 原生 `an`/`in`，由语法树处理 Vue 注入树，缺少解析器时由原生动作回退 LSP。
 
-textobjects main 的移动/交换只查主语言树，直接替换会漏 Vue 内嵌 TS。C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/ast_move.lua 遍历主树和注入树，按文本版本建索引，再二分跳转；修改/filetype 改变重建，BufWipeout 清理。参数交换显式访问注入树，限制同一参数列表，保留相邻交换及点重复。
+textobjects main 的移动/交换只查主语言树，直接替换会漏 Vue 内嵌 TS。C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/ast_move.lua 遍历主树和注入树，按文本版本及 256 行窗口建立索引，再二分跳转；修改/filetype 改变重建，BufWipeout 清理。参数交换显式访问注入树，限制同一参数列表，保留相邻交换及点重复。
 
 按 D1/D5，格式与语义补全/诊断/跳转/重构经 LSP；参数/引号/函数体的精确文本对象需要语法树，调试需要 DAP。documentSymbol 不能替代这些 AST 编辑语义。
 
@@ -94,18 +94,18 @@ UFO 首选 LSP foldingRange，后备已安装的 Tree-sitter/indent，摘要与�
 
 ## 5. 性能证据
 
-本机代表样例，不能外推为所有项目保证。旧版用保留的 0.11.5/配置，新版用 0.12.5/配置。启动交替运行 5 次、真实 RPC UI attach，取 Lazy startuptime 中位数，文件缓存已热。AST/搜索使用 1千/5千/2万行合成 JS，重复操作取 7 次中位数，采样间完整 Lua GC。
+以下是升级初验时的历史对照，当前语法跳转复核见第 9 节。本机代表样例不能外推为所有项目保证。旧版用保留的 0.11.5/配置，新版用 0.12.5/配置。启动交替运行 5 次、真实 RPC UI attach，取 Lazy startuptime 中位数，文件缓存已热。AST/搜索使用 1千/5千/2万行合成 JS，重复操作取 7 次中位数，采样间完整 Lua GC。
 
 | 场景 | 修改前 | 修改后 | 实际限制 |
 | --- | ---: | ---: | --- |
 | 空白 UI 启动 | 40.28 ms，23 个加载插件 | 28.75 ms，10 个 | Lazy 启动指标，不含语言首次索引 |
 | 2万行重复 AST 跳转 | 914.67 ms | 0.097 ms | 命中文本未变的索引 |
-| 2万行首次 AST 索引 | 每次都需遍历 | 885.68 ms | 首次与编辑后仍有开销 |
+| 2万行首次 AST 索引 | 每次都需遍历 | 885.68 ms | 初验时的全量索引；当前结果见第 9 节 |
 | 2万行重复搜索计数 | 4.954 ms | 0.034 ms | 输入不变才复用 |
 
 减少工作：Neo-tree/GrugFar/Showkeys/Flash 移除 VeryLazy；Rust/DAP/opencode 按入口加载；日常启动不自动安装工具。诊断一次 count，搜索依 buffer/tick/cursor/pattern/options 重算。AST 缓存避免弱表被 GC 清除导致重复扫描。
 
-首次大文件操作仍会停顿，未用关闭诊断、语义能力、折叠预览或所有动画换数字。更大真实项目需要再测。证据：C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/performance.json 与 startup-performance.json；脚本：C:/Users/Administrator/AppData/Local/nvim-upgrade/scripts/check-performance.lua。
+初验时首次大文件索引仍有明显停顿；后续按窗口索引已单独复核。更大真实项目需要再测。初验证据：C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/performance.json 与 startup-performance.json；脚本：C:/Users/Administrator/AppData/Local/nvim-upgrade/scripts/check-performance.lua。
 
 ## 6. 宿主和调试
 
@@ -161,6 +161,30 @@ Vue 选区复现路径是可视模式 `v` 后第一次 `Enter`：旧映射只要
 Hover 实际由 Noice 接管 `vim.lsp.buf.hover`，因此 Neovim 原生浮窗变量不在原路径上。为 D8 的可预测 Esc 行为，关闭 Noice 的 Hover 覆盖，保留其消息 UI；用 Neovim 原生浮窗的 `textDocument/hover` 标识精确关闭 Hover，不影响其他浮窗。
 
 Code Action 的 `Buffer operation failed` 在 18 个真实 vtsls 动作中定位到插件预览写入：14 个动作被服务器标为 `disabled`，其错误内容可能包含换行，插件把它作为单个 `nvim_buf_set_lines` 元素，触发 `'replacement string' item contains newlines`。插件当前 main 与本地锁定提交相同；配置层在预览前处理禁用动作，并对其他预览行拆分换行。执行入口也阻止禁用动作，列表显示原因。面包屑原插件按文件自动附着，现将自动附着关闭，按键仍可按需显示。
+
+## 9. 导航与编辑性能复核
+
+2026-10-03 在同一 Neovim 0.12.5、插件和合成 JavaScript 样本中，交替运行 5 轮旧索引与当前索引。每轮先解析语法树，只计首次跳转回调；重复跳转仍取 7 次中位数。旧实现一次扫描整个文件：2 万行产生 57 万条查询捕获，遍历约 684 ms、排序约 138 ms。当前实现按光标附近的 256 行窗口查询，单窗口约 7296 条捕获、约 6 ms；只有找不到目标时才继续向相邻窗口搜索。
+
+| 文件行数 | 首次跳转旧索引中位数 | 当前中位数 | 当前重复跳转中位数 |
+| --- | ---: | ---: | ---: |
+| 1000 | 30.14 ms | 8.35 ms | 0.016 ms |
+| 5000 | 184.36 ms | 9.48 ms | 0.020 ms |
+| 20000 | 856.96 ms | 12.70 ms | 0.028 ms |
+
+全量与分窗口的捕获位置集合在 2 万行 JavaScript 及 TypeScript、TSX、Vue、Rust 样本中一致。跨越多个窗口的父函数会被 Tree-sitter 在后续查询中重复返回；若不按捕获起始行归属窗口，从长函数内部反向跳转会跳过更近的内层函数。负对照触发该失败，过滤后通过。跨 256 行边界、Vue 注入函数、正反跳转、`;`/`,`、文本修改后失效均通过；真实 UI 的 `3gjf` 与连续三次 `gjf` 到达相同位置。
+
+另以 1504 行 Vue、1002 棵主/注入树做已编译查询的 5 轮对照：旧全量索引首次跳转中位数 30.84 ms，当前按窗口跳转 2.93 ms。跳过根范围与当前窗口无交集的树，单独将热查询样本从约 6.61 ms 降到 4.71 ms。完全冷的首次调用仍约 50 ms，其中 TypeScript 文本对象查询编译约 45.5 ms；预加载该查询会把开销转移到启动阶段，因此保持按需编译。
+
+附着 vtsls 的 2400 行 TypeScript、130×40 UI 中，每轮连续输入 300 个移动键。基线与当前配置的映射/原生中位数分别为：`j` 391/402 ms、405/412 ms；`k` 390/360 ms、373/370 ms。差值小且方向不稳定，不能证明 `j/k` 表达式映射是瓶颈。交替忽略 `CursorMoved` 的 `j` 中位数为 385 ms，同组正常约 404 ms，收益约 0.06 ms/键，不足以据此关闭诊断或 LSP 高亮事件。`h/l` 未设表达式映射。真实 UI 首次 AST 跳转还包含解析器、RPC 和重绘开销，不能直接等同于上表的回调计时；没有匹配捕获时可能仍扫描到文件末尾。
+
+另一个确定的热路径是状态栏搜索计数：旧配置把光标位置和 changedtick 放进缓存键，位置变化就执行 `searchcount(recompute=1)`，每次重新扫描全文件。2 万行直接测量，300 次强制重算耗时 2760.79 ms；`recompute=0` 仅 5.64 ms，但真实按键后当前位置会滞后，不能直接替代。现保留相同 Neovim 计数函数，在搜索模式/选项/窗口改变时立即计算；光标移动或编辑时延后 120 ms，连续输入只保留最后一次重算。代价是快速移动期间状态栏短暂显示上次计数，停下后刷新到准确值；真实状态栏已验证。
+
+2400 行 TypeScript、附着 vtsls 的真实 UI 中，连续 300 次 `j` 的搜索开启/关闭中位数，修改前分别为 685.99/413.45 ms；修改后同轮为 474.54/469.04 ms。100 字符连续插入，修改后搜索开启/关闭为 27.45/30.94 ms。计时包含 UI、映射及插件事件，样本有波动；数据只能说明本样本的搜索额外开销基本消失，不能外推为所有文件的键入延迟。
+
+其他跳转的代码路径没有发现每次 `h/j/k/l` 都发起的 LSP 请求：`gd`/`gr` 按需进入 Snacks LSP picker，`gjx`/`gkx` 调用原生诊断跳转并在目标处开浮窗。真实 UI 已验证诊断正反跳转、`;`/`,` 重复和回绕，LSP 定义请求返回目标；这不等于所有项目的服务器响应时间已有上界，因此没有改动这些按需入口。
+
+原始样本和等价性结果见 [导航性能证据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/navigation-performance.json)；复跑入口为 `scripts/check-performance.lua` 和 `scripts/verification/check-ui.mjs navigation-performance`。面包屑按 D9 保持默认关闭，真实 UI 已复验，无需修改该配置。
 
 ## 官方依据
 

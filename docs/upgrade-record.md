@@ -31,7 +31,7 @@
 | Neovide | 系统 GUI 实际 multi-grid attach；核心/新 config/data 正确；messages/errmsg 为空 | [neovide.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/neovide.json) |
 | 性能 | 热文件缓存下交替 5 轮真实 UI：40.28 → 28.75 ms，23 → 10 启动插件；2 万行重复 AST 914.67 → 0.097 ms；搜索 4.954 → 0.034 ms | [startup-performance.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/startup-performance.json)、[performance.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/performance.json) |
 
-首次 2 万行 AST 索引仍约 885.68 ms。启动指标是 Lazy startuptime，不代表首次语言分析或所有项目的总启动时间。性能采样已在安装/启动器问题出现前完成。
+升级初验时，首次 2 万行 AST 全量索引约 885.68 ms；后续分窗口修复及当前结果见文末导航性能复核。启动指标是 Lazy startuptime，不代表首次语言分析或所有项目的总启动时间。性能采样已在安装/启动器问题出现前完成。
 
 可重复性：测试专用 @msgpack/msgpack 3.1.3 与依赖锁、Lua 用例、PowerShell 样例创建器已保存在 scripts/verification。新临时样例 npm ci 成功，语言/UI/重构复跑通过；选区的 500 ms 在并行冷启动下过短，已恢复 Neovim 原生默认 1000 ms，最终真实按键验收通过。
 
@@ -88,3 +88,11 @@ Syntax/format/diff 全量检查与原配置保护结果保存在[本轮最终检
 本轮使用已有隔离临时工程及固定工具/插件锁；原配置、项目文件和既有用户编辑器进程未修改。旧[选区证据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/lsp-selection.json)仍是当时 LSP 优先映射的历史结果，以本节选区证据代表当前配置。
 
 最终 StyLua 检查、74 个 Lua 文件语法检查、验收驱动 JavaScript 语法检查、Git staged diff 检查均通过；旧 `nvim` 工作树保持干净。已安装 tiny-code-action 的 main 与锁定提交同为 `91a9c32228e9a7761d241023d9ebb9d11d8fb10d`，本轮无需更新其依赖锁。
+
+## 导航与编辑性能复核（2026-10-03）
+
+`config/ast_move.lua` 已将全文件索引改为按 256 行窗口按需建立，继续包含注入语法树，并按 buffer 文本版本/filetype 失效。5 轮交替回归中，2 万行首次跳转中位数由 856.96 ms 降至 12.70 ms，重复跳转维持在 0.1 ms 内；1504 行、1002 棵语法树的 Vue 样本由 30.84 ms 降至 2.93 ms；逐轮数据见[导航性能证据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/navigation-performance.json)。全量与窗口查询在 JavaScript/TypeScript/TSX/Vue/Rust 样本的位置集合一致。长父函数跨窗口时的重复捕获曾使反向跳转越过内层函数，负对照复现，按捕获起始行过滤后通过。
+
+状态栏搜索计数改为光标/文本连续变化后 120 ms 重算；真实 UI 中 300 次 `j` 在搜索开启/关闭时，修改前中位数为 685.99/413.45 ms，修改后为 474.54/469.04 ms。真实状态栏停下后显示正确匹配序号；100 字符连续输入在搜索开启/关闭时为 27.45/30.94 ms。`j/k` 映射对原生移动无稳定额外耗时，`CursorMoved` 事件贡献小，未修改其行为。
+
+StyLua、73 个 Lua 文件的 `loadfile` 语法检查、验收驱动 JavaScript 语法检查、`scripts/check-performance.lua` 的跨窗口/Vue 大量注入树/长函数反向跳转/重复键/修改失效/延迟搜索重算，以及真实 UI 的 `navigation-performance`、`selection`、`workflows`、`breadcrumbs`、`vue-textobjects.lua`、`interactions.lua`、`parameter-repeat.lua`、`config-audit.lua` 均通过。Vue 折叠的两种打开顺序和 VSCode 宿主边界复验通过；诊断正反跳转/重复/回绕及浮窗见 UI 结果。面包屑仍默认不加载、不显示，`<Leader>wd` 可开启并关闭。旧配置目录和既有用户进程未改动。
