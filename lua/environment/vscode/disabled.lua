@@ -34,5 +34,4 @@ return {
     'windwp/nvim-autopairs',
     'windwp/nvim-ts-autotag',
     'catppuccin/nvim',
-    'tris203/precognition.nvim',
 }

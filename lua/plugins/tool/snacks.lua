@@ -249,53 +249,37 @@ return {
                 '<A-w>',
                 function()
                     local winid = vim.api.nvim_get_current_win()
-                    local win_config = vim.api.nvim_win_get_config(winid)
-                    local bufnr = vim.api.nvim_get_current_buf()
-                    local buftype = vim.bo[bufnr].buftype
-                    local ft = vim.bo[bufnr].filetype -- 获取当前光标所在的文件类型
+                    local function is_editor_window(win)
+                        if vim.api.nvim_win_get_config(win).relative ~= '' then
+                            return false
+                        end
+                        local buffer = vim.bo[vim.api.nvim_win_get_buf(win)]
+                        return buffer.buftype ~= 'help'
+                            and buffer.buftype ~= 'quickfix'
+                            and buffer.filetype ~= 'neo-tree'
+                    end
 
-                    -- 1. 如果是浮动窗口，直接关闭
-                    if win_config.relative ~= '' then
+                    if vim.api.nvim_win_get_config(winid).relative ~= '' then
                         vim.api.nvim_win_close(winid, false)
                         return
                     end
 
-                    -- 2. 如果光标就在 Neo-tree 或 help 窗口里，直接关闭该窗口
-                    if
-                        buftype == 'help'
-                        or buftype == 'quickfix'
-                        or ft == 'neo-tree'
-                    then
+                    if not is_editor_window(winid) then
                         vim.cmd('close')
                         return
                     end
 
-                    -- 3. 统计“真正的”代码窗口（排除 Neo-tree）
-                    local wins = vim.api.nvim_tabpage_list_wins(0)
-                    local real_editor_wins = {}
-                    for _, w in ipairs(wins) do
-                        local w_conf = vim.api.nvim_win_get_config(w)
-                        local w_buf = vim.api.nvim_win_get_buf(w)
-                        local w_ft = vim.bo[w_buf].filetype
-
-                        -- 只有当窗口不是浮动窗口，且文件类型不是 neo-tree 时，才算作“编辑器窗口”
-                        if
-                            w_conf.relative == ''
-                            and w_ft ~= 'neo-tree'
-                            and w_ft ~= 'qf'
-                        then
-                            table.insert(real_editor_wins, w)
+                    local editor_windows = 0
+                    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+                        if is_editor_window(win) then
+                            editor_windows = editor_windows + 1
                         end
                     end
 
-                    -- 4. 逻辑判断
-                    if #real_editor_wins > 1 then
-                        -- 如果有多个代码窗口（比如分屏了），就关闭当前这个分屏
+                    if editor_windows > 1 then
                         vim.cmd('close')
                     else
-                        -- 如果只剩这一个代码窗口（即使 Neo-tree 还开着），
-                        -- 使用 bufdelete 删除缓冲区，这样会保留窗口布局（不会让 Neo-tree 变大），
-                        -- 只是把当前文件变成空的或显示 Dashboard
+                        -- 保留最后一个编辑窗口的布局。
                         require('snacks').bufdelete()
                     end
                 end,

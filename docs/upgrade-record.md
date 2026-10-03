@@ -183,3 +183,7 @@ Neovim 0.12.5 原生 Hover 为 Markdown 浮窗设置 `conceallevel=2`，但默�
 ## 主树性能复测与审计（2026-10-04）
 
 使用主树 `scripts/verification/check-ui.mjs navigation-performance` 对新建隔离夹具完成真实 UI 性能复测，测试通过，原始输出保存在[主树导航证据](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/main-tree-navigation-20261004.json)。当前代码路径与审计结论见分析第 11 节。本轮仅更新入口、文档和证据，没有据单次性能样本改变编辑器行为。
+
+## 主树窗口行为修复（2026-10-04）
+
+修复 `<A-w>` 对 help 分屏的误判：当前窗口与分屏计数使用相同的编辑窗口条件，并用整数计数代替临时窗口列表。删除已经禁用的 precognition 插件规格及 VSCode 禁用列表中的对应项。隔离主树会话的映射回调验收覆盖编辑窗口配 help/quickfix、help/quickfix 当前、两个编辑分屏、Neo-tree 当前、浮窗当前七种场景，全部通过；StyLua、77 个 Lua 文件语法检查通过。VSCode-Neovim 的真实扩展运行时宿主验收通过，`NVIM_APPNAME=nvim`、原生 LSP 客户端数为 0、`errmsg` 为空。

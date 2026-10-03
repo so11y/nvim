@@ -190,9 +190,9 @@ Code Action 的 `Buffer operation failed` 在 18 个真实 vtsls 动作中定位
 
 日常入口已切到主树 `nvim`，数据目录连接到已验收的 0.12.5 依赖。旧版 0.11.5 的核心、独立数据和 GUI 备份已按 D6 清理。此前旧/新性能数据取自合并前同一套升级配置；为核实主树入口，用当前主树在 130×40 真实 UI、附着 vtsls 的 2400 行 TypeScript 样本中重新运行 `navigation-performance`。七轮交替测试里，300 次 `j` 的映射/原生中位数分别为 1.369/1.367 ms 每键，`k` 为 1.260/1.291 ms 每键；同轮结果未显示 `j/k` 映射的可辨识额外成本。搜索开启/关闭时连续 `j` 的中位数为 2.930/2.687 ms 每键，含 UI、事件和服务器工作，不能全部归因于状态栏。完整样本见[主树导航证据](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/main-tree-navigation-20261004.json)。这次是热缓存合成样本，不覆盖业务项目冷启动或完整索引。
 
-代码审计发现一处可复现的窗口行为错误：[Snacks 窗口键位](C:/Users/Administrator/AppData/Local/nvim/lua/plugins/tool/snacks.lua)把当前 help 窗口排除在编辑窗口外，却在统计其他窗口时将 help 算入。仅有一个编辑窗口和一个 help 分屏时，从编辑窗口按 `<A-w>` 会关闭编辑窗口，留下 help。后续修复应共用同一编辑窗口判定，再复验编辑窗口、help、quickfix、Neo-tree 和浮窗组合。
+代码审计发现并已修复一处窗口行为错误：[Snacks 窗口键位](C:/Users/Administrator/AppData/Local/nvim/lua/plugins/tool/snacks.lua)原先把当前 help 窗口排除在编辑窗口外，却在统计其他窗口时将 help 算入。仅有一个编辑窗口和一个 help 分屏时，从编辑窗口按 `<A-w>` 会误关编辑窗口。现在当前窗口与分屏计数共用同一编辑窗口判定；编辑窗口配 help/quickfix、辅助窗口当前、两个编辑分屏、Neo-tree 与浮窗共七种实际映射回调场景通过。
 
-[precognition 规格](C:/Users/Administrator/AppData/Local/nvim/lua/plugins/editor/precognition.lua)已 `enabled=false`，对应键位不可达，属于可删除的失效配置。Tiny Code Action 的多个补丁分别覆盖菜单、单动作直执行、resolve 和底层 apply 路径；它们承担禁用动作过滤和执行拦截，不能仅凭数量判为重复。同步保存格式化最多等待 2000 ms，Code Action 等待服务器最多 3000 ms；这是可感知的响应上限，但本轮未测得具体项目卡顿，因此不据此修改语义或删除功能。除上述窗口问题外，没有测得值得为性能再改生产配置的瓶颈。
+已删除 `enabled=false` 的 precognition 插件规格及 VSCode 禁用列表中的对应失效项，原 `<leader>wp` 键位此前不可达。Tiny Code Action 的多个补丁分别覆盖菜单、单动作直执行、resolve 和底层 apply 路径；它们承担禁用动作过滤和执行拦截，不能仅凭数量判为重复。同步保存格式化最多等待 2000 ms，Code Action 等待服务器最多 3000 ms；这是可感知的响应上限，但本轮未测得具体项目卡顿，因此不据此修改语义或删除功能。没有测得值得为性能再改生产配置的瓶颈。
 
 ## 官方依据
 
