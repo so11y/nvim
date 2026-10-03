@@ -1,23 +1,10 @@
 return {
-    -- {
-    --     "mattn/emmet-vim",
-    --     event = "InsertEnter",
-    --     config = function()
-    --     end
-    -- },
-    -- {
-    --     "xzbdmw/colorful-menu.nvim",
-    --     config = true
-    -- },
     {
         'saghen/blink.cmp',
         version = '1.*',
         event = { 'InsertEnter', 'CmdlineEnter' },
         dependencies = { 'rafamadriz/friendly-snippets', 'mattn/emmet-vim' },
         opts = {
-            snippets = {
-                preset = 'default',
-            },
             completion = {
                 documentation = {
                     auto_show = true,
@@ -25,7 +12,6 @@ return {
                 },
                 list = {
                     selection = {
-                        preselect = true,
                         auto_insert = false,
                     },
                 },
@@ -36,17 +22,6 @@ return {
                     border = 'rounded',
                     draw = {
                         treesitter = { 'lsp' },
-                        -- components = {
-                        --     label = {
-                        --         text = function(ctx)
-                        --             return require("colorful-menu").blink_components_text(ctx)
-                        --         end,
-                        --         highlight = function(ctx)
-                        --             return require("colorful-menu").blink_components_highlight(ctx)
-                        --             -- return ctx.label_matched_indices
-                        --         end
-                        --     }
-                        -- },
                         columns = {
                             {
                                 'kind_icon',
@@ -96,7 +71,6 @@ return {
                     end,
                     'fallback',
                 },
-                -- ["<Tab>"] = { "select_and_accept", "snippet_forward", "fallback" },
                 -- S-Tab: 片段回退
                 ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
                 ['<Up>'] = { 'select_prev', 'fallback' },
@@ -104,18 +78,10 @@ return {
 
                 ['<A-k>'] = { 'select_prev', 'fallback' },
                 ['<A-j>'] = { 'select_next', 'fallback' },
-
-                -- -- 命令行滚动文档
-                -- ['<C-u>']     = { 'scroll_documentation_up', 'fallback' },
-                -- ['<C-d>']     = { 'scroll_documentation_down', 'fallback' },
             },
 
             cmdline = {
-                enabled = true,
                 completion = {
-                    -- trigger = {
-                    -- 	show_on_trigger_character = false,
-                    -- },
                     menu = {
                         auto_show = true,
                     },

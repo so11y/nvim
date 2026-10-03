@@ -3,7 +3,6 @@ return {
         'neovim/nvim-lspconfig',
         version = '^2',
         event = { 'BufReadPre', 'BufNewFile', 'FileType' },
-        dependencies = { 'mason-org/mason-lspconfig.nvim' },
         keys = {
             {
                 '<A-F>',

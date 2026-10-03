@@ -34,6 +34,7 @@ return {
 
     settings = {
         vtsls = {
+            autoUseWorkspaceTsdk = true,
             tsserver = {
                 globalPlugins = {
                     {

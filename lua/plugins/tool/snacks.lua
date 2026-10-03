@@ -366,21 +366,7 @@ return {
                     vim.lsp.buf.rename()
                 end,
                 desc = '重命名',
-            }, -- 2. 诊断跳转 (保持你习惯的 gdj / gdk)
-            -- {
-            --     'gkx',
-            --     function()
-            --         vim.diagnostic.goto_prev()
-            --     end,
-            --     desc = '上一个诊断',
-            -- },
-            -- {
-            --     'gjx',
-            --     function()
-            --         vim.diagnostic.goto_next()
-            --     end,
-            --     desc = '下一个诊断',
-            -- },
+            },
             {
                 '<leader>xf',
                 function()
@@ -426,14 +412,18 @@ return {
         config = function(_, opts)
             require('snacks').setup(opts)
 
-            require('utils.repeatable').map_jump(
-                'gjx',
-                'gkx',
-                vim.diagnostic.goto_next,
-                vim.diagnostic.goto_prev,
-                '下一个诊断',
-                '上一个诊断'
-            )
+            local function show_diagnostic(_, bufnr)
+                vim.diagnostic.open_float({
+                    bufnr = bufnr,
+                    scope = 'cursor',
+                    focus = false,
+                })
+            end
+            require('utils.repeatable').map_jump('gjx', 'gkx', function()
+                vim.diagnostic.jump({ count = 1, on_jump = show_diagnostic })
+            end, function()
+                vim.diagnostic.jump({ count = -1, on_jump = show_diagnostic })
+            end, '下一个诊断', '上一个诊断')
         end,
     },
 }

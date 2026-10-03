@@ -33,7 +33,7 @@ for _, ft in ipairs({
     M.languages[ft] = { prettierd }
 end
 
-function M.client(bufnr, method)
+function M.client(bufnr)
     bufnr = bufnr or vim.api.nvim_get_current_buf()
     local ft = vim.bo[bufnr].filetype
     local name = M.languages[ft] and 'efm' or ft == 'rust' and 'rust-analyzer'
@@ -41,7 +41,7 @@ function M.client(bufnr, method)
         return vim.lsp.get_clients({
             bufnr = bufnr,
             name = name,
-            method = method or 'textDocument/formatting',
+            method = 'textDocument/formatting',
         })[1]
     end
 end

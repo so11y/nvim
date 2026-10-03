@@ -12,19 +12,12 @@ local M = {
 }
 
 function M.setup()
-    M.capabilities = require('blink.cmp').get_lsp_capabilities({
-        textDocument = {
-            foldingRange = {
-                dynamicRegistration = false,
-                lineFoldingOnly = true,
-            },
-        },
-    })
+    M.capabilities = require('blink.cmp').get_lsp_capabilities()
     vim.lsp.config('*', { capabilities = M.capabilities })
     vim.lsp.config('vtsls', require('lsp.vtsls'))
     vim.lsp.config('vue_ls', require('lsp.vue_ls'))
     vim.lsp.config('eslint', {
-        settings = { format = false, workingDirectory = { mode = 'auto' } },
+        settings = { format = false },
     })
     local format = require('config.format')
     vim.lsp.config('efm', {
@@ -33,7 +26,7 @@ function M.setup()
             documentFormatting = true,
             documentRangeFormatting = false,
         },
-        settings = { rootMarkers = { '.git/' }, languages = format.languages },
+        settings = { languages = format.languages },
         root_dir = function(bufnr, on_dir)
             local name = vim.api.nvim_buf_get_name(bufnr)
             if name ~= '' then

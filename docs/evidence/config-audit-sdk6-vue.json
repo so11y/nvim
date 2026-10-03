@@ -1,0 +1,461 @@
+{
+  "auto_import": {
+    "edits": [
+      {
+        "newText": "import BetaCard from './BetaCard.vue';\n",
+        "range": {
+          "end": {
+            "line": 2,
+            "character": 0
+          },
+          "start": {
+            "line": 2,
+            "character": 0
+          }
+        }
+      }
+    ],
+    "label": "BetaCard"
+  },
+  "errmsg": "",
+  "shared_vue_unsaved": 3,
+  "cases": {
+    "alpha": {
+      "before": 3,
+      "unsaved_edit": 3,
+      "ts_root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha",
+      "vue_root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    "beta": {
+      "before": 3,
+      "unsaved_edit": 3,
+      "ts_root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta",
+      "vue_root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    }
+  },
+  "requests": [
+    {
+      "command": "_vue:projectInfo",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:projectInfo",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:documentHighlights-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:documentHighlights-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:documentHighlights-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:documentHighlights-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:projectInfo",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\alpha\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/alpha"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\App.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:documentHighlights-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:encodedSemanticClassifications-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getComponentNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getElementNames",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:getAutoImportSuggestions",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:resolveAutoImportCompletionEntry",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    },
+    {
+      "command": "_vue:documentHighlights-full",
+      "buffer": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-config-audit-Yg3855\\sdk6-fixtures\\beta\\Second.vue",
+      "root": "C:/Users/ADMINI~1/AppData/Local/Temp/nvim-config-audit-Yg3855/sdk6-fixtures/beta"
+    }
+  ],
+  "completion_labels": [
+    "Teleport",
+    "Suspense",
+    "KeepAlive",
+    "BaseTransition",
+    "Transition",
+    "TransitionGroup",
+    "App",
+    "ref",
+    "total",
+    "wrong",
+    "greet",
+    "a",
+    "abbr",
+    "address",
+    "area",
+    "article",
+    "aside",
+    "audio",
+    "b",
+    "base",
+    "bdi",
+    "bdo",
+    "blockquote",
+    "body",
+    "br",
+    "button",
+    "canvas",
+    "caption",
+    "cite",
+    "code",
+    "col",
+    "colgroup",
+    "data",
+    "datalist",
+    "dd",
+    "del",
+    "details",
+    "dfn",
+    "dialog",
+    "div",
+    "dl",
+    "dt",
+    "em",
+    "embed",
+    "fieldset",
+    "figcaption",
+    "figure",
+    "footer",
+    "form",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "head",
+    "header",
+    "hgroup",
+    "hr",
+    "html",
+    "i",
+    "iframe",
+    "img",
+    "input",
+    "ins",
+    "kbd",
+    "keygen",
+    "label",
+    "legend",
+    "li",
+    "link",
+    "main",
+    "map",
+    "mark",
+    "menu",
+    "meta",
+    "meter",
+    "nav",
+    "noindex",
+    "noscript",
+    "object",
+    "ol",
+    "optgroup",
+    "option",
+    "output",
+    "p",
+    "param",
+    "picture",
+    "pre",
+    "progress",
+    "q",
+    "rp",
+    "rt",
+    "ruby",
+    "s",
+    "samp",
+    "script",
+    "section",
+    "select",
+    "small",
+    "source",
+    "span",
+    "strong",
+    "style",
+    "sub",
+    "summary",
+    "sup",
+    "table",
+    "template",
+    "tbody",
+    "td",
+    "textarea",
+    "tfoot",
+    "th",
+    "thead",
+    "time",
+    "title",
+    "tr",
+    "track",
+    "u",
+    "ul",
+    "var",
+    "video",
+    "wbr",
+    "webview",
+    "svg",
+    "animate",
+    "animateMotion",
+    "animateTransform",
+    "circle",
+    "clipPath",
+    "defs",
+    "desc",
+    "ellipse",
+    "feBlend",
+    "feColorMatrix",
+    "feComponentTransfer",
+    "feComposite",
+    "feConvolveMatrix",
+    "feDiffuseLighting",
+    "feDisplacementMap",
+    "feDistantLight",
+    "feDropShadow",
+    "feFlood",
+    "feFuncA",
+    "feFuncB",
+    "feFuncG",
+    "feFuncR",
+    "feGaussianBlur",
+    "feImage",
+    "feMerge",
+    "feMergeNode",
+    "feMorphology",
+    "feOffset",
+    "fePointLight",
+    "feSpecularLighting",
+    "feSpotLight",
+    "feTile",
+    "feTurbulence",
+    "filter",
+    "foreignObject",
+    "g",
+    "image",
+    "line",
+    "linearGradient",
+    "marker",
+    "mask",
+    "metadata",
+    "mpath",
+    "path",
+    "pattern",
+    "polygon",
+    "polyline",
+    "radialGradient",
+    "rect",
+    "set",
+    "stop",
+    "switch",
+    "symbol",
+    "text",
+    "textPath",
+    "tspan",
+    "use",
+    "view",
+    "component",
+    "slot",
+    "BaseTransition",
+    "BaseTransitionPropsValidators",
+    "BetaCard"
+  ],
+  "native_completion": true,
+  "closed_source": 3
+}

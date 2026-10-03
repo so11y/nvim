@@ -15,6 +15,7 @@
 | P6 性能 | P4、P5 | 启动按需加载；heirline 搜索计数；AST 索引 | 相同样例前后测量；保留首次开销和指标范围 | 完成 |
 | P7 日常入口 | P1—P6 | scripts/nvim.ps1、neovide.ps1、activate.ps1；VSCode 原生 NVIM_APPNAME；系统 Neovide | 未来 CLI/GUI/VSCode 使用相同锁和 profile，旧用户会话继续运行 | 已切换；现有 VSCode 窗口由用户保存后重启 |
 | P8 收尾/回退 | P7 | 中文分析/约定/计划/记录、证据、验收工具；scripts/rollback.ps1 | 格式/语法/diff 检查、旧环境可启动、代码提交和备份路径完整 | 完成，最终检查见执行记录 |
+| P9 升级后审计 | P8 | 清理重复/失效配置、安装命令所有权、项目 SDK、Vue 多根上下文、状态栏与路径栏 | 实际 SDK 路径；双 Vue 根/自动导入/未保存编辑；管理命令；组件等效性能；原日常回归 | 完成；证据见执行记录 |
 
 阶段编号用于执行依赖，不另行定义约定。P2/P3 与 P4 可在隔离数据中分别推进；P7 依赖所有日常功能验收出口。
 
@@ -23,7 +24,7 @@
 - 原生 LSP：Mason 负责安装；config/lsp.lua 负责普通服务器启用、能力、诊断和事件；rustaceanvim 负责 Rust。删除 Conform 与独立 nvim-eslint 实现。状态栏读取同一个格式客户端选择规则。
 - 格式化：config/format.lua 通过原生客户端同步请求与 apply_text_edits；同时处理 RPC 错误和超时。efm 通过 prettierd/StyLua，Rust 经 RA 调用项目 rustfmt。ESLint 不参与文档格式化。
 - Tree-sitter：从 master 集成迁移到 main，显式高亮/缩进/新文本对象；自定义跳转和参数交换保留 Vue 注入树。选择范围优先 LSP；其他精确文本对象保持语法树职责。
-- 启动：Rust、DAP、Neo-tree、GrugFar、Showkeys、Flash、opencode 按使用入口加载；日常启动不安装工具。
+- 启动：Rust、DAP、Neo-tree、GrugFar、Showkeys、Flash、opencode 按使用入口加载；Mason 与 mason-lspconfig 按安装管理命令加载，工具 PATH 由 runtime 设置；日常启动不安装工具。
 - 宿主：独立编辑器/GUI 使用新 profile；VSCode 语言、格式化、折叠、选区和大纲交给宿主。未增加额外 init/RTP 引导文件。
 
 具体文件的完整路径、原配置问题和理由见分析文档，不在这里重复版本矩阵。
@@ -65,11 +66,21 @@ Remove-Item Env:NVIM_TEST_VUE_FIRST
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs node-debug.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs rust-debug.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs secondary-languages.lua
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs workspace-sdk.lua
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs vue-workspaces.lua
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs config-audit.lua
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs mason-commands.lua
+$env:NVIM_TEST_MASON_COMMAND = 'MasonInstall'
+& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs mason-commands.lua
+Remove-Item Env:NVIM_TEST_MASON_COMMAND
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs host
+& $nvimUpgrade --headless -u NONE -c 'luafile scripts/check-ui-performance.lua'
 & $nvimUpgrade --headless -u NONE -c 'set rtp+=C:/Users/Administrator/AppData/Local/nvim-upgrade' -c 'luafile scripts/check-performance.lua'
 ~~~
 
-UI 验收需要桌面会话、已安装解析器/工具；Rust 样例需要 1.99.0 工具链和 Windows C/C++ 链接环境。真实 UI/RPC 脚本会创建并关闭自己的编辑器，输出结果 JSON 与 .errors；断言失败返回非零。Rust 验收等 Cargo run target 就绪后才调试。VSCode 验收加载扩展的真实 Lua/Vim 运行时并记录宿主 RPC，未代替业务项目的宿主语言扩展实测。
+UI 验收需要桌面会话、已安装解析器/工具；Rust 样例需要 1.99.0 工具链和 Windows C/C++ 链接环境。真实 UI/RPC 脚本会创建并关闭自己的编辑器，输出结果 JSON 与 .errors；断言失败返回非零。Rust 验收等 rustaceanvim 既有 on_initialized/quiescent 信号和 Cargo run target 就绪后才调试；等待谓词不发 RPC。VSCode 验收加载扩展的真实 Lua/Vim 运行时并记录宿主 RPC，未代替业务项目的宿主语言扩展实测。
+
+组件前后对比用 NVIM_AUDIT_BASELINE 指向从基线 97f8ca2 导出的配置目录（只需 lua/custom/heirline 的两个文件）；未设置时性能脚本只输出当前值。原始对照与 SDK 负对照见执行记录。
 
 使用代理的安装过程若遇本机 Node 24 TLS 连接复位，可仅对该安装命令设置 NODE_OPTIONS=--tls-max-v1.2 和 npm --https-proxy；完成后恢复原值。下载 curl 使用同一代理和 TLS 1.2 上限，证书验证保持开启。详情见记录。
 

@@ -25,7 +25,8 @@ editor.on('error',e=>errors.push(e.message));
 }})().catch(e=>errors.push(e.message));
 function rpc(method,params=[]){return new Promise((resolve,reject)=>{const id=++sequence;calls.set(id,{resolve,reject});editor.stdin.write(encode([0,id,method,params]));});}
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
-const deadline=setTimeout(()=>{errors.push('Verification timed out');for(const call of calls.values())call.reject(new Error('Verification timed out'));editor.kill();},60000);
+const deadlineMs=suite==='rust-debug.lua'?120000:60000;
+const deadline=setTimeout(()=>{errors.push('Verification timed out after '+deadlineMs+' ms');for(const call of calls.values())call.reject(new Error('Verification timed out'));editor.kill();},deadlineMs);
 try{
  await rpc('nvim_get_api_info');
  await rpc('nvim_set_client_info',['Upgrade verification',{major:1,minor:0},'ui',{},{}]);

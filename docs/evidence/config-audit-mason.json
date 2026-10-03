@@ -1,0 +1,32 @@
+{
+  "before": {
+    "mason": false,
+    "mason_lspconfig": false,
+    "efm": "C:\\Users\\Administrator\\AppData\\Local\\nvim-upgrade-data\\mason\\bin\\efm-langserver.CMD"
+  },
+  "errmsg": "",
+  "mason_completion": [
+    "vue-language-server"
+  ],
+  "commands": {
+    "MasonInstall": "Install one or more packages.",
+    "MasonUninstall": "Uninstall one or more packages.",
+    "MasonUninstallAll": "Uninstall all packages.",
+    "MasonUpdate": "Update Mason registries.",
+    "MasonLog": "Opens the mason.nvim log.",
+    "LspInstall": "Install one or more LSP servers.",
+    "LspUninstall": "Uninstall one or more LSP servers.",
+    "Mason": "Opens mason's UI window."
+  },
+  "lsp_completion": [
+    "vue_ls"
+  ],
+  "after": {
+    "mason": true,
+    "mason_lspconfig": true,
+    "alias": [
+      "vue_ls"
+    ]
+  },
+  "first_command": "Mason"
+}

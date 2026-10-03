@@ -34,7 +34,7 @@
 | VSCode-Neovim | 1.20.0 | 1.20.0，已是稳定目标 | 核验 [官方变更记录](https://github.com/vscode-neovim/vscode-neovim/blob/master/CHANGELOG.md)，原生 profile 支持 |
 | Go | 编辑器不需常驻 | 1.27.1，仅用于 efm 构建 | 运行 efm 不需要 Go |
 
-45 个启用插件均核对安装 HEAD，且无跟踪文件修改，详见 [插件证据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/plugins.json)。稳定标签优先；维护方案需要 main 的插件固定完整 SHA。lazy.nvim、Noice 等当前提交已经满足目标，核验后保留。
+升级时 45 个独立模式插件均核对安装 HEAD，且无跟踪文件修改，详见 [升级插件证据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/plugins.json)。后续审计另补齐宿主插件锁，当前状态见第 8 节与执行记录。稳定标签优先；维护方案需要 main 的插件固定完整 SHA。lazy.nvim、Noice 等当前提交已经满足目标，核验后保留。
 
 TypeScript 分两层：服务器兼容的全局 JS SDK 固定为 5.9.3，项目 SDK 由 vtsls.autoUseWorkspaceTsdk 选择。Vue 的 Mason 安装原来会浮动拉取 typescript，现显式固定全局 SDK。新的 TypeScript 原生编译器可执行文件不能直接替代 tsserver JavaScript API；编辑器升级也不应改写项目依赖锁。
 
@@ -64,7 +64,7 @@ flowchart LR
 | Conform 单独执行且关闭错误通知 | 格式化不经过原生 LSP | efm + 统一格式入口 |
 | 提取函数返回 editor.action.rename，但无客户端 handler | 生成代码后无法进入重命名 | 原生 show_document + buf.rename，处理编码 |
 
-实现位置：[LSP 生命周期](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/lsp.lua)、[格式入口](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/format.lua)、[vtsls 集成](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/lsp/vtsls.lua)。Vue 沿用官方 vue_ls.on_init 转发，不复制 handler，不同时启动旧 Volar/ts_ls。vtsls 注册 @vue/typescript-plugin；Vue hybrid 与 vtsls 共同完成 SFC 能力。
+实现位置：[LSP 生命周期](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/lsp.lua)、[格式入口](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/format.lua)、[vtsls 集成](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/lsp/vtsls.lua)。Vue 委托官方 vue_ls.on_init 转发，并以一个上下文适配修正多工作区归属（第 8 节）；不同时启动旧 Volar/ts_ls。vtsls 注册 @vue/typescript-plugin；Vue hybrid 与 vtsls 共同完成 SFC 能力。
 
 Rust 只有 rustaceanvim 启动 RA；可执行文件固定在 1.99.0 工具链，cargo/rustfmt 通过 rustup 解析项目约束。RA 子进程 PATH 把 rustup 放在旧 Mason rustfmt shim 前，避免旧 rustfmt 抢占。打开 Rust 文件不加载 DAP，F5 才进 Cargo 调试。
 
@@ -124,6 +124,35 @@ Rust initialized 不代表 Cargo 模型完成。过早 debuggables 只有 cargo 
 旧功能删除候选：0。Conform/nvim-eslint 的功能由原生入口承接；清理的是重复实现。原来禁用的 precognition 仅去掉无效锁项。项目依赖锁、默认 Rust、全局 Node 保留。
 
 维护成本是 efm 补丁、SDK 固定和 Tree-sitter main 查询 ABI。后续先更新锁，再重跑验收；网络代理/TLS 调整只用于安装过程，不关闭证书验证。未测试任意业务仓库完整 CI、全部浏览器框架调试或当前 VSCode 窗口人工重启。
+
+## 8. 升级后的配置审计
+
+以升级提交 97f8ca2 为本次清理基线；D1—D6 保持原定义。清理依据是已安装插件/核心源码、配置引用和真实执行，未删除日常功能。未使用的状态栏导出、转发环境模块、失效选项和停用方案注释已移除；禁用的 Precognition 意图仍保留。
+
+| 发现 | 处理与边界 |
+| --- | --- |
+| vtsls.autoUseWorkspaceTsdk 只在分析中承诺，配置未启用 | 显式启用；真实 projectInfo 返回的标准库路径必须来自项目 node_modules/typescript/lib，不能只比较相同版本号 |
+| Vue 服务器请求不带 buffer，官方 handler 在多根场景选择全局第一个 TS 客户端 | [Vue 适配](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/lsp/vue_ls.lua) 按发起 Vue 工作区选择所属 vtsls，补齐连接 buffer 后委托官方 handler；转发协议、回调和初始化重试仍由上游实现，不解析各种 payload 形状 |
+| 读取普通文件就加载安装管理器；Mason PATH 与语言启用混在加载链 | runtime 统一加入已安装工具 PATH；Mason 使用 PATH=skip，两个安装插件按命令加载；全部 Mason/LspInstall 入口归 mason-lspconfig 一处注册，automatic_enable=false 保持 |
+| 诊断可见性条件每次渲染复制诊断列表，即使计数已缓存 | DiagnosticChanged/BufEnter 更新一次计数，内层按缓存控制显示；从空诊断变为有诊断再恢复均覆盖 |
+| Dropbar 先构建整条路径，再只取文件名 | 使用官方 sources.path.max_depth=1，保留文件图标和 Markdown/LSP/语法后备 |
+| Colorizer 旧配置仍可转换，但 Sass parsers 使用列表而非有效映射 | 改用结构化 options.parsers/display；CSS 函数 Sass 变量真实解析为 ff0000，虚拟色块与位置保留 |
+| 0.12 原生能力和上游默认重复配置 | 去掉 foldingRange 默认值、ESLint workingDirectory、Vue 已废弃 hybridMode、EFM 重复全局标记、Blink 默认项；格式规则仍集中在 config/format.lua，单工具 cwd 标记保留 |
+| Snacks 仍调用废弃的诊断跳转接口 | 改用 vim.diagnostic.jump/on_jump；保留方向、;/, 重复、循环与浮窗 |
+| 仅 VSCode 启用的多光标插件未锁定 | 增补一个宿主插件 SHA，原有 45 个提交不变；独立与宿主合计 46 个锁定插件 |
+
+两根验收夹具必须各有真实包管理锁标记。原 Beta 缺标记，使 vtsls 找到用户目录上层的锁；只断言客户端 ID 不同无法检验根正确。新增 Beta 样例与锁标记，保留官方 vtsls 单仓库/monorepo 根算法，测试明确核对两个 TS 根。
+
+VSCode 的 cmdheight=50 保留：已安装 1.20.0 包含旧问题修复，但当前宿主仍按消息行数超过 cmdheight 时展开 Output。注释已改为说明当前行为，不能将该设置仅因旧 issue 已关闭判为冗余。
+
+本轮性能在同一进程交替运行 5 轮、每轮完整 GC，500 条合成诊断和 200 次组件计算取中位数。状态栏结果文本、高亮组及间距逐轮相同；文件名/图标逐轮相同。原始结果见 [组件性能](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/config-audit-ui-performance.json)。
+
+| 场景 | 基线 | 清理后 | 减少的实际工作 |
+| --- | ---: | ---: | --- |
+| 200 次 Heirline 计算 | 128.308 ms | 4.4081 ms | diagnostic.get 400 → 0；每轮初始化 count 都为 1，后续缓存渲染不查诊断 |
+| 200 次 Dropbar 路径源计算 | 24.5061 ms | 8.4779 ms | fs_stat 800 → 200，创建 4 → 1 个路径符号 |
+
+这些是组件/路径源成本，不是整机启动或每次按键的总耗时。无文件、修改文件、未命名和终端状态栏也逐项比较了显示结果；详细功能回归和失败处理以执行记录为准。
 
 ## 官方依据
 

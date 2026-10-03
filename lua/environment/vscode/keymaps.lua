@@ -5,7 +5,7 @@ local vscode = require('vscode')
 local map = vim.keymap.set
 
 vim.opt.shortmess:append('sS')
--- https://github.com/vscode-neovim/vscode-neovim/issues/2507
+-- 扩展按 cmdheight 判断是否自动展开多行消息，保留当前输出面板行为。
 vim.o.cmdheight = 50
 
 map('n', 'j', function()

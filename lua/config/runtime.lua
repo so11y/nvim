@@ -7,6 +7,11 @@ M.versions = vim.json.decode(
 )
 
 function M.setup()
+    local separator = vim.fn.has('win32') == 1 and ';' or ':'
+    vim.env.PATH = vim.fn.stdpath('data')
+        .. '/mason/bin'
+        .. separator
+        .. vim.env.PATH
     if vim.fn.has('win32') == 1 then
         local node = vim.fn.stdpath('data')
             .. '/tools/node-v'

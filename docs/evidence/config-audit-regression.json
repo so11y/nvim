@@ -1,0 +1,101 @@
+{
+  "suite_count": 19,
+  "passed": true,
+  "suites": [
+    {
+      "name": "workflows",
+      "source": "audit-final-workflows.json",
+      "passed": true
+    },
+    {
+      "name": "selection",
+      "source": "audit-final-selection.json",
+      "passed": true
+    },
+    {
+      "name": "typescript-refactor",
+      "source": "audit-final-typescript-refactor.json",
+      "passed": true
+    },
+    {
+      "name": "vue-folding-ts-first",
+      "source": "audit-final-vue-folding.json",
+      "passed": true
+    },
+    {
+      "name": "vue-folding-vue-first",
+      "source": "audit-final-vue-first-120s.json",
+      "passed": true
+    },
+    {
+      "name": "vue-workspaces",
+      "source": "audit-final-vue-workspaces.json",
+      "passed": true
+    },
+    {
+      "name": "rust-debug",
+      "source": "audit-final-rust-debug-120s.json",
+      "passed": true
+    },
+    {
+      "name": "parameter-repeat",
+      "source": "audit-regression-parameter-repeat.json",
+      "passed": true
+    },
+    {
+      "name": "interactions",
+      "source": "audit-regression-interactions.json",
+      "passed": true
+    },
+    {
+      "name": "format-failure",
+      "source": "audit-regression-format-failure.json",
+      "passed": true
+    },
+    {
+      "name": "node-debug",
+      "source": "audit-regression-node-debug.json",
+      "passed": true
+    },
+    {
+      "name": "secondary-languages",
+      "source": "audit-regression-secondary-languages.json",
+      "passed": true
+    },
+    {
+      "name": "workspace-sdk-5.9.3",
+      "source": "audit-regression-workspace-sdk.json",
+      "passed": true
+    },
+    {
+      "name": "config-audit",
+      "source": "audit-regression-config-audit.json",
+      "passed": true
+    },
+    {
+      "name": "mason-entry",
+      "source": "audit-regression-mason-commands.json",
+      "passed": true
+    },
+    {
+      "name": "mason-install-first",
+      "source": "audit-regression-mason-install-first.json",
+      "passed": true
+    },
+    {
+      "name": "host",
+      "source": "audit-regression-host.json",
+      "passed": true
+    },
+    {
+      "name": "workspace-sdk-6.0.3",
+      "source": "audit-sdk6-workspace-sdk.json",
+      "passed": true
+    },
+    {
+      "name": "vue-workspaces-sdk6",
+      "source": "audit-sdk6-vue-workspaces.json",
+      "passed": true
+    }
+  ]
+}

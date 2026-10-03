@@ -15,9 +15,6 @@ local colors = {
     diag_error = utils.get_highlight('DiagnosticError').fg,
     diag_hint = utils.get_highlight('DiagnosticHint').fg,
     diag_info = utils.get_highlight('DiagnosticInfo').fg,
-    git_del = utils.get_highlight('diffDeleted').fg,
-    git_add = utils.get_highlight('diffAdded').fg,
-    git_change = utils.get_highlight('diffChanged').fg,
 }
 local dim_color = palette.surface1
 
@@ -27,9 +24,6 @@ M.Spacer = {
 }
 M.Fill = {
     provider = '%=',
-}
-M.Ruler = {
-    provider = '%4l,%-3c %P',
 }
 M.ScrollBar = {
     static = {
@@ -143,12 +137,6 @@ M.MacroRecording = {
     condition = conditions.is_active,
     init = function(self)
         self.reg_recording = vim.fn.reg_recording()
-        -- self.status_dict = vim.b.gitsigns_status_dict or {
-        --     added = 0,
-        --     removed = 0,
-        --     changed = 0
-        -- }
-        -- self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
     end,
     {
         condition = function(self)
@@ -251,9 +239,7 @@ M.Git = {
     end,
 }
 
--- Dianostics
 M.Diagnostics = {
-    condition = conditions.has_diagnostics,
     static = {
         error_icon = icons.diagnostics.Error .. ' ',
         warn_icon = icons.diagnostics.Warn .. ' ',
@@ -269,264 +255,83 @@ M.Diagnostics = {
     end,
     update = { 'DiagnosticChanged', 'BufEnter' },
     {
-        provider = function(self)
-            return (self.errors or 0) > 0
-                and (self.error_icon .. self.errors .. ' ')
+        condition = function(self)
+            return self.errors + self.warnings + self.info + self.hints > 0
         end,
-        hl = {
-            fg = colors.diag_error,
+        {
+            provider = function(self)
+                return self.errors > 0
+                    and (self.error_icon .. self.errors .. ' ')
+            end,
+            hl = { fg = colors.diag_error },
         },
-    },
-    {
-        provider = function(self)
-            return (self.warnings or 0) > 0
-                and (self.warn_icon .. self.warnings .. ' ')
-        end,
-        hl = {
-            fg = colors.diag_warn,
+        {
+            provider = function(self)
+                return self.warnings > 0
+                    and (self.warn_icon .. self.warnings .. ' ')
+            end,
+            hl = { fg = colors.diag_warn },
         },
-    },
-    {
-        provider = function(self)
-            return (self.info or 0) > 0 and (self.info_icon .. self.info .. ' ')
-        end,
-        hl = {
-            fg = colors.diag_info,
+        {
+            provider = function(self)
+                return self.info > 0 and (self.info_icon .. self.info .. ' ')
+            end,
+            hl = { fg = colors.diag_info },
         },
-    },
-    {
-        provider = function(self)
-            return (self.hints or 0) > 0 and (self.hint_icon .. self.hints)
-        end,
-        hl = {
-            fg = colors.diag_hint,
+        {
+            provider = function(self)
+                return self.hints > 0 and (self.hint_icon .. self.hints)
+            end,
+            hl = { fg = colors.diag_hint },
         },
+        M.Spacer,
     },
 }
 
 M.FileIcon = {
     condition = function(self)
-        return vim.fn.fnamemodify(self.filename, ':.') ~= ''
-    end,
-    init = function(self)
-        self.is_modified = vim.api.nvim_get_option_value('modified', {
-            buf = self.bufnr,
-        })
-        local filename = self.filename
-        local extension = vim.fn.fnamemodify(filename, ':e')
-
-        local icon, icon_hl_name = devicons.get_icon(filename, extension, {
-            default = true,
-        })
-
-        -- 特殊处理 Terminal
-        local bt = vim.api.nvim_get_option_value('buftype', {
-            buf = self.bufnr,
-        }) or nil
-        if bt and bt == 'terminal' then
-            icon = ''
-            icon_hl_name = nil -- Terminal 通常不需要特定的颜色组，或者你可以自定义
-        end
-
-        self.icon = icon
-
-        -- 获取高亮颜色
-        if icon_hl_name then
-            local hl = vim.api.nvim_get_hl(0, {
-                name = icon_hl_name,
-            })
-            if hl and hl.fg then
-                self.icon_color = string.format('#%06x', hl.fg)
-            else
-                self.icon_color = dim_color
-            end
-        else
-            self.icon_color = dim_color
-        end
+        return self.filename ~= ''
     end,
     provider = function(self)
-        return self.icon and (self.icon .. ' ')
+        return self.icon .. ' '
     end,
     hl = function(self)
         return {
-            fg = self.is_modified and self.icon_color or dim_color,
+            fg = self.is_modified and not self.is_terminal and self.icon_color
+                or dim_color,
         }
     end,
 }
 
--- === 修改 2: 使用 nvim-web-devicons 获取颜色 ===
 M.FileName = {
-    init = function(self)
-        self.is_modified = vim.api.nvim_get_option_value('modified', {
-            buf = self.bufnr,
-        })
-        local filename = self.filename
-        local extension = vim.fn.fnamemodify(filename, ':e')
-
-        -- 获取颜色逻辑
-        local _, icon_hl_name = devicons.get_icon(filename, extension, {
-            default = true,
-        })
-
-        if icon_hl_name then
-            local hl = vim.api.nvim_get_hl(0, {
-                name = icon_hl_name,
-            })
-            if hl and hl.fg then
-                self.icon_color = string.format('#%06x', hl.fg)
-            else
-                self.icon_color = dim_color
-            end
-        else
-            self.icon_color = dim_color
-        end
-    end,
     provider = function(self)
-        local filename = self.filename
-        filename = filename == '' and vim.bo.filetype
-            or vim.fn.fnamemodify(filename, ':t')
-        return '' .. filename .. ''
+        return self.filename == '' and vim.bo.filetype
+            or vim.fn.fnamemodify(self.filename, ':t')
     end,
     hl = function(self)
-        return {
-            fg = self.is_modified and self.icon_color or dim_color,
-            -- italic = self.is_modified
-        }
+        return { fg = self.is_modified and self.icon_color or dim_color }
     end,
-}
-
-M.FilePath = {
-    provider = function(self)
-        local filename = vim.fn.fnamemodify(self.filename, ':.')
-        if filename == '' then
-            return vim.bo.filetype ~= '' and vim.bo.filetype or vim.bo.buftype
-        end
-        return filename
-    end,
-    hl = function(self)
-        return {
-            fg = self.is_active and palette.text or palette.subtext0,
-            bold = self.is_active or self.is_visible,
-            italic = self.is_active,
-        }
-    end,
-}
-
-M.FileFlags = {
-    {
-        init = function(self)
-            local filename = self.filename
-            local extension = vim.fn.fnamemodify(filename, ':e')
-
-            local _, icon_hl_name = devicons.get_icon(filename, extension, {
-                default = true,
-            })
-
-            if icon_hl_name then
-                local hl = vim.api.nvim_get_hl(0, {
-                    name = icon_hl_name,
-                })
-                if hl and hl.fg then
-                    self.icon_color = string.format('#%06x', hl.fg)
-                else
-                    self.icon_color = dim_color
-                end
-            else
-                self.icon_color = dim_color
-            end
-        end,
-        condition = function(self)
-            local ignored_filetypes = { 'dap-repl' }
-            local result = vim.fn.fnamemodify(self.filename, ':.') ~= ''
-                and vim.api.nvim_get_option_value('modified', {
-                    buf = self.bufnr,
-                })
-            local ft = vim.api.nvim_get_option_value('buftype', {
-                buf = self.bufnr,
-            })
-            if vim.tbl_contains(ignored_filetypes, ft) then
-                result = false
-            end
-            return result
-        end,
-        provider = ' 󰏫 ',
-        hl = function(self)
-            return {
-                fg = self.icon_color,
-                bold = self.is_active,
-            }
-        end,
-    },
-    {
-        condition = function(self)
-            return not vim.api.nvim_get_option_value('modifiable', {
-                buf = self.bufnr,
-            }) or vim.api.nvim_get_option_value('readonly', {
-                buf = self.bufnr,
-            })
-        end,
-        provider = function(self)
-            if
-                vim.api.nvim_get_option_value('buftype', {
-                    buf = self.bufnr,
-                }) == 'terminal'
-            then
-                return ''
-            else
-                return ' [+] '
-            end
-        end,
-        hl = {
-            fg = palette.text,
-        },
-    },
 }
 
 M.FileNameBlock = {
     init = function(self)
-        local bufnr = self.bufnr and self.bufnr or 0
+        local bufnr = self.bufnr or 0
         self.filename = vim.api.nvim_buf_get_name(bufnr)
+        self.is_modified = vim.bo[bufnr].modified
+        self.is_terminal = vim.bo[bufnr].buftype == 'terminal'
+        local icon, icon_hl = devicons.get_icon(
+            self.filename,
+            vim.fn.fnamemodify(self.filename, ':e'),
+            { default = true }
+        )
+        self.icon = self.is_terminal and '' or icon
+        local fg = icon_hl and vim.api.nvim_get_hl(0, { name = icon_hl }).fg
+        self.icon_color = fg and string.format('#%06x', fg) or dim_color
     end,
-    hl = {
-        fg = palette.text,
-    },
+    hl = { fg = palette.text },
     M.FileIcon,
     M.FileName,
-    -- M.FileFlags
 }
-
-M.FilePathBlock = {
-    init = function(self)
-        local bufnr = self.bufnr and self.bufnr or 0
-        self.filename = vim.api.nvim_buf_get_name(bufnr)
-    end,
-    hl = {
-        fg = palette.text,
-    },
-    M.FileIcon,
-    M.FileName,
-    M.FileFlags,
-}
-
-M.TablineFileNameBlock = vim.tbl_extend('force', M.FileNameBlock, {
-    on_click = {
-        callback = function(_, minwid, _, button)
-            if button == 'm' then
-                vim.schedule(function()
-                    vim.api.nvim_buf_delete(minwid, {
-                        force = false,
-                    })
-                end)
-            else
-                vim.api.nvim_win_set_buf(0, minwid)
-            end
-        end,
-        minwid = function(self)
-            return self.bufnr
-        end,
-        name = 'heirline_tabline_buffer_callback',
-    },
-})
 
 M.SearchOccurrence = {
     condition = function()
@@ -562,55 +367,6 @@ M.SearchOccurrence = {
             return ''
         end
     end,
-}
-
-M.SimpleIndicator = {
-    condition = function()
-        return vim.g.simple_indicator_on
-    end,
-    hl = {
-        fg = palette.sky,
-    },
-    provider = '',
-}
-
-M.LspProgress = {
-    provider = function()
-        return require('lsp-progress').progress({
-            format = function(messages)
-                local active_clients = vim.lsp.get_clients()
-                local client_count = #active_clients
-                if #messages > 0 then
-                    return table.concat(messages, ' ')
-                end
-                if #active_clients <= 0 then
-                    return client_count
-                else
-                    local client_names = {}
-                    for i, client in ipairs(active_clients) do
-                        if client and client.name ~= '' then
-                            table.insert(
-                                client_names,
-                                '[' .. client.name .. ']'
-                            )
-                        end
-                    end
-                    return table.concat(client_names, ' ')
-                end
-            end,
-        })
-    end,
-    update = {
-        'User',
-        pattern = 'LspProgressStatusUpdated',
-        callback = vim.schedule_wrap(function()
-            vim.cmd('redrawstatus')
-        end),
-    },
-    hl = {
-        fg = dim_color,
-        bold = false,
-    },
 }
 
 return M

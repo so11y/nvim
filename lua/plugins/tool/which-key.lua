@@ -26,7 +26,7 @@ return {
                 {
                     '<leader>s',
                     group = '🖥️ 分屏与搜索',
-                    mode = { 'n', 'v' },
+                    mode = 'v',
                 },
                 {
                     '<leader>f',
