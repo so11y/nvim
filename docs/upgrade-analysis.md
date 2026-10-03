@@ -1,6 +1,6 @@
 # Neovim 升级分析
 
-角色：ANALYSIS。依据：[迁移约定](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-contract.md)。范围：这台 Windows 机器上的独立 Neovim、Neovide、VSCode-Neovim 与当前配置。版本核验日期：2026-10-03。本文解释事实和取舍；目标以约定为准，版本以 tools.lock.json / lazy-lock.json 为准，完成状态以执行记录为准。
+角色：ANALYSIS。依据：[迁移约定](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-contract.md)。范围：这台 Windows 机器上的独立 Neovim、Neovide、VSCode-Neovim 与当前配置。版本核验日期：2026-10-03。本文解释事实和取舍；目标以约定为准，版本以 tools.lock.json / lazy-lock.json 为准，完成状态以执行记录为准。
 
 ## 结论
 
@@ -10,7 +10,7 @@
 
 ## 1. 基线与升级矩阵
 
-原配置 Git 提交：cde7e723b57aac4edbd957e4b2d1a16668b00b91。原目录 C:/Users/Administrator/AppData/Local/nvim 与 C:/Users/Administrator/AppData/Local/nvim-data 保留。实现位于 C:/Users/Administrator/AppData/Local/nvim-upgrade，数据位于 C:/Users/Administrator/AppData/Local/nvim-upgrade-data，分支 codex/upgrade-nvim-0.12。
+原配置 Git 提交：cde7e723b57aac4edbd957e4b2d1a16668b00b91。隔离升级阶段，原目录 C:/Users/Administrator/AppData/Local/nvim 与 C:/Users/Administrator/AppData/Local/nvim-data 保留；实现位于 C:/Users/Administrator/AppData/Local/nvim-upgrade，数据位于 C:/Users/Administrator/AppData/Local/nvim-upgrade-data，分支 codex/upgrade-nvim-0.12。合并后的当前入口与数据备份见执行记录末节。
 
 | 部件 | 实际原版本 | 目标/处理 | 原因 |
 | --- | --- | --- | --- |
@@ -34,7 +34,7 @@
 | VSCode-Neovim | 1.20.0 | 1.20.0，已是稳定目标 | 核验 [官方变更记录](https://github.com/vscode-neovim/vscode-neovim/blob/master/CHANGELOG.md)，原生 profile 支持 |
 | Go | 编辑器不需常驻 | 1.27.1，仅用于 efm 构建 | 运行 efm 不需要 Go |
 
-升级时 45 个独立模式插件均核对安装 HEAD，且无跟踪文件修改，详见 [升级插件证据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/plugins.json)。后续审计另补齐宿主插件锁，当前状态见第 8 节与执行记录。稳定标签优先；维护方案需要 main 的插件固定完整 SHA。lazy.nvim、Noice 等当前提交已经满足目标，核验后保留。
+升级时 45 个独立模式插件均核对安装 HEAD，且无跟踪文件修改，详见 [升级插件证据](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/plugins.json)。后续审计另补齐宿主插件锁，当前状态见第 8 节与执行记录。稳定标签优先；维护方案需要 main 的插件固定完整 SHA。lazy.nvim、Noice 等当前提交已经满足目标，核验后保留。
 
 TypeScript 分两层：服务器兼容的全局 JS SDK 固定为 5.9.3，项目 SDK 由 vtsls.autoUseWorkspaceTsdk 选择。Vue 的 Mason 安装原来会浮动拉取 typescript，现显式固定全局 SDK。新的 TypeScript 原生编译器可执行文件不能直接替代 tsserver JavaScript API；编辑器升级也不应改写项目依赖锁。
 
@@ -64,7 +64,7 @@ flowchart LR
 | Conform 单独执行且关闭错误通知 | 格式化不经过原生 LSP | efm + 统一格式入口 |
 | 提取函数返回 editor.action.rename，但无客户端 handler | 生成代码后无法进入重命名 | 原生 show_document + buf.rename，处理编码 |
 
-实现位置：[LSP 生命周期](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/lsp.lua)、[格式入口](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/config/format.lua)、[vtsls 集成](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/lsp/vtsls.lua)。Vue 委托官方 vue_ls.on_init 转发，并以一个上下文适配修正多工作区归属（第 8 节）；不同时启动旧 Volar/ts_ls。vtsls 注册 @vue/typescript-plugin；Vue hybrid 与 vtsls 共同完成 SFC 能力。
+实现位置：[LSP 生命周期](C:/Users/Administrator/AppData/Local/nvim/lua/config/lsp.lua)、[格式入口](C:/Users/Administrator/AppData/Local/nvim/lua/config/format.lua)、[vtsls 集成](C:/Users/Administrator/AppData/Local/nvim/lua/lsp/vtsls.lua)。Vue 委托官方 vue_ls.on_init 转发，并以一个上下文适配修正多工作区归属（第 8 节）；不同时启动旧 Volar/ts_ls。vtsls 注册 @vue/typescript-plugin；Vue hybrid 与 vtsls 共同完成 SFC 能力。
 
 Rust 只有 rustaceanvim 启动 RA；可执行文件固定在 1.99.0 工具链，cargo/rustfmt 通过 rustup 解析项目约束。RA 子进程 PATH 把 rustup 放在旧 Mason rustfmt shim 前，避免旧 rustfmt 抢占。打开 Rust 文件不加载 DAP，F5 才进 Cargo 调试。
 
@@ -132,7 +132,7 @@ Rust initialized 不代表 Cargo 模型完成。过早 debuggables 只有 cargo 
 | 发现 | 处理与边界 |
 | --- | --- |
 | vtsls.autoUseWorkspaceTsdk 只在分析中承诺，配置未启用 | 显式启用；真实 projectInfo 返回的标准库路径必须来自项目 node_modules/typescript/lib，不能只比较相同版本号 |
-| Vue 服务器请求不带 buffer，官方 handler 在多根场景选择全局第一个 TS 客户端 | [Vue 适配](C:/Users/Administrator/AppData/Local/nvim-upgrade/lua/lsp/vue_ls.lua) 按发起 Vue 工作区选择所属 vtsls，补齐连接 buffer 后委托官方 handler；转发协议、回调和初始化重试仍由上游实现，不解析各种 payload 形状 |
+| Vue 服务器请求不带 buffer，官方 handler 在多根场景选择全局第一个 TS 客户端 | [Vue 适配](C:/Users/Administrator/AppData/Local/nvim/lua/lsp/vue_ls.lua) 按发起 Vue 工作区选择所属 vtsls，补齐连接 buffer 后委托官方 handler；转发协议、回调和初始化重试仍由上游实现，不解析各种 payload 形状 |
 | 读取普通文件就加载安装管理器；Mason PATH 与语言启用混在加载链 | runtime 统一加入已安装工具 PATH；Mason 使用 PATH=skip，两个安装插件按命令加载；全部 Mason/LspInstall 入口归 mason-lspconfig 一处注册，automatic_enable=false 保持 |
 | 诊断可见性条件每次渲染复制诊断列表，即使计数已缓存 | DiagnosticChanged/BufEnter 更新一次计数，内层按缓存控制显示；从空诊断变为有诊断再恢复均覆盖 |
 | Dropbar 先构建整条路径，再只取文件名 | 使用官方 sources.path.max_depth=1，保留文件图标和 Markdown/LSP/语法后备 |
@@ -145,7 +145,7 @@ Rust initialized 不代表 Cargo 模型完成。过早 debuggables 只有 cargo 
 
 VSCode 的 cmdheight=50 保留：已安装 1.20.0 包含旧问题修复，但当前宿主仍按消息行数超过 cmdheight 时展开 Output。注释已改为说明当前行为，不能将该设置仅因旧 issue 已关闭判为冗余。
 
-本轮性能在同一进程交替运行 5 轮、每轮完整 GC，500 条合成诊断和 200 次组件计算取中位数。状态栏结果文本、高亮组及间距逐轮相同；文件名/图标逐轮相同。原始结果见 [组件性能](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/config-audit-ui-performance.json)。
+本轮性能在同一进程交替运行 5 轮、每轮完整 GC，500 条合成诊断和 200 次组件计算取中位数。状态栏结果文本、高亮组及间距逐轮相同；文件名/图标逐轮相同。原始结果见 [组件性能](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/config-audit-ui-performance.json)。
 
 | 场景 | 基线 | 清理后 | 减少的实际工作 |
 | --- | ---: | ---: | --- |
@@ -162,7 +162,7 @@ Hover 实际由 Noice 接管 `vim.lsp.buf.hover`，因此 Neovim 原生浮窗变
 
 Code Action 的 `Buffer operation failed` 在 18 个真实 vtsls 动作中定位到插件预览写入：14 个动作被服务器标为 `disabled`，其错误内容可能包含换行，插件把它作为单个 `nvim_buf_set_lines` 元素，触发 `'replacement string' item contains newlines`。插件当前 main 与本地锁定提交相同；配置层在预览前处理禁用动作，并对其他预览行拆分换行。执行入口也阻止禁用动作，列表显示原因。面包屑原插件按文件自动附着，现将自动附着关闭，按键仍可按需显示。
 
-## 9. 导航与编辑性能复核
+## 10. 导航与编辑性能复核
 
 2026-10-03 在同一 Neovim 0.12.5、插件和合成 JavaScript 样本中，交替运行 5 轮旧索引与当前索引。每轮先解析语法树，只计首次跳转回调；重复跳转仍取 7 次中位数。旧实现一次扫描整个文件：2 万行产生 57 万条查询捕获，遍历约 684 ms、排序约 138 ms。当前实现按光标附近的 256 行窗口查询，单窗口约 7296 条捕获、约 6 ms；只有找不到目标时才继续向相邻窗口搜索。
 
@@ -184,7 +184,15 @@ Code Action 的 `Buffer operation failed` 在 18 个真实 vtsls 动作中定位
 
 其他跳转的代码路径没有发现每次 `h/j/k/l` 都发起的 LSP 请求：`gd`/`gr` 按需进入 Snacks LSP picker，`gjx`/`gkx` 调用原生诊断跳转并在目标处开浮窗。真实 UI 已验证诊断正反跳转、`;`/`,` 重复和回绕，LSP 定义请求返回目标；这不等于所有项目的服务器响应时间已有上界，因此没有改动这些按需入口。
 
-原始样本和等价性结果见 [导航性能证据](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/evidence/navigation-performance.json)；复跑入口为 `scripts/check-performance.lua` 和 `scripts/verification/check-ui.mjs navigation-performance`。面包屑按 D9 保持默认关闭，真实 UI 已复验，无需修改该配置。
+原始样本和等价性结果见 [导航性能证据](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/navigation-performance.json)；复跑入口为 `scripts/check-performance.lua` 和 `scripts/verification/check-ui.mjs navigation-performance`。面包屑按 D9 保持默认关闭，真实 UI 已复验，无需修改该配置。
+
+## 11. 主树环境与配置审计（2026-10-04）
+
+日常入口已切到主树 `nvim`，数据目录连接到已验收的 0.12.5 依赖。旧版 0.11.5 的核心、独立数据和 GUI 备份已按 D6 清理。此前旧/新性能数据取自合并前同一套升级配置；为核实主树入口，用当前主树在 130×40 真实 UI、附着 vtsls 的 2400 行 TypeScript 样本中重新运行 `navigation-performance`。七轮交替测试里，300 次 `j` 的映射/原生中位数分别为 1.369/1.367 ms 每键，`k` 为 1.260/1.291 ms 每键；同轮结果未显示 `j/k` 映射的可辨识额外成本。搜索开启/关闭时连续 `j` 的中位数为 2.930/2.687 ms 每键，含 UI、事件和服务器工作，不能全部归因于状态栏。完整样本见[主树导航证据](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/main-tree-navigation-20261004.json)。这次是热缓存合成样本，不覆盖业务项目冷启动或完整索引。
+
+代码审计发现一处可复现的窗口行为错误：[Snacks 窗口键位](C:/Users/Administrator/AppData/Local/nvim/lua/plugins/tool/snacks.lua)把当前 help 窗口排除在编辑窗口外，却在统计其他窗口时将 help 算入。仅有一个编辑窗口和一个 help 分屏时，从编辑窗口按 `<A-w>` 会关闭编辑窗口，留下 help。后续修复应共用同一编辑窗口判定，再复验编辑窗口、help、quickfix、Neo-tree 和浮窗组合。
+
+[precognition 规格](C:/Users/Administrator/AppData/Local/nvim/lua/plugins/editor/precognition.lua)已 `enabled=false`，对应键位不可达，属于可删除的失效配置。Tiny Code Action 的多个补丁分别覆盖菜单、单动作直执行、resolve 和底层 apply 路径；它们承担禁用动作过滤和执行拦截，不能仅凭数量判为重复。同步保存格式化最多等待 2000 ms，Code Action 等待服务器最多 3000 ms；这是可感知的响应上限，但本轮未测得具体项目卡顿，因此不据此修改语义或删除功能。除上述窗口问题外，没有测得值得为性能再改生产配置的瓶颈。
 
 ## 官方依据
 

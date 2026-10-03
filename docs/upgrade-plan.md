@@ -1,20 +1,20 @@
 # Neovim 升级执行计划
 
-角色：PLAN。依据：[迁移约定](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-contract.md)。原因和数据见[完整分析](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-analysis.md)；实际结果见[执行记录](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-record.md)。版本唯一来源为 [tools.lock.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/tools.lock.json) 与 [lazy-lock.json](C:/Users/Administrator/AppData/Local/nvim-upgrade/lazy-lock.json)。
+角色：PLAN。依据：[迁移约定](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-contract.md)。原因和数据见[完整分析](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-analysis.md)；实际结果见[执行记录](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-record.md)。版本唯一来源为 [tools.lock.json](C:/Users/Administrator/AppData/Local/nvim/tools.lock.json) 与 [lazy-lock.json](C:/Users/Administrator/AppData/Local/nvim/lazy-lock.json)。
 
 ## 执行顺序
 
 | 阶段 | 依赖 | 工作与主要文件 | 验收出口 | 当前状态 |
 | --- | --- | --- | --- | --- |
-| P0 基线/隔离 | 无 | 保存 Git、插件、运行时、VSCode/环境/GUI 备份；创建 codex/upgrade-nvim-0.12 工作树与独立数据 | 旧环境可独立启动，测试不会替换运行中目录 | 完成 |
+| P0 基线/隔离 | 无 | 保存 Git、插件、运行时、VSCode/环境/GUI 备份；创建 codex/upgrade-nvim-0.12 工作树与独立数据 | 隔离测试不会替换运行中目录 | 完成；旧版资产已按 D6 清理 |
 | P1 运行时/安装 | P0 | 稳定核心、Node、MinGW、CLI、Rust/Go、GUI；迁移插件锁；scripts/install-tools.lua、build-efm.ps1 | 实际版本、Mason receipt、插件 HEAD/无修改、下载 SHA 与锁一致 | 完成 |
 | P2 LSP 生命周期 | P1 | config/lsp.lua；lsp/vtsls.lua、vue_ls.lua；Rust 唯一入口；诊断/高亮按 buffer 管理 | JS/TS/Vue/Rust 原生请求；双根隔离；ESLint 修复；提取函数后重命名 | 完成 |
 | P3 格式化 | P2 | config/format.lua、format/prettier.json；efm 引号/失败传播补丁 | 保存和手动唯一客户端；项目风格；Unicode 文件名；失败提示且不改内容 | 完成 |
 | P4 语法树/编辑 | P1、P2 | config/treesitter.lua、ast_move.lua、parameter_swap.lua；main API 与解析器 DLL | queries/注入树、选择展开收缩、交换/点重复、;/,、缓存失效 | 完成 |
 | P5 UI/宿主/调试 | P2—P4 | Snacks 公共 outline 钩子、UFO、Blink 片段、会话、按需 DAP；environment/vscode | 真实 UI/Unicode/null；Vue JS/TS 的区块/函数折叠及预览；Node/Rust 断点；VSCode 原生扩展运行时发宿主动作且无 LSP 客户端 | 完成 |
 | P6 性能 | P4、P5 | 启动按需加载；heirline 搜索计数；AST 索引 | 相同样例前后测量；保留首次开销和指标范围 | 完成 |
-| P7 日常入口 | P1—P6 | scripts/nvim.ps1、neovide.ps1、activate.ps1；VSCode 原生 NVIM_APPNAME；系统 Neovide | 未来 CLI/GUI/VSCode 使用相同锁和 profile，旧用户会话继续运行 | 已切换；现有 VSCode 窗口由用户保存后重启 |
-| P8 收尾/回退 | P7 | 中文分析/约定/计划/记录、证据、验收工具；scripts/rollback.ps1 | 格式/语法/diff 检查、旧环境可启动、代码提交和备份路径完整 | 完成，最终检查见执行记录 |
+| P7 日常入口 | P1—P6 | scripts/nvim.ps1、neovide.ps1、activate.ps1；VSCode 原生 NVIM_APPNAME；系统 Neovide | 未来 CLI/GUI/VSCode 使用相同锁和 profile，旧会话按 D6 处理 | 主树入口已切换并复验；既有 VSCode 窗口需重启扩展 |
+| P8 收尾/回退 | P7 | 中文分析/约定/计划/记录、证据、验收工具；scripts/rollback.ps1 | 格式/语法/diff 检查、代码提交和当前版本入口备份完整 | 完成，最终检查见执行记录 |
 | P9 升级后审计 | P8 | 清理重复/失效配置、安装命令所有权、项目 SDK、Vue 多根上下文、状态栏与路径栏 | 实际 SDK 路径；双 Vue 根/自动导入/未保存编辑；管理命令；组件等效性能；原日常回归 | 完成；证据见执行记录 |
 | P10 升级后交互修复 | P9 | 按 D7—D9 修正语法选区、Hover、Code Action 预览/禁用状态和面包屑默认状态；复验 Vue 折叠与文本对象 | 真实 UI 的 Vue script/template 展开回缩、浮窗 Esc 与聚焦后的 Markdown 显示、真实禁用动作预览/执行、双顺序折叠、宿主边界 | 完成；证据见执行记录 |
 | P11 标签 Code Action | P10 | 按 D8、D10 接入进程内 tag_fix、Emmet 包裹和 Tiny 紧凑菜单；可视模式扩展 `<leader>ca` | 固定动作预览与一次撤销；取消/过期输入无改动；Vue/HTML/UTF-8/多行选区；真实菜单过滤与边缘布局；旧工作流/宿主回归和大文件测量 | 完成；证据见执行记录 |
@@ -34,11 +34,11 @@
 
 ## 本机安装/复跑命令
 
-以下 PowerShell 命令对应已安装的锁版本。先进入新工作树；核心与 Node/MinGW/Go 的下载、校验和实际安装结果在执行记录中。全新机器应先按锁安装这些外部工具，再执行下列命令。
+以下 PowerShell 命令对应已安装的锁版本，从当前主树执行；核心与 Node/MinGW/Go 的下载、校验和实际安装结果在执行记录中。全新机器应先按锁安装这些外部工具，再执行下列命令。
 
 ~~~powershell
-Set-Location C:\Users\Administrator\AppData\Local\nvim-upgrade
-$env:NVIM_APPNAME = 'nvim-upgrade'
+Set-Location C:\Users\Administrator\AppData\Local\nvim
+$env:NVIM_APPNAME = 'nvim'
 $nvimUpgrade = 'C:\tools\neovim\nvim-v0.12.5\nvim-win64\bin\nvim.exe'
 & $nvimUpgrade --headless -c 'luafile scripts/install-tools.lua'
 & $nvimUpgrade --headless -c 'luafile scripts/install-parsers.lua'
@@ -46,10 +46,10 @@ $nvimUpgrade = 'C:\tools\neovim\nvim-v0.12.5\nvim-win64\bin\nvim.exe'
 
 install-tools.lua 按工具锁安装 Mason 包，并为 Vue 显式固定全局 TypeScript SDK，再调用受 SHA 校验的 efm 构建。不要用 -l 执行含异步安装的脚本；主事件循环必须持续到子进程完成。日常启动不用这两条命令。
 
-验收工具只用于回归，不是编辑器运行依赖。已有安装位于 scripts/verification/node_modules；以后重建使用 npm ci。样例由脚本复制到新的临时目录，避免修改业务项目。
+验收工具只用于回归，不是编辑器运行依赖。主树的 scripts/verification/node_modules 已按锁文件执行 npm ci；以后重建仍使用该命令。样例由脚本复制到新的临时目录，避免修改业务项目。
 
 ~~~powershell
-$nodeUpgrade = 'C:\Users\Administrator\AppData\Local\nvim-upgrade-data\tools\node-v24.21.0-win-x64'
+$nodeUpgrade = 'C:\Users\Administrator\AppData\Local\nvim-data\tools\node-v24.21.0-win-x64'
 $env:Path = "$nodeUpgrade;$env:Path"
 & "$nodeUpgrade\npm.cmd" ci --prefix scripts/verification --no-audit --no-fund
 $fixtureDestination = Join-Path ([IO.Path]::GetTempPath()) ('nvim-verification-' + [guid]::NewGuid().ToString('N'))
@@ -90,7 +90,7 @@ $env:NVIM_TEST_MASON_COMMAND = 'MasonInstall'
 Remove-Item Env:NVIM_TEST_MASON_COMMAND
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs host
 & $nvimUpgrade --headless -u NONE -c 'luafile scripts/check-ui-performance.lua'
-& $nvimUpgrade --headless -u NONE -c 'set rtp+=C:/Users/Administrator/AppData/Local/nvim-upgrade' -c 'luafile scripts/check-performance.lua'
+& $nvimUpgrade --headless -u NONE -c 'set rtp+=C:/Users/Administrator/AppData/Local/nvim' -c 'luafile scripts/check-performance.lua'
 ~~~
 
 UI 验收需要桌面会话、已安装解析器/工具；Rust 样例需要 1.99.0 工具链和 Windows C/C++ 链接环境。真实 UI/RPC 脚本会创建并关闭自己的编辑器，输出结果 JSON 与 .errors；断言失败返回非零。Rust 验收等 rustaceanvim 既有 on_initialized/quiescent 信号和 Cargo run target 就绪后才调试；等待谓词不发 RPC。VSCode 验收加载扩展的真实 Lua/Vim 运行时并记录宿主 RPC，未代替业务项目的宿主语言扩展实测。
@@ -101,34 +101,29 @@ UI 验收需要桌面会话、已安装解析器/工具；Rust 样例需要 1.99
 
 ## 日常使用与切换状态
 
-已应用的 Windows 用户环境：NVIM_APPNAME=nvim-upgrade、NEOVIM_BIN 指向锁定核心、用户 PATH 将新核心目录置前。Windows PowerShell profile 的 nvim/neovide 函数调用新工作树的固定版本脚本。系统与便携 Neovide 均为 0.16.2。
+已应用的 Windows 用户环境：NVIM_APPNAME=nvim、NEOVIM_BIN 指向锁定核心、用户 PATH 将新核心目录置前。Windows PowerShell profile 的 nvim/neovide 函数调用主树的固定版本脚本。nvim-data 连接到已验收的升级依赖目录；无需全局 XDG 路径覆盖。系统与便携 Neovide 均为 0.16.2。
 
 VSCode 用户设置已更新两个官方键：
 
 ~~~json
 {
   "vscode-neovim.neovimExecutablePaths.win32": "C:\\tools\\neovim\\nvim-v0.12.5\\nvim-win64\\bin\\nvim.exe",
-  "vscode-neovim.NVIM_APPNAME": "nvim-upgrade"
+  "vscode-neovim.NVIM_APPNAME": "nvim"
 }
 ~~~
 
-新 PowerShell 窗口直接运行 nvim 或 neovide。已有终端也可显式运行 C:/Users/Administrator/AppData/Local/nvim-upgrade/scripts/nvim.ps1 或 neovide.ps1。已有 VSCode 窗口先保存文件，再执行 Neovim: Restart Extension；不强制中断运行中的三个会话。
+新 PowerShell 窗口直接运行 nvim 或 neovide。已有终端也可显式运行 C:/Users/Administrator/AppData/Local/nvim/scripts/nvim.ps1 或 neovide.ps1。切换前的嵌入进程已按用户授权停止；已有 VSCode 窗口保存文件后执行 Neovim: Restart Extension，才会重新启动主树配置。
 
 打开文件后，用 :LspInfo / :checkhealth vim.lsp 查看实际客户端与根；状态栏查看格式器是否已就绪。按需入口首次启动服务器/调试器仍需等待；先用常用真实项目各完成一次编辑、保存、重命名和调试再长期使用。
 
 ## 回退
 
-旧核心 C:/tools/neovim/nvim-win64/bin/nvim.exe、原配置 nvim、原数据 nvim-data 均保留；旧环境真实 UI 启动已复验。切换前设置、profile 与环境备份位于 C:/Users/Administrator/AppData/Local/nvim-upgrade-data/migration-backup-20261003/activation；旧 Neovide 完整目录位于其父目录的 neovide-0.13.3。
+主树切换前的当前版本环境、PowerShell profile 和 VSCode 设置备份位于 C:/Users/Administrator/AppData/Local/nvim-main-activation-backup-20261003153346。按 D6，旧版 0.11.5 的核心、独立数据和旧 Neovide 备份已清理；Git 历史中的旧配置提交仅作为历史记录，不提供旧版启动入口。
 
-rollback.ps1 恢复本次快照中的用户环境、PowerShell profile 和 VSCode settings.json。若切换后又改过这些文件，先保留后续修改，再恢复对应快照。执行后保存文件，完全退出并重新打开终端和 VSCode，使父进程环境也刷新。
+rollback.ps1 恢复本次快照中的用户环境、PowerShell profile 和 VSCode settings.json，使入口回到同为 0.12.5 的升级工作树。若切换后又改过这些文件，先保留后续修改，再恢复对应快照。该命令不会恢复已删除的 0.11.5 资产。执行后保存文件，完全退出并重新打开终端和 VSCode，使父进程环境也刷新。
 
 ~~~powershell
-& C:\Users\Administrator\AppData\Local\nvim-upgrade\scripts\rollback.ps1 -BackupRoot C:\Users\Administrator\AppData\Local\nvim-upgrade-data\migration-backup-20261003\activation
-# 单独复验旧核心/配置，不更改当前默认入口
-$env:NVIM_APPNAME = 'nvim'
-& C:\tools\neovim\nvim-win64\bin\nvim.exe
-# 需要旧 GUI 时使用备份的完整可执行目录
-& C:\Users\Administrator\AppData\Local\nvim-upgrade-data\migration-backup-20261003\neovide-0.13.3\neovide.exe --neovim-bin C:\tools\neovim\nvim-win64\bin\nvim.exe
+& C:\Users\Administrator\AppData\Local\nvim\scripts\rollback.ps1 -BackupRoot C:\Users\Administrator\AppData\Local\nvim-main-activation-backup-20261003153346
 ~~~
 
 后续依赖更新先修改锁，在新隔离 profile 重跑相关验收，再切换入口。efm 上游修复 Windows 命令/错误传播后，应先用 Unicode 文件名和故障场景证明一致，再去掉本地补丁与 Go 构建依赖。
