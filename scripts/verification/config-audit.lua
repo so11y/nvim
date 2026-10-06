@@ -158,6 +158,90 @@ local ok, err = xpcall(function()
         'Sass function color was not resolved: ' .. vim.inspect(color)
     )
     report.sass_rgb_variable = color
+    vim.cmd.enew()
+    local vue_lines = {
+        '<script setup lang="ts">',
+        'const wrong: string = "#abcdef;";',
+        '</script>',
+        [=[<template><div style="color: #123456" :style="{ color: '#aabbcc' }" class="bg-[#fedcba]">#556677</div></template>]=],
+        '<style>button { color: #abcdef; }</style>',
+    }
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, vue_lines)
+    vim.bo.filetype = 'vue'
+    local vue_options =
+        require('colorizer.config').new_bo_options(0, 'filetype')
+    local colors =
+        require('colorizer.buffer').parse_lines(0, vue_lines, 0, vue_options)
+    assert(
+        not colors[1] and #(colors[3] or {}) == 3 and #(colors[4] or {}) == 1,
+        'Vue colorizer must skip script/text and keep style/class colors: '
+            .. vim.inspect(colors)
+    )
+    report.vue_color_scope = { script = 0, template_styles = 3, style = 1 }
+
+    local vue_buf = vim.api.nvim_get_current_buf()
+    local colorizer_buffer = require('colorizer.buffer')
+    local sass_parser = require('colorizer.parser.sass')
+    local function refresh(lines)
+        vim.api.nvim_buf_set_lines(vue_buf, 0, -1, false, lines)
+        colorizer_buffer.highlight(
+            vue_buf,
+            ns,
+            0,
+            #lines,
+            vue_options,
+            { __event = 'TextChangedI' }
+        )
+    end
+    local function variable(name, expected)
+        local _, actual = sass_parser.parser('$' .. name, 1, vue_buf)
+        assert(
+            actual == expected,
+            'Vue Sass variable ' .. name .. ': ' .. vim.inspect(actual)
+        )
+    end
+    local imported = vim.env.NVIM_TEST_ROOT .. '/_audit-colors.scss'
+    vim.fn.writefile({ '$imported: rgb(0, 0, 255);' }, imported)
+    vim.api.nvim_buf_set_name(
+        vue_buf,
+        vim.env.NVIM_TEST_ROOT .. '/sass-scope.vue'
+    )
+    refresh({
+        '<script setup>const ignored = "$outside: #ffffff;";</script>',
+        '<style lang="scss">',
+        '@use "audit-colors";',
+        '$accent: rgb(255, 0, 0);',
+        '$alias: $accent;',
+        '</style>',
+        '<style lang="scss">$second: #00ff00;</style>',
+    })
+    variable('outside', nil)
+    variable('accent', 'ff0000')
+    variable('alias', 'ff0000')
+    variable('second', '00ff00')
+    variable('imported', '0000ff')
+    refresh({
+        '<template><div style="color: $accent"></div></template>',
+        '<style lang="scss">',
+        '@use "audit-colors";',
+        '$accent: #112233;',
+        '</style>',
+    })
+    variable('accent', '112233')
+    variable('alias', nil)
+    variable('second', nil)
+    variable('imported', '0000ff')
+    refresh({ '<template><div>no styles</div></template>' })
+    variable('accent', nil)
+    variable('imported', nil)
+    report.vue_sass_scope = {
+        multiple_styles = true,
+        rgb = true,
+        aliases = true,
+        imports = true,
+        removed_definitions = true,
+        removed_styles = true,
+    }
 end, debug.traceback)
 report.error = not ok and err or nil
 report.errmsg = vim.v.errmsg

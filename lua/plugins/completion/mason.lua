@@ -4,6 +4,10 @@ return {
         version = '^2',
         lazy = true,
         opts = { PATH = 'skip' },
+        config = function(_, opts)
+            require('mason').setup(opts)
+            require('config.mason_tools').setup()
+        end,
     },
     {
         'mason-org/mason-lspconfig.nvim',

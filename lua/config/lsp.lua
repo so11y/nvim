@@ -19,7 +19,7 @@ function M.setup()
     vim.lsp.config('vue_ls', require('lsp.vue_ls'))
     vim.lsp.config('tag_fix', {
         cmd = require('lsp.tag_fix').cmd,
-        filetypes = { 'html', 'vue' },
+        filetypes = { 'html', 'vue', 'javascriptreact', 'typescriptreact' },
         offset_encoding = 'utf-8',
     })
     vim.lsp.config('eslint', {

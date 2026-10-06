@@ -1,10 +1,14 @@
-param([Parameter(Mandatory=$true)][string]$DataRoot)
+param(
+    [Parameter(Mandatory=$true)][string]$DataRoot,
+    [string]$PackageRoot
+)
 $ErrorActionPreference = 'Stop'
 $configRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $lock = Get-Content -LiteralPath (Join-Path $configRoot 'tools.lock.json') -Raw | ConvertFrom-Json
 $patch = Join-Path $configRoot 'patches\efm-windows-command.patch'
 if ((Get-FileHash -LiteralPath $patch -Algorithm SHA256).Hash.ToLowerInvariant() -ne $lock.efm_patch.patch_sha256) { throw 'EFM patch checksum mismatch' }
-$binary = Join-Path $DataRoot "mason\packages\efm\efm-langserver_$($lock.mason.efm)_windows_amd64\efm-langserver.exe"
+if (-not $PackageRoot) { $PackageRoot = Join-Path $DataRoot 'mason\packages\efm' }
+$binary = Join-Path $PackageRoot "efm-langserver_$($lock.mason.efm)_windows_amd64\efm-langserver.exe"
 if ((Test-Path -LiteralPath $binary) -and (Get-FileHash -LiteralPath $binary -Algorithm SHA256).Hash.ToLowerInvariant() -eq $lock.efm_patch.binary_sha256) { exit 0 }
 $go = Join-Path $DataRoot "tools\$($lock.efm_patch.compiler.version)\go\bin\go.exe"
 if (-not (Test-Path -LiteralPath $go)) { throw 'Install the compiler pinned in tools.lock.json before rebuilding EFM' }

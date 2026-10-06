@@ -102,7 +102,7 @@ map('v', '<A-d>', '"_d', {
 map('n', '<A-z>', 'u', {
     desc = 'Undo',
 })
-map('v', '<A-z>', 'u', {
+map('v', '<A-z>', '<Esc>u', {
     desc = 'Undo',
 })
 map('i', '<A-z>', '<C-o>u', {
@@ -113,7 +113,7 @@ map('i', '<A-z>', '<C-o>u', {
 map('n', '<A-y>', '<C-r>', {
     desc = 'Redo',
 })
-map('v', '<A-y>', '<C-r>', {
+map('v', '<A-y>', '<Esc><C-r>', {
     desc = 'Redo',
 })
 map('i', '<A-y>', '<C-o><C-r>', {

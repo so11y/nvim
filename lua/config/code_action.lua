@@ -197,15 +197,66 @@ function M.setup()
     end
 
     local previewer = require('tiny-code-action.previewers.buffer')
-    local preview_with_resolve = previewer.preview_with_resolve
-    previewer.preview_with_resolve = function(action, bufnr, client, ...)
+    previewer.preview_with_resolve = function(action, bufnr, client, entry)
         local reason = unavailable_reason(action, client, bufnr)
         if reason then
             return { 'Unavailable: ' .. one_line(reason) }
         end
-        local lines = preview_with_resolve(action, bufnr, client, ...)
+        local resolved, has_error, message =
+            previewer.resolve_action(vim.deepcopy(action), bufnr, client)
+        if entry and resolved then
+            entry._resolved_action = resolved
+        end
+        local changes = not has_error and actions.find_changes(resolved)
+        local lines = has_error and message or {}
+        if changes then
+            local backend = previewer.backend
+                or require('tiny-code-action.backend.vim')
+            local utils = require('tiny-code-action.utils')
+            for uri, edits in pairs(actions.normalize_changes(changes)) do
+                local source = vim.uri_to_bufnr(uri)
+                local before = vim.api.nvim_buf_is_loaded(source)
+                        and vim.api.nvim_buf_get_lines(source, 0, -1, false)
+                    or actions.get_file_lines(uri, bufnr)
+                local scratch = vim.api.nvim_create_buf(false, true)
+                local ok, after = pcall(function()
+                    vim.api.nvim_buf_set_lines(scratch, 0, -1, false, before)
+                    for _, option in ipairs({ 'eol', 'fixeol', 'binary' }) do
+                        vim.bo[scratch][option] = vim.bo[source][option]
+                    end
+                    local preview_edits = vim.deepcopy(edits)
+                    for _, edit in ipairs(preview_edits) do
+                        edit.newText = utils.strip_snippet_syntax(edit.newText)
+                        -- Confirmation belongs to applying the original action.
+                        edit.annotationId = nil
+                    end
+                    vim.lsp.util.apply_text_edits(
+                        preview_edits,
+                        scratch,
+                        client.offset_encoding
+                    )
+                    return vim.api.nvim_buf_get_lines(scratch, 0, -1, false)
+                end)
+                vim.api.nvim_buf_delete(scratch, { force = true })
+                if not ok then
+                    return {
+                        'Unable to preview code action.',
+                        one_line(tostring(after)),
+                    }
+                end
+                local diff =
+                    backend.get_diff(bufnr, before, after, previewer.config)
+                if type(diff) == 'string' then
+                    diff = vim.split(diff, '\n', { plain = true })
+                end
+                vim.list_extend(lines, diff)
+            end
+        end
+        if #lines == 0 then
+            lines = previewer.generate_preview(resolved, bufnr)
+        end
         local normalized = {}
-        for _, line in ipairs(lines or {}) do
+        for _, line in ipairs(lines) do
             vim.list_extend(normalized, vim.split(line, '\n', { plain = true }))
         end
         return normalized

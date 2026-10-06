@@ -1,1 +1,2 @@
 patches/*.patch -text -whitespace
+*.lua text eol=lf

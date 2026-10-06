@@ -1,5 +1,3 @@
-; extends
-
 ; --- 函数 ---
 (function_declaration) @function.outer
 (method_definition) @function.outer
@@ -51,5 +49,3 @@
 (string (string_fragment) @string.inner)
 (template_string) @string.outer
 ((template_string) @string.inner (#offset! @string.inner 0 1 0 -1))
-
-

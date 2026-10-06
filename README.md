@@ -1,6 +1,6 @@
 # Neovim 配置快捷键文档
 
-升级已部署到 `nvim-upgrade` profile：新终端使用 `nvim` / `neovide`，现有 VSCode 窗口保存后执行 **VSCode-Neovim: Restart**。完整[升级分析](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-analysis.md)、[执行计划与回退](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-plan.md)、[验收记录](C:/Users/Administrator/AppData/Local/nvim-upgrade/docs/upgrade-record.md)已保存。
+日常配置已部署到 `nvim` profile：新终端使用 `nvim` / `neovide`，现有 VSCode 窗口保存后执行 **VSCode-Neovim: Restart**。完整[升级分析](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-analysis.md)、[执行计划与回退](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-plan.md)、[验收记录](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-record.md)已保存。
 
 ## 目录
 
@@ -22,8 +22,8 @@
 |------|------|------|
 | n | `<Enter>` | 进入插入模式 |
 | i | `<Enter>` | 换行 |
-| n | `<C-a>` | 全选 |
-| n | `<C-n>` | 取消高亮搜索 |
+| n | `<A-a>` | 全选 |
+| n | `<Esc>` | 关闭悬浮帮助或清除搜索 |
 | n | `J` | 下翻半页 |
 | n | `K` | 上翻半页 |
 | n | `gh` | 跳转到行首 |
@@ -31,9 +31,10 @@
 
 ### 禁用按键 (使用 Alt 组合键替代)
 
+`x` 保留字符删除，`x` / `c` / `d` 使用黑洞寄存器，不覆盖剪贴板。
+
 | 原按键 | 替代方案 |
 |--------|----------|
-| `x` (删除字符) | `<A-d>` 删除行 |
 | `s` (替换) | `<Enter>` 进入插入模式 |
 | `u` (撤销) | `<A-z>` |
 | `<C-r>` (重做) | `<A-y>` |
@@ -46,6 +47,7 @@
 | n, i, v | `<A-z>` | 撤销 |
 | n, i, v | `<A-y>` | 重做 |
 | n | `<A-u>` | 后退跳转位置 |
+| n | `<A-i>` | 前进跳转位置 |
 | n | `<A-o>` | 代码大纲 |
 
 ---
@@ -89,7 +91,7 @@
 | `<A-l>` | 下一 buffer |
 | `<A-<>>` | buffer 左移 |
 | `<A->>` | buffer 右移 |
-| `<A-1>` ~ `<A-9>` | 跳转到对应 buffer |
+| `<A-1>` ~ `<A-3>` | 跳转到对应 buffer |
 | `<A-p>` | pin buffer (固定) |
 | `<A-w>` | 关闭当前 buffer |
 
@@ -114,8 +116,6 @@
 | n | `<A-k>` | 向上移动行 |
 | v | `<A-j>` | 向下移动选区 |
 | v | `<A-k>` | 向上移动选区 |
-| v | `J` | 多行选区下移 |
-| v | `K` | 多行选区上移 |
 
 ### 删除/剪切
 
@@ -233,6 +233,7 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 
 | 按键 | 功能 |
 |------|------|
+| `A-a` | 全选 |
 | `A-s` | 保存 |
 | `A-f` | 文件内搜索 |
 | `A-d` | 删除行 |
@@ -240,7 +241,8 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 | `A-y` | 重做 |
 | `A-j` | 向下移动 / 下一补全 |
 | `A-k` | 向上移动 / 上一补全 |
-| `A-i` | 后退跳转 |
+| `A-u` | 后退跳转 |
+| `A-i` | 前进跳转 |
 | `A-o` | 代码大纲 |
 | `A-c` | 复制到剪贴板 |
 | `A-v` | 粘贴 |
@@ -259,8 +261,6 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 | 按键 | 功能 |
 |------|------|
 | `C-j/k/h/l` | 窗口上下左右跳转 |
-| `C-n` | 取消高亮 |
-| `C-a` | 全选 |
 
 ### Leader 组合键
 

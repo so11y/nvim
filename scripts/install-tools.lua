@@ -1,13 +1,13 @@
 local data = vim.fn.stdpath('data')
 vim.opt.rtp:prepend(data .. '/lazy/mason.nvim')
-require('mason').setup()
+local mason = require('mason')
+local tools = require('config.mason_tools')
+if not mason.has_setup then
+    mason.setup({ PATH = 'skip' })
+    tools.setup()
+end
 local registry = require('mason-registry')
-local versions = vim.json.decode(
-    table.concat(
-        vim.fn.readfile(vim.fn.stdpath('config') .. '/tools.lock.json'),
-        '\n'
-    )
-)
+local versions = require('config.runtime').versions
 local result = { requested = versions.mason, installed = {}, failures = {} }
 local pending = vim.tbl_count(versions.mason)
 local function save_result()
@@ -20,15 +20,7 @@ end
 local function finish()
     if vim.fn.has('win32') == 1 and not next(result.failures) then
         vim.system(
-            {
-                'powershell',
-                '-NoProfile',
-                '-NonInteractive',
-                '-File',
-                vim.fn.stdpath('config') .. '/scripts/build-efm.ps1',
-                '-DataRoot',
-                data,
-            },
+            tools.efm_command(data .. '/mason/packages/efm'),
             { text = true },
             vim.schedule_wrap(function(build)
                 if build.code ~= 0 then
@@ -51,8 +43,6 @@ registry.refresh(vim.schedule_wrap(function(ok)
         local package = registry.get_package(name)
         local sdk_ok = true
         if name == 'vue-language-server' then
-            package.spec.source.extra_packages =
-                { 'typescript@' .. versions.typescript_sdk }
             local sdk = package:get_install_path()
                 .. '/node_modules/typescript/package.json'
             sdk_ok = vim.uv.fs_stat(sdk) ~= nil

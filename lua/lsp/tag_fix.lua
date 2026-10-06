@@ -19,6 +19,10 @@ local html_void = {
     wbr = true,
 }
 
+local function is_jsx(filetype)
+    return filetype == 'javascriptreact' or filetype == 'typescriptreact'
+end
+
 local function range(node)
     local sr, sc, er, ec = node:range()
     return {
@@ -35,6 +39,15 @@ local function compare(a, b)
         return a.character < b.character and -1 or 1
     end
     return 0
+end
+
+local function contains(outer, inner)
+    return compare(outer.start, inner.start) <= 0
+        and compare(inner['end'], outer['end']) <= 0
+end
+
+local function overlaps(a, b)
+    return compare(a.start, b['end']) < 0 and compare(a['end'], b.start) > 0
 end
 
 local function node_at(bufnr, position)
@@ -65,7 +78,11 @@ local function element_at(bufnr, position, filetype)
     local candidate
     while node do
         local type = node:type()
-        if
+        if is_jsx(filetype) then
+            if type == 'jsx_element' or type == 'jsx_self_closing_element' then
+                return node
+            end
+        elseif
             type == 'element'
             or filetype == 'html'
                 and (type == 'script_element' or type == 'style_element')
@@ -82,12 +99,15 @@ local function element_at(bufnr, position, filetype)
 end
 
 local function children(element)
+    if element:type() == 'jsx_self_closing_element' then
+        return nil, nil, element
+    end
     local start_tag, end_tag, self_closing_tag
     for child in element:iter_children() do
         local type = child:type()
-        if type == 'start_tag' then
+        if type == 'start_tag' or type == 'jsx_opening_element' then
             start_tag = child
-        elseif type == 'end_tag' then
+        elseif type == 'end_tag' or type == 'jsx_closing_element' then
             end_tag = child
         elseif type == 'self_closing_tag' then
             self_closing_tag = child
@@ -97,11 +117,18 @@ local function children(element)
 end
 
 local function empty_element(bufnr, element)
+    local jsx = element:type() == 'jsx_element'
     for child in element:iter_children() do
         local type = child:type()
-        if type ~= 'start_tag' and type ~= 'end_tag' then
+        if
+            type ~= 'start_tag'
+            and type ~= 'end_tag'
+            and type ~= 'jsx_opening_element'
+            and type ~= 'jsx_closing_element'
+        then
             if
-                type ~= 'text'
+                jsx
+                or type ~= 'text'
                 or vim.treesitter.get_node_text(child, bufnr):find('%S')
             then
                 return false
@@ -112,6 +139,10 @@ local function empty_element(bufnr, element)
 end
 
 local function tag_name(bufnr, tag)
+    if tag:type():match('^jsx_') then
+        local name = tag:field('name')[1]
+        return name and vim.treesitter.get_node_text(name, bufnr)
+    end
     for child in tag:iter_children() do
         if child:type() == 'tag_name' then
             return vim.treesitter.get_node_text(child, bufnr)
@@ -140,6 +171,75 @@ local function selection_in_template(bufnr, selected)
         and compare(selected['end'], range(end_tag).start) <= 0
 end
 
+local function selection_in_jsx(bufnr, selected)
+    local node = node_at(bufnr, selected.start)
+    while node do
+        local type = node:type()
+        if type == 'jsx_element' or type == 'jsx_self_closing_element' then
+            local whole = range(node)
+            if
+                compare(selected.start, whole.start) == 0
+                and compare(selected['end'], whole['end']) == 0
+            then
+                return true
+            end
+            if type == 'jsx_element' then
+                local opening, closing = children(node)
+                local body = opening
+                    and closing
+                    and {
+                        start = range(opening)['end'],
+                        ['end'] = range(closing).start,
+                    }
+                if body and contains(body, selected) then
+                    for child in node:iter_children() do
+                        if child ~= opening and child ~= closing then
+                            local child_range = range(child)
+                            if
+                                child:type() ~= 'jsx_text'
+                                and overlaps(selected, child_range)
+                                and not contains(selected, child_range)
+                            then
+                                return false
+                            end
+                        end
+                    end
+                    return true
+                end
+            end
+        end
+        node = node:parent()
+    end
+    return false
+end
+
+local function can_unwrap_jsx(bufnr, element, opening, closing)
+    if element:parent() and element:parent():type() == 'jsx_element' then
+        return true
+    end
+    local only_child
+    for child in element:iter_children() do
+        if child ~= opening and child ~= closing then
+            local type = child:type()
+            if type == 'jsx_text' then
+                if vim.treesitter.get_node_text(child, bufnr):find('%S') then
+                    return false
+                end
+            elseif
+                type == 'jsx_element' or type == 'jsx_self_closing_element'
+            then
+                if only_child then
+                    return false
+                end
+                only_child = true
+            else
+                return false
+            end
+        end
+    end
+    return only_child == true
+end
+
 local function code_actions(params)
     local only = params.context and params.context.only
     if only then
@@ -165,7 +265,12 @@ local function code_actions(params)
     local element = element_at(bufnr, selected.start, filetype)
     local has_selection = compare(selected.start, selected['end']) ~= 0
     local can_wrap = filetype == 'html'
-        or filetype == 'vue' and selection_in_template(bufnr, selected)
+    if filetype == 'vue' then
+        can_wrap = selection_in_template(bufnr, selected)
+    elseif is_jsx(filetype) then
+        can_wrap = element ~= nil
+            and (not has_selection or selection_in_jsx(bufnr, selected))
+    end
     if not element and not (has_selection and can_wrap) then
         return {}
     end
@@ -182,15 +287,24 @@ local function code_actions(params)
         )
 
         if start_tag and end_tag then
-            actions[#actions + 1] = action(
-                '去掉外层标签',
-                edit(uri, {
-                    { range = range(start_tag), newText = '' },
-                    { range = range(end_tag), newText = '' },
-                })
-            )
+            if
+                not is_jsx(filetype)
+                or can_unwrap_jsx(bufnr, element, start_tag, end_tag)
+            then
+                actions[#actions + 1] = action(
+                    '去掉外层标签',
+                    edit(uri, {
+                        { range = range(start_tag), newText = '' },
+                        { range = range(end_tag), newText = '' },
+                    })
+                )
+            end
 
-            if filetype == 'vue' and empty_element(bufnr, element) then
+            if
+                (filetype == 'vue' or is_jsx(filetype))
+                and tag_name(bufnr, start_tag)
+                and empty_element(bufnr, element)
+            then
                 local opening = vim.treesitter.get_node_text(start_tag, bufnr)
                 opening = opening:sub(1, -2):gsub('%s+$', '') .. ' />'
                 actions[#actions + 1] = action(
@@ -202,7 +316,14 @@ local function code_actions(params)
             end
         elseif self_closing_tag then
             local name = tag_name(bufnr, self_closing_tag)
-            if name and (filetype == 'vue' or not html_void[name:lower()]) then
+            if
+                name
+                and (
+                    filetype == 'vue'
+                    or not html_void[name:lower()]
+                    or is_jsx(filetype) and name:match('^[A-Z]')
+                )
+            then
                 local opening =
                     vim.treesitter.get_node_text(self_closing_tag, bufnr)
                 opening = opening:sub(1, -3):gsub('%s+$', '') .. '>'
@@ -276,7 +397,7 @@ local function wrap(params, callback, dispatchers)
         local ok, expanded = pcall(
             vim.fn['emmet#expandWord'],
             vim.trim(abbr) .. '{$#}',
-            'html',
+            is_jsx(vim.bo[bufnr].filetype) and 'jsx' or 'html',
             0
         )
         if not ok then
@@ -321,6 +442,13 @@ end
 
 function M.cmd(dispatchers)
     local closing, request_id = false, 0
+    local function terminate()
+        if closing then
+            return
+        end
+        closing = true
+        dispatchers.on_exit(0, 15)
+    end
     return {
         request = function(method, params, callback)
             request_id = request_id + 1
@@ -345,15 +473,13 @@ function M.cmd(dispatchers)
         end,
         notify = function(method)
             if method == 'exit' then
-                dispatchers.on_exit(0, 15)
+                terminate()
             end
         end,
         is_closing = function()
             return closing
         end,
-        terminate = function()
-            closing = true
-        end,
+        terminate = terminate,
     }
 end
 

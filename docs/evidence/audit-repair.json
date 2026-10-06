@@ -1,0 +1,239 @@
+{
+  "date": "2026-10-07",
+  "timezone": "Asia/Shanghai",
+  "scope": "Repair of confirmed code, performance, query duplication and configuration consistency findings in the existing working tree",
+  "fixes": {
+    "visual_undo_redo": "Leave Visual mode before undo/redo",
+    "unicode_previews": "Native apply_text_edits with negotiated LSP encoding and source EOF options; preserve source buffers, executable annotations and resolved actions; normalize preview and error lines",
+    "rust_textobjects": "Extend upstream queries, restore call argument swaps and inner objects, retain closures and macro interiors",
+    "tag_rpc_lifecycle": "Dispatch exit once for graceful and forced termination",
+    "mason_installation": "Use the lock for managed versions and Vue SDK; patch EFM in the staged package before promotion; reuse initialized Mason in the installer",
+    "shared_queries": "One ECMA extension loaded once by JavaScript, TypeScript and inherited TSX queries",
+    "vue_sass": "Scan only style contents; clear removed definitions and retain imports and variable aliases",
+    "consistency": "Lua LF enforced by .gitattributes and StyLua; README matches actual mappings and active profile"
+  },
+  "checks": {
+    "json": {
+      "checked": 87,
+      "passed": true
+    },
+    "lua_syntax": {
+      "checked": 81,
+      "passed": true
+    },
+    "lua_lf": true,
+    "stylua": true,
+    "powershell": {
+      "checked": 7,
+      "passed": true
+    },
+    "js_syntax": true,
+    "git_diff_check": true,
+    "plugin_lock": {
+      "checked": 45,
+      "passed": true
+    },
+    "efm_sha256": true,
+    "vue_sdk": {
+      "actual": "5.9.3",
+      "locked": "5.9.3"
+    }
+  },
+  "regressions": {
+    "editing": {
+      "visual_undo_redo": true,
+      "unicode_previews": 4,
+      "resolve_error_lines": true,
+      "eof_preview": true,
+      "errmsg": "",
+      "tag_restarts": {
+        "graceful": true,
+        "exits": 1,
+        "forced": true
+      },
+      "rust_textobjects": true,
+      "shared_queries": true,
+      "annotated_preview": {
+        "apply_confirmations": 1,
+        "preview_confirmations": 0
+      },
+      "unsaved_preview": true
+    },
+    "mason": {
+      "success_events": 1,
+      "errmsg": "",
+      "pinned_vue_sdk": true,
+      "version_conflict_rejected": true,
+      "staged_efm_build": true,
+      "failed_build_preserves_install": true
+    },
+    "vue_sass": {
+      "aliases": true,
+      "removed_definitions": true,
+      "removed_styles": true,
+      "imports": true,
+      "rgb": true,
+      "multiple_styles": true
+    },
+    "previews": {
+      "actions": 18,
+      "vue": {
+        "notices": 3,
+        "resolves": 0,
+        "kind": "refactor.move.newFile"
+      },
+      "disabled": 14,
+      "preview_errors": [],
+      "errmsg": ""
+    },
+    "ui_suites": [
+      {
+        "suite": "workflows",
+        "passed": true
+      },
+      {
+        "suite": "host",
+        "passed": true
+      },
+      {
+        "suite": "config-audit.lua",
+        "passed": true
+      },
+      {
+        "suite": "code-action-previews.lua",
+        "passed": true
+      },
+      {
+        "suite": "selection",
+        "passed": true
+      },
+      {
+        "suite": "tag-ui",
+        "passed": true
+      },
+      {
+        "suite": "linked-tags",
+        "passed": true
+      },
+      {
+        "suite": "action-ui",
+        "passed": true
+      },
+      {
+        "suite": "fold-colors",
+        "passed": true
+      },
+      {
+        "suite": "hover",
+        "passed": true
+      },
+      {
+        "suite": "mason-commands.lua (installed registry)",
+        "passed": true
+      },
+      {
+        "suite": "format-failure.lua",
+        "passed": true
+      }
+    ],
+    "jsx_tsx_tag_actions": true,
+    "installer_bootstrap": {
+      "normal_config": true,
+      "no_config": true,
+      "repeated_initialization_calls": 1
+    }
+  },
+  "performance": {
+    "method": "Same-process alternating before/after measurements; cached parse; component timings, not whole-editor latency",
+    "vue_sass": [
+      {
+        "before_ms": 0.8314,
+        "after_ms": 0.5971,
+        "script_lines": 1000,
+        "visible_lines": 40
+      },
+      {
+        "before_ms": 1.8602,
+        "after_ms": 0.493,
+        "script_lines": 5000,
+        "visible_lines": 40
+      },
+      {
+        "before_ms": 5.9072,
+        "after_ms": 0.584,
+        "script_lines": 20000,
+        "visible_lines": 40
+      }
+    ],
+    "queries": [
+      {
+        "before_ms": 21.1922,
+        "before_captures": 31000,
+        "after_captures": 31000,
+        "unique_targets_preserved": true,
+        "after_ms": 22.0207,
+        "lines": 1000,
+        "language": "javascript"
+      },
+      {
+        "before_ms": 12.0644,
+        "before_captures": 18000,
+        "after_captures": 18000,
+        "unique_targets_preserved": true,
+        "after_ms": 12.0147,
+        "lines": 1000,
+        "language": "typescript"
+      },
+      {
+        "before_ms": 23.0467,
+        "before_captures": 36000,
+        "after_captures": 31000,
+        "unique_targets_preserved": true,
+        "after_ms": 20.9277,
+        "lines": 1000,
+        "language": "tsx"
+      }
+    ]
+  },
+  "existing_changes_preserved": [
+    "JSX/TSX tag action implementation and tests",
+    "Native LSP setup change",
+    "Vue style/class color scope filter"
+  ],
+  "limitations": [
+    "Online registry refresh exceeded the existing command test wait on both baseline and repaired configurations; installation commands passed against the installed registry. Full online downloads were not rerun.",
+    "Mason staging regression substituted the download boundary and exercised the native runner, the real PowerShell checksum-success path, and injected patch failures. Fresh Go compilation was not rerun.",
+    "Full Node/Rust DAP matrix and cold startup/indexing of a large business project were not rerun."
+  ],
+  "final_review": {
+    "date": "2026-10-07",
+    "additional_fixes": [
+      "AnnotatedTextEdit: remove annotation references only in scratch preview copies, keeping confirmation on the executable action",
+      "EOF edits: match source eol, fixeol and binary options before native preview application",
+      "Normalize multiline resolver and edit-error messages before writing preview buffers"
+    ],
+    "headless_suites": [
+      "editing-regressions.lua",
+      "mason-tools.lua"
+    ],
+    "ui_suites": [
+      "code-action-previews.lua",
+      "tag-ui",
+      "action-ui",
+      "workflows",
+      "host",
+      "config-audit.lua"
+    ],
+    "static_checks": [
+      "StyLua",
+      "81 Lua files compiled",
+      "81 Lua files use LF",
+      "87 JSON files parsed",
+      "7 PowerShell files parsed",
+      "UI driver JavaScript syntax",
+      "git diff --check HEAD"
+    ],
+    "passed": true,
+    "carried_forward": "Remaining UI suites, installed plugin/tool checks and component performance measurements passed during repair and were not rerun in the final review"
+  }
+}
