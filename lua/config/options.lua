@@ -33,6 +33,11 @@ vim.opt.smartindent = true -- 开启智能缩进（换行时自动对齐）
 vim.opt.splitbelow = true -- 水平分屏时，新窗口在下方（默认在上方）
 vim.opt.splitright = true -- 垂直分屏时，新窗口在右方（默认在左方）
 
+if vim.g.neovide then
+    vim.g.neovide_scroll_animation_length = 0.16
+    vim.g.neovide_position_animation_length = 0.1
+end
+
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 0
 

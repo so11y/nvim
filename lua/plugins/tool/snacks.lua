@@ -76,6 +76,8 @@ return {
                 enabled = true,
                 animate = {
                     enabled = true,
+                    easing = 'outQuad',
+                    duration = { step = 8, total = 160 },
                 },
                 scope = {
                     enabled = true, -- enable highlighting the current scope
@@ -90,7 +92,7 @@ return {
             },
             notifier = {
                 enabled = true,
-                style = 'notification',
+                style = 'compact',
                 filter = function(notif)
                     local exclude = { 'No information available' }
                     for _, m in ipairs(exclude) do
@@ -104,6 +106,16 @@ return {
             scope = {
                 enabled = true,
                 cursor = false,
+            },
+            scroll = {
+                enabled = not vim.g.neovide,
+                animate = {
+                    duration = { step = 8, total = 160 },
+                    easing = 'outQuad',
+                },
+                animate_repeat = {
+                    duration = { step = 3, total = 50 },
+                },
             },
             picker = {
                 ui_select = true,

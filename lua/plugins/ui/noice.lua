@@ -3,12 +3,25 @@ return {
         'folke/noice.nvim',
         event = 'VeryLazy',
         dependencies = {
-            'MunifTanjim/nui.nvim', -- "rcarriga/nvim-notify", -- 如果你想要精美的右上角通知，可以取消注释
+            'MunifTanjim/nui.nvim',
         },
         opts = {
+            notify = { enabled = false },
+            views = {
+                notify = { backend = 'snacks' },
+                lsp_progress = {
+                    backend = 'snacks',
+                    format = 'notify',
+                    replace = true,
+                    merge = true,
+                    timeout = 1000,
+                    title = 'LSP',
+                },
+            },
             lsp = {
                 progress = {
                     enabled = true,
+                    view = 'lsp_progress',
                 },
                 hover = {
                     enabled = false,

@@ -8,7 +8,7 @@ return {
             completion = {
                 documentation = {
                     auto_show = true,
-                    auto_show_delay_ms = 300,
+                    auto_show_delay_ms = 0,
                 },
                 list = {
                     selection = {
@@ -19,6 +19,7 @@ return {
                     enabled = true,
                 },
                 menu = {
+                    auto_show_delay_ms = 0,
                     border = 'rounded',
                     draw = {
                         treesitter = { 'lsp' },
