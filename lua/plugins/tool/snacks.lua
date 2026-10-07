@@ -92,7 +92,7 @@ return {
             },
             notifier = {
                 enabled = true,
-                style = 'compact',
+                style = 'notification',
                 filter = function(notif)
                     local exclude = { 'No information available' }
                     for _, m in ipairs(exclude) do
