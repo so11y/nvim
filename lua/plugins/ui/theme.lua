@@ -11,6 +11,8 @@ return {
             },
             custom_highlights = function(colors)
                 return {
+                    ['@lsp.type.class.vue'] = { link = '@property' },
+                    ['@lsp.type.method.vue'] = { link = '@property' },
                     LspInlayHint = {
                         bg = 'NONE', -- colors.base,
                     },
