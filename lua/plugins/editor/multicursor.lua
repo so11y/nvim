@@ -121,6 +121,11 @@ return {
         local mc = require('multicursor-nvim')
         mc.setup()
         mc.addKeymapLayer(function(map)
+            map({ 'n', 'x' }, 'mm', function()
+                if not mc.cursorsEnabled() then
+                    mc.enableCursors()
+                end
+            end, { desc = '启用所有光标' })
             map('n', '<Esc>', mc.clearCursors, { desc = '退出多光标' })
         end)
     end,

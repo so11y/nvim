@@ -5,6 +5,11 @@ return {
         event = { 'InsertEnter', 'CmdlineEnter' },
         dependencies = { 'rafamadriz/friendly-snippets', 'mattn/emmet-vim' },
         opts = {
+            sources = {
+                providers = {
+                    lsp = { async = true },
+                },
+            },
             completion = {
                 documentation = {
                     auto_show = true,
