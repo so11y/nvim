@@ -6,6 +6,7 @@ local M = {
         'javascript',
         'html',
         'css',
+        'scss',
         'lua',
         'bash',
         'markdown',
