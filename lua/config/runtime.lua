@@ -18,7 +18,8 @@ function M.setup()
             .. M.versions.node
             .. '-win-x64'
         local compiler = 'C:/tools/mingw-v' .. M.versions.mingw .. '/bin'
-        vim.env.PATH = node .. ';' .. compiler .. ';' .. vim.env.PATH
+        local bin = vim.fn.stdpath('data') .. '/tools/bin'
+        vim.env.PATH = bin .. ';' .. node .. ';' .. compiler .. ';' .. vim.env.PATH
     end
 end
 
