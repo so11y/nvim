@@ -20,10 +20,10 @@ return {
             local nxo = { 'n', 'x', 'o' }
             local motion = require('config.ast_move')
             for key, capture in pairs(motion.captures) do
-                vim.keymap.set(nxo, 'gj' .. key, function()
+                vim.keymap.set(nxo, ']' .. key, function()
                     motion.move({ forward = true }, capture)
                 end, { desc = 'Next ' .. capture })
-                vim.keymap.set(nxo, 'gk' .. key, function()
+                vim.keymap.set(nxo, '[' .. key, function()
                     motion.move({ forward = false }, capture)
                 end, { desc = 'Previous ' .. capture })
             end

@@ -90,7 +90,7 @@ vim.api.nvim_create_autocmd('User', {
     pattern = 'LazyDone',
     once = true,
     callback = function()
-        require('utils.repeatable').map_jump('gjx', 'gkx', function()
+        require('utils.repeatable').map_jump(']x', '[x', function()
             vscode.action('editor.action.marker.next')
         end, function()
             vscode.action('editor.action.marker.prev')

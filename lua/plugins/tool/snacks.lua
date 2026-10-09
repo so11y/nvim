@@ -432,7 +432,7 @@ return {
                     focus = false,
                 })
             end
-            require('utils.repeatable').map_jump('gjx', 'gkx', function()
+            require('utils.repeatable').map_jump(']x', '[x', function()
                 vim.diagnostic.jump({ count = 1, on_jump = show_diagnostic })
             end, function()
                 vim.diagnostic.jump({ count = -1, on_jump = show_diagnostic })
