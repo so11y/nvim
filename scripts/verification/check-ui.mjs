@@ -307,8 +307,8 @@ return {lines=vim.api.nvim_buf_get_lines(0,0,-1,false),height=vim.api.nvim_win_g
   result={setup,preview,applied,filtered};
  }else if(suite==='fold-colors'){
    result=await rpc('nvim_exec_lua',[`local cases={
-   {file='TagActions.html',insert=6,lines={'','<ul>','  <li>上方</li>','</ul>','','<ul>','  <li>下方</li>','</ul>'},first=8,second=12,col=1},
-   {file='TagActions.vue',insert=13,lines={'  <ul>','    <li>上方</li>','  </ul>','','  <ul>','    <li>下方</li>','  </ul>'},first=14,second=18,col=3},
+   {file='TagActions.html',insert=6,lines={'','<ul class="top">','  <li>上方</li>','</ul>','','<ul class="bottom">','  <li>下方</li>','</ul>'},first=8,second=12,col=1},
+   {file='TagActions.vue',insert=13,lines={'  <ul v-if="visible">','    <li>上方</li>','  </ul>','','  <ul v-for="item in items">','    <li>下方</li>','  </ul>'},first=14,second=18,col=3},
    {file='TagActions.jsx',insert=0,lines={'const View = () => (','  <f-div>','    <f-div>','      <span>上方</span>','    </f-div>','    <f-div>','      <span>下方</span>','    </f-div>','  </f-div>',');'},first=3,second=6,col=5},
    {file='TagActions.tsx',insert=0,lines={'const View = () => (','  <f-div>','    <f-div>','      <span>上方</span>','    </f-div>','    <f-div>','      <span>下方</span>','    </f-div>','  </f-div>',');'},first=3,second=6,col=5},
  }
@@ -333,13 +333,23 @@ return {lines=vim.api.nvim_buf_get_lines(0,0,-1,false),height=vim.api.nvim_win_g
     local first_open,first_close=rainbow(case.first,case.col),rainbow(case.first+2,case.col+1)
     local second_open,second_close=rainbow(case.second,case.col),rainbow(case.second+2,case.col+1)
     assert(first_open==first_close and second_open==second_close,case.file..' unfurled tag colors differ')
-   vim.cmd(('%d,%dfold'):format(case.first,case.first+2))
-   vim.cmd(('%d,%dfold'):format(case.second,case.second+2))
+   if vim.bo.filetype=='html' or vim.bo.filetype=='vue' then
+    ufo.enableFold(bufnr)
+    assert(vim.wait(5000,function() return vim.fn.foldlevel(case.first)>vim.fn.foldlevel(case.first+3) and vim.fn.foldlevel(case.second)>vim.fn.foldlevel(case.first+3) end,25),case.file..' native tag folds missing')
+   else
+    vim.cmd(('%d,%dfold'):format(case.first,case.first+2))
+    vim.cmd(('%d,%dfold'):format(case.second,case.second+2))
+   end
    ufo.openAllFolds()
    vim.api.nvim_win_set_cursor(0,{case.first,0})
    vim.cmd.normal({args={'zc'},bang=true})
    vim.cmd.redraw()
-   assert(vim.fn.foldclosed(case.first)==case.first,case.file..' first ul did not fold')
+   assert(vim.fn.foldclosed(case.first)==case.first and vim.fn.foldclosedend(case.first)==case.first+2,case.file..' first tag fold did not include closing tag')
+   local first_fold={start=vim.fn.foldclosed(case.first),finish=vim.fn.foldclosedend(case.first)}
+   vim.api.nvim_win_set_cursor(0,{case.second,0})
+   vim.cmd.normal({args={'zc'},bang=true})
+   assert(vim.fn.foldclosed(case.second)==case.second and vim.fn.foldclosedend(case.second)==case.second+2,case.file..' second tag fold did not include closing tag')
+   local second_fold={start=vim.fn.foldclosed(case.second),finish=vim.fn.foldclosedend(case.second)}
    local function captures(row)
      return vim.tbl_map(function(x) return x.capture end,vim.treesitter.get_captures_at_pos(0,row-1,case.col))
    end
@@ -354,11 +364,14 @@ return {lines=vim.api.nvim_buf_get_lines(0,0,-1,false),height=vim.api.nvim_win_g
       local chunks=require('ufo.render').captureVirtText(bufnr,line,row,false,{},0)
       local handler=require('ufo.decorator'):getVirtTextHandler(bufnr)
       chunks=handler(chunks,row,row+2,200,function(text) return text end,{bufnr=bufnr,text=line})
-      for _,chunk in ipairs(chunks) do if chunk[1]=='ul' or chunk[1]=='f-div' then return chunk[2] end end
+      local text=table.concat(vim.tbl_map(function(chunk) return chunk[1] end,chunks))
+      assert(text:sub(1,#line)==line,case.file..' folded text lost opening tag attributes')
+      for _,chunk in ipairs(chunks) do if chunk[1]=='ul' or chunk[1]=='f-div' then return chunk[2],text end end
    end
-   local first_hl,second_hl=tag_highlight(case.first),tag_highlight(case.second)
+   local first_hl,first_text=tag_highlight(case.first)
+   local second_hl,second_text=tag_highlight(case.second)
     assert(first_hl==first_close and second_hl==second_close,case.file..' folded tag lost rainbow color')
-    result[#result+1]={file=case.file,captures=first,normal=normal,folded=folded,ufo_bg=ufo_bg,tag_hl=first_hl,rainbow_hl=first_close}
+    result[#result+1]={file=case.file,captures=first,normal=normal,folded=folded,ufo_bg=ufo_bg,tag_hl=first_hl,rainbow_hl=first_close,folds={first_fold,second_fold},texts={first_text,second_text}}
    vim.bo.modified=false
  end
  return {cases=result,errmsg=vim.v.errmsg}`,[]]);

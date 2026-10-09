@@ -66,32 +66,35 @@ local ok, err = xpcall(function()
         end
         report.last_file = filename
         report.native_clients = clients
-        -- These endpoints exclude closing tags, so Tree-sitter alone cannot satisfy this assertion.
         assert(
             vim.wait(10000, function()
                 return vim.fn.foldlevel(1) > 0
-                    and vim.fn.foldlevel(9) == 0
+                    and vim.fn.foldlevel(9) > 0
+                    and vim.fn.foldlevel(4) > vim.fn.foldlevel(3)
+                    and vim.fn.foldlevel(5) > vim.fn.foldlevel(4)
                     and vim.fn.foldlevel(11) > 0
-                    and vim.fn.foldlevel(19) == 0
+                    and vim.fn.foldlevel(19) > 0
                     and vim.fn.foldlevel(21) > 0
-                    and vim.fn.foldlevel(25) == 0
+                    and vim.fn.foldlevel(25) > 0
+                    and vim.fn.foldlevel(22) > vim.fn.foldlevel(21)
             end, 25),
-            'Native Vue section folds missing'
+            'Vue element and injected language folds missing'
         )
         local case = { clients = clients, folds = {} }
         for _, span in ipairs({
-            { 1, 8 },
-            { 4, 7 },
-            { 5, 6 },
-            { 11, 18 },
-            { 12, 17 },
-            { 14, 15 },
-            { 21, 24 },
-            { 22, 23 },
+            { 1, 9 },
+            { 4, 8 },
+            { 5, 7 },
+            { 11, 19 },
+            { 12, 18 },
+            { 13, 17 },
+            { 14, 16 },
+            { 21, 25 },
+            { 22, 24 },
         }) do
             case.folds[#case.folds + 1] = check_fold(span[1], span[2])
         end
-        check_fold(4, 7)
+        check_fold(4, 8)
         vim.cmd.redraw()
         local preview = require('ufo').peekFoldedLinesUnderCursor()
         assert(
@@ -104,7 +107,7 @@ local ok, err = xpcall(function()
         case.preview = true
         report.cases[filename] = case
     end
-    -- A disconnected Vue server still leaves syntax folds usable.
+    -- Folding stays independent of the Vue server.
     local bufnr = vim.api.nvim_get_current_buf()
     local vue = vim.lsp.get_clients({ bufnr = bufnr, name = 'vue_ls' })[1]
     vim.lsp.buf_detach_client(bufnr, vue.id)
@@ -119,13 +122,13 @@ local ok, err = xpcall(function()
                 and vim.fn.foldlevel(19) > 0
                 and vim.fn.foldlevel(25) > 0
         end, 25),
-        'Vue syntax fallback missing'
+        'Vue server-independent folds missing'
     )
-    require('ufo').closeAllFolds()
-    report.fallback = {
-        script = vim.fn.foldclosedend(1),
-        template = vim.fn.foldclosedend(11),
-        style = vim.fn.foldclosedend(21),
+    report.server_independent = {
+        script = check_fold(1, 9),
+        function_body = check_fold(4, 8),
+        template = check_fold(11, 19),
+        style = check_fold(21, 25),
     }
     vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/fold.ts')
     assert(

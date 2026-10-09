@@ -1,0 +1,146 @@
+{
+  "errmsg": "",
+  "cases": [
+    {
+      "folds": [
+        {
+          "finish": 10,
+          "start": 8
+        },
+        {
+          "finish": 14,
+          "start": 12
+        }
+      ],
+      "folded": {
+        "bg": 1973806,
+        "fg": 13489908
+      },
+      "tag_hl": "RainbowDelimiterRed",
+      "rainbow_hl": "RainbowDelimiterRed",
+      "captures": [
+        "tag",
+        "nospell"
+      ],
+      "file": "TagActions.html",
+      "texts": [
+        "<ul class=\"top\"> 󰁂 2 ",
+        "<ul class=\"bottom\"> 󰁂 2 "
+      ],
+      "ufo_bg": {
+        "bg": 1973806
+      },
+      "normal": {
+        "bg": 1973806,
+        "fg": 13489908
+      }
+    },
+    {
+      "folds": [
+        {
+          "finish": 16,
+          "start": 14
+        },
+        {
+          "finish": 20,
+          "start": 18
+        }
+      ],
+      "folded": {
+        "bg": 1973806,
+        "fg": 13489908
+      },
+      "tag_hl": "RainbowDelimiterYellow",
+      "rainbow_hl": "RainbowDelimiterYellow",
+      "captures": [
+        "_template",
+        "tag",
+        "nospell"
+      ],
+      "file": "TagActions.vue",
+      "texts": [
+        "  <ul v-if=\"visible\"> 󰁂 2 ",
+        "  <ul v-for=\"item in items\"> 󰁂 2 "
+      ],
+      "ufo_bg": {
+        "bg": 1973806
+      },
+      "normal": {
+        "bg": 1973806,
+        "fg": 13489908
+      }
+    },
+    {
+      "folds": [
+        {
+          "finish": 5,
+          "start": 3
+        },
+        {
+          "finish": 8,
+          "start": 6
+        }
+      ],
+      "folded": {
+        "bg": 1973806,
+        "fg": 13489908
+      },
+      "tag_hl": "RainbowDelimiterBlue",
+      "rainbow_hl": "RainbowDelimiterBlue",
+      "captures": [
+        "_jsx_element",
+        "_jsx_element",
+        "variable",
+        "tag.builtin"
+      ],
+      "file": "TagActions.jsx",
+      "texts": [
+        "    <f-div> 󰁂 2 ",
+        "    <f-div> 󰁂 2 "
+      ],
+      "ufo_bg": {
+        "bg": 1973806
+      },
+      "normal": {
+        "bg": 1973806,
+        "fg": 13489908
+      }
+    },
+    {
+      "folds": [
+        {
+          "finish": 5,
+          "start": 3
+        },
+        {
+          "finish": 8,
+          "start": 6
+        }
+      ],
+      "folded": {
+        "bg": 1973806,
+        "fg": 13489908
+      },
+      "tag_hl": "RainbowDelimiterBlue",
+      "rainbow_hl": "RainbowDelimiterBlue",
+      "captures": [
+        "_jsx_element",
+        "_jsx_element",
+        "variable",
+        "tag.builtin"
+      ],
+      "file": "TagActions.tsx",
+      "texts": [
+        "    <f-div> 󰁂 2 ",
+        "    <f-div> 󰁂 2 "
+      ],
+      "ufo_bg": {
+        "bg": 1973806
+      },
+      "normal": {
+        "bg": 1973806,
+        "fg": 13489908
+      }
+    }
+  ]
+}

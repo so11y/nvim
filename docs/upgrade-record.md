@@ -191,3 +191,9 @@ Neovim 0.12.5 原生 Hover 为 Markdown 浮窗设置 `conceallevel=2`，但默�
 ## Vue Code Action 不可用操作修复（2026-10-04）
 
 用户截图中的 `Move to a new file` 是 vtsls 对 Vue 文件返回的 `refactor.move.newFile`。在独立复制的 Vue 项目中，服务器未标记它为禁用，但 `codeAction/resolve` 可复现 TypeScript 5.9.3 的 `App.vue has unknown extension`。现由 [Code Action 集成](C:/Users/Administrator/AppData/Local/nvim/lua/config/code_action.lua)在菜单前过滤该精确组合，并拦截预览与直接执行。[真实服务器回归](C:/Users/Administrator/AppData/Local/nvim/scripts/verification/code-action-previews.lua)通过：18 个原有 TypeScript 动作预览无缓冲区错误，Vue 动作的三条执行路径均被阻止、`resolve` 请求数为 0；原有禁用动作 UI 回归也通过。真实 Vue 菜单只显示可用的 `Remove unused declaration for: 'wrong'`，`errmsg` 为空；同名动作在 `.ts` 文件中 resolve 成功并返回编辑。修改文件的 StyLua 检查及全量 Lua 语法检查通过。验收项目位于独立临时目录，未修改工作区样例。
+
+## HTML/Vue 完整元素折叠（2026-10-09）
+
+按 D13 调整 UFO 提供器选择，删除 Vue 专用 LSP 折叠请求；现有 Vue 范围验收改为包含结束标签，HTML/Vue 配色验收改用实际生成的折叠并检查开标签属性。约定及现行分析已同步；升级计划中的已完成阶段和旧执行证据保留为历史记录。
+
+独立临时工程的真实 UI 验收全部通过：[先开 TypeScript](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/element-fold-vue-ts-first-20261009.json)与[先开 Vue](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/element-fold-vue-first-20261009.json)均覆盖 JS/TS SFC 各 9 个区块、函数、条件、模板和样式范围、预览、展开、Vue 服务器断开及普通 TypeScript 折叠；[标签配色与范围](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/element-fold-fold-colors-20261009.json)确认 HTML/Vue 双 `<ul>` 的结束标签随元素折入，`class`、`v-if`、`v-for` 属性保留，四类标签前景色及背景检查通过，`errmsg` 均为空。修改文件的 StyLua、JavaScript 语法、82 个 Lua 文件语法及 Git diff 检查通过。

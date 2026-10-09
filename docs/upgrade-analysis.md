@@ -90,7 +90,7 @@ textobjects main 的移动/交换只查主语言树，直接替换会漏 Vue 内
 
 按 D1/D5，格式与语义补全/诊断/跳转/重构经 LSP；参数/引号/函数体的精确文本对象需要语法树，调试需要 DAP。documentSymbol 不能替代这些 AST 编辑语义。
 
-UFO 首选 LSP foldingRange，后备已安装的 Tree-sitter/indent，摘要与浮窗预览保留。Vue hybrid 同时连接 vue_ls 和 vtsls：实测前者返回完整 SFC 折叠，后者声明能力但对 Vue 返回空列表。UFO 默认只取第一个客户端，先打开 TypeScript 再打开 Vue 会导致全部折叠丢失。因此 Vue 经 UFO 的自定义提供器直接请求 vue_ls；LspAttach 后刷新折叠，避免初始化前的语法后备一直保留。VSCode 调用宿主折叠/选区/大纲，不启动 Neovim 语言插件。
+按 D13，HTML/Vue 使用 UFO 内置 Tree-sitter 提供器，现有元素查询覆盖结束标签，注入查询提供脚本与样式内部范围；已移除原先直接请求 vue_ls 的自定义折叠提供器。其余文件类型仍首选 LSP foldingRange，后备已安装的 Tree-sitter/indent，LspAttach 后刷新折叠。VSCode 调用宿主折叠/选区/大纲，不启动 Neovim 语言插件。
 
 ## 5. 性能证据
 

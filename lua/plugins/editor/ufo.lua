@@ -1,5 +1,3 @@
--- vtsls advertises folding for Vue but returns no ranges in hybrid mode.
--- Request the Vue server directly, independent of client attachment order.
 local function preserve_tag_colors(virt_text, lnum, ctx)
     if not ctx.text:match('^%s*</?[%w]') then
         return virt_text
@@ -76,29 +74,6 @@ local function preserve_tag_colors(virt_text, lnum, ctx)
     return result
 end
 
-local function vue_folds(bufnr)
-    return require('promise')(function(resolve, reject)
-        local client = vim.lsp.get_clients({
-            bufnr = bufnr,
-            name = 'vue_ls',
-            method = 'textDocument/foldingRange',
-        })[1]
-        if not client then
-            reject('UfoFallbackException')
-            return
-        end
-        client:request('textDocument/foldingRange', {
-            textDocument = vim.lsp.util.make_text_document_params(bufnr),
-        }, function(err, ranges)
-            if err then
-                reject(err)
-            else
-                resolve(ranges or {})
-            end
-        end, bufnr)
-    end)
-end
-
 return {
     {
         {
@@ -110,10 +85,13 @@ return {
                     if buftype ~= '' and buftype ~= 'acwrite' then
                         return ''
                     end
+                    if filetype == 'html' or filetype == 'vue' then
+                        return { 'treesitter', 'indent' }
+                    end
                     local parser =
                         vim.treesitter.get_parser(bufnr, nil, { error = false })
                     return {
-                        filetype == 'vue' and vue_folds or 'lsp',
+                        'lsp',
                         parser and 'treesitter' or 'indent',
                     }
                 end,
