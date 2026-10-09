@@ -54,8 +54,6 @@ return {
                 ia = 'parameter.inner',
                 ['as'] = 'statement.outer',
                 ['is'] = 'statement.inner',
-                aq = 'string.outer',
-                iq = 'string.inner',
             }) do
                 vim.keymap.set({ 'x', 'o' }, key, function()
                     vim.cmd("normal! m'")
