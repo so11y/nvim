@@ -18,10 +18,15 @@ function M.setup()
             .. M.versions.node
             .. '-win-x64'
         local compiler = 'C:/tools/mingw-v' .. M.versions.mingw .. '/bin'
+        local lazygit = vim.fn.stdpath('data')
+            .. '/tools/lazygit-v'
+            .. M.versions.lazygit
         local bin = vim.fn.stdpath('data') .. '/tools/bin'
         vim.env.PATH = bin
             .. ';'
             .. node
+            .. ';'
+            .. lazygit
             .. ';'
             .. compiler
             .. ';'

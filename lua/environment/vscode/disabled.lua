@@ -24,6 +24,7 @@ return {
     'folke/snacks.nvim',
     'folke/persistence.nvim',
     'lewis6991/gitsigns.nvim',
+    'esmuellert/codediff.nvim',
     'folke/which-key.nvim',
     'nvzone/showkeys',
     'MagicDuck/grug-far.nvim',

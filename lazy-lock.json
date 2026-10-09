@@ -11,6 +11,10 @@
     "branch": "main",
     "commit": "edefef779ab08ce1a4a404713e3012b0d202bd35"
   },
+  "codediff.nvim": {
+    "branch": "main",
+    "commit": "09d9ebef2cc5a5c04db7a349cd6c61bdf84ecc8e"
+  },
   "colorful-winsep.nvim": {
     "branch": "main",
     "commit": "6134b5cd4a38990c7b720adc90973ed32f726179"

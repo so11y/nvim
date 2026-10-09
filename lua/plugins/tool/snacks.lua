@@ -209,6 +209,13 @@ return {
 
         keys = {
             {
+                '<leader>gt',
+                function()
+                    Snacks.lazygit()
+                end,
+                desc = '打开 LazyGit',
+            },
+            {
                 '<A-o>',
                 function()
                     local cursor = vim.api.nvim_win_get_cursor(0)

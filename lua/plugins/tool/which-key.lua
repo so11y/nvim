@@ -24,6 +24,10 @@ return {
             -- 这里配置你的菜单分组名称
             spec = {
                 {
+                    '<leader>g',
+                    group = 'Git',
+                },
+                {
                     '<leader>s',
                     group = '🖥️ 分屏与搜索',
                     mode = 'v',

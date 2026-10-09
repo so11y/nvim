@@ -10,6 +10,7 @@
 - [Buffer 管理](#buffer-管理)
 - [文件树操作](#文件树操作)
 - [代码编辑](#代码编辑)
+- [Git 操作与差异](#git-操作与差异)
 - [代码搜索与跳转](#代码搜索与跳转)
 - [LSP 功能](#lsp-功能)
 - [Treesitter 文本对象与跳转](#treesitter-文本对象与跳转)
@@ -182,6 +183,20 @@
 
 ---
 
+## Git 操作与差异
+
+独立 Neovim / Neovide 使用 LazyGit 管理分支、远程仓库、暂存和提交，CodeDiff 查看差异；`<leader>` 是空格。
+
+| 按键 | 功能 |
+|------|------|
+| `<leader>gt` | 打开 LazyGit |
+| `<leader>gd` | 打开 CodeDiff 差异视图 |
+| `<leader>gh` | 查看 Git 历史 |
+
+CodeDiff 中用 `]c` / `[c` 切换差异块，`]f` / `[f` 切换文件，`q` 关闭视图并返回。看完差异后按 `<leader>gt` 打开 LazyGit 进行 Git 操作。
+
+---
+
 ## 代码搜索与跳转
 
 ### Flash (快速跳转)
@@ -285,6 +300,9 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 |------|------|
 | `<leader>sv` | 垂直分屏 |
 | `<leader>sh` | 水平分屏 |
+| `<leader>gt` | LazyGit |
+| `<leader>gd` | Git 差异 |
+| `<leader>gh` | Git 历史 |
 | `<leader>jw` | Flash 跳转 |
 | `<leader>sw` | Flash 选区 |
 | `<leader>fp` | 项目选择器 |

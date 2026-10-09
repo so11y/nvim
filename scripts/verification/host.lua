@@ -7,6 +7,8 @@ for _, name in ipairs({
     'rustaceanvim',
     'blink.cmp',
     'nvim-dap',
+    'snacks.nvim',
+    'codediff.nvim',
 }) do
     assert(not config.plugins[name], 'Host loaded ' .. name)
     blocked[#blocked + 1] = name

@@ -34,6 +34,9 @@ vim.opt.splitbelow = true -- 水平分屏时，新窗口在下方（默认在上
 vim.opt.splitright = true -- 垂直分屏时，新窗口在右方（默认在左方）
 
 if vim.g.neovide then
+    vim.o.guifont = 'FiraCode Nerd Font:h14'
+    vim.opt.background = 'dark'
+    vim.g.neovide_theme = 'dark'
     vim.g.neovide_scroll_animation_length = 0.16
     vim.g.neovide_position_animation_length = 0.1
 end

@@ -1,6 +1,7 @@
 {
   "neovim": "0.12.5",
   "node": "24.21.0",
+  "lazygit": "0.65.1",
   "tree-sitter": "0.27.0",
   "mason": {
     "codelldb": "v1.12.3",
