@@ -1,0 +1,67 @@
+{
+  "repo": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-git-ui-gUQGR6",
+  "setup": {
+    "version": "commit=17cb09fa7b08bc96d9f0e81b91f4720fc1a36700, build date=2026-09-13T05:42:30Z, build source=binaryRelease, version=0.65.1, os=windows, arch=amd64, git version=2.42.0.windows.2\n",
+    "executable": "C:\\Users\\Administrator\\AppData\\Local\\nvim-data\\tools\\lazygit-v0.65.1\\lazygit.exe"
+  },
+  "diff": {
+    "before": [
+      "alpha",
+      "beta",
+      "gamma"
+    ],
+    "layout": "side-by-side",
+    "changes": 1,
+    "after": [
+      "ALPHA",
+      "beta",
+      "gamma"
+    ],
+    "root": "C:/Users/Administrator/AppData/Local/Temp/nvim-git-ui-gUQGR6"
+  },
+  "terminal": {
+    "name": "term://C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-git-ui-gUQGR6//8604:C:\\Users\\Administrator\\AppData\\Local\\nvim-data/tools/lazygit-v0.65.1\\lazygit.exe",
+    "ft": "snacks_terminal",
+    "mode": "t",
+    "floating": true
+  },
+  "stage": true,
+  "commit": "Verify LazyGit CodeDiff integration",
+  "history": true,
+  "neogit": {
+    "refs": [
+      "Branches (2)",
+      "@ main                               Verify LazyGit CodeDiff integration",
+      "  base-for-neogit                    Seed verification repository",
+      "",
+      "Tags (0)",
+      ""
+    ],
+    "base": "9053ea0e84dd8154a3c86ebad1716dc8cf01492b",
+    "branch": "trial/neogit",
+    "diff": {
+      "changes": 1,
+      "after": [
+        "NEOGIT",
+        "beta",
+        "gamma"
+      ],
+      "mode": "explorer",
+      "before": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    "stage": true,
+    "commit": "Verify Neogit branch and CodeDiff workflow",
+    "commit_count": 2
+  },
+  "editor": {
+    "dd": "<Nop>",
+    "messages": "",
+    "ft": "text",
+    "u": "<Nop>",
+    "errmsg": ""
+  }
+}

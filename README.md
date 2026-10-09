@@ -185,15 +185,31 @@
 
 ## Git 操作与差异
 
-独立 Neovim / Neovide 使用 LazyGit 管理分支、远程仓库、暂存和提交，CodeDiff 查看差异；`<leader>` 是空格。
+独立 Neovim / Neovide 可用 LazyGit 或 Neogit 管理分支、远程仓库、暂存和提交，CodeDiff 查看差异；`<leader>` 是空格。Neogit 使用英文菜单，CodeDiff 固定在与其集成兼容的 2.49.2。
 
 | 按键 | 功能 |
 |------|------|
 | `<leader>gt` | 打开 LazyGit |
+| `<leader>gn` | 打开 Neogit |
 | `<leader>gd` | 打开 CodeDiff 差异视图 |
 | `<leader>gh` | 查看 Git 历史 |
 
-CodeDiff 中用 `]c` / `[c` 切换差异块，`]f` / `[f` 切换文件，`q` 关闭视图并返回。看完差异后按 `<leader>gt` 打开 LazyGit 进行 Git 操作。
+CodeDiff 中用 `]c` / `[c` 切换差异块，`]f` / `[f` 切换文件，`q` 关闭视图并返回。看完差异后按 `<leader>gt` 或 `<leader>gn` 进行 Git 操作。
+
+Neogit 中先按菜单键，再按动作键，例如 `b c` 表示先按 `b`，再按 `c`：
+
+| 按键 | 功能 |
+|------|------|
+| `y` | 查看分支列表 |
+| `b c` | 选择创建起点，新建并切换分支 |
+| `b l` | 切换分支 |
+| `m m` | 选择分支合入当前分支 |
+| `s` / `u` | 暂存 / 取消暂存光标所在文件或差异块 |
+| `c c` | 编辑提交信息；连续两次 `Ctrl+C` 完成提交 |
+| `f a` | 抓取所有远程仓库 |
+| `p u` / `P u` | 从上游拉取 / 推送到上游 |
+| `d d` | 在 CodeDiff 中查看光标所在文件或提交的差异 |
+| `?` | 查看操作菜单 |
 
 ---
 
@@ -301,6 +317,7 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 | `<leader>sv` | 垂直分屏 |
 | `<leader>sh` | 水平分屏 |
 | `<leader>gt` | LazyGit |
+| `<leader>gn` | Neogit |
 | `<leader>gd` | Git 差异 |
 | `<leader>gh` | Git 历史 |
 | `<leader>jw` | Flash 跳转 |

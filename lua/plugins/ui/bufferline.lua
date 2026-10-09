@@ -10,6 +10,7 @@ return {
             close_icon = '',
             always_show_bufferline = false,
             show_tab_indicators = false,
+            show_close_icon = false,
             show_buffer_close_icons = true,
             offsets = {
                 {

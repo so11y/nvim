@@ -24,6 +24,7 @@ return {
     'folke/snacks.nvim',
     'folke/persistence.nvim',
     'lewis6991/gitsigns.nvim',
+    'NeogitOrg/neogit',
     'esmuellert/codediff.nvim',
     'folke/which-key.nvim',
     'nvzone/showkeys',

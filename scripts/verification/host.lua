@@ -8,6 +8,7 @@ for _, name in ipairs({
     'blink.cmp',
     'nvim-dap',
     'snacks.nvim',
+    'neogit',
     'codediff.nvim',
 }) do
     assert(not config.plugins[name], 'Host loaded ' .. name)

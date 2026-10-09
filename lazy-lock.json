@@ -13,7 +13,7 @@
   },
   "codediff.nvim": {
     "branch": "main",
-    "commit": "09d9ebef2cc5a5c04db7a349cd6c61bdf84ecc8e"
+    "commit": "7608f3b436ce1f84a4888f75e53079caa981a2e9"
   },
   "colorful-winsep.nvim": {
     "branch": "main",
@@ -74,6 +74,10 @@
   "neo-tree.nvim": {
     "branch": "v3.x",
     "commit": "1a14083046d96e88e361d1da00761c40d45012f3"
+  },
+  "neogit": {
+    "branch": "master",
+    "commit": "70708be9664b7fcdd010eb07bdc3ebc9311c2027"
   },
   "noice.nvim": {
     "branch": "main",
