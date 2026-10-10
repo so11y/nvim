@@ -10,12 +10,12 @@ return {
         {
             '<A-b>',
             '<cmd>Neotree toggle<cr>',
-            desc = 'Toggle Explorer',
+            desc = '切换文件树',
         },
         {
             '<A-e>',
             '<cmd>Neotree reveal<cr>',
-            desc = 'Reveal File',
+            desc = '定位当前文件',
         },
     },
     config = function()

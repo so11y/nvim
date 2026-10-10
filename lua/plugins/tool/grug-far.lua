@@ -31,7 +31,7 @@ return {
                     end
                 end,
                 mode = { 'n', 'v' }, -- 支持普通模式和可视模式
-                desc = 'Grug Far (当前文件)',
+                desc = '搜索替换（当前文件）',
             },
         },
     },

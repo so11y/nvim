@@ -53,10 +53,10 @@ map('n', 'K', '<C-u>', {
 
 -- 跳转历史 (光标前进后退)
 map('n', '<A-u>', '<C-o>', {
-    desc = '光标位置撤销 (Back)',
+    desc = '后退跳转位置',
 })
 map('n', '<A-i>', '<C-i>', {
-    desc = '光标位置重做 (Forward)',
+    desc = '前进跳转位置',
 })
 
 -- =======================================================
@@ -64,7 +64,7 @@ map('n', '<A-i>', '<C-i>', {
 -- =======================================================
 -- 回车键行为
 map('n', '<CR>', 'a', {
-    desc = '进入插入模式 (Append)',
+    desc = '在光标后插入',
 })
 
 -- 取消搜索高亮
@@ -79,7 +79,7 @@ map('n', '<Esc>', function()
     vim.fn.setreg('/', '')
     vim.snippet.stop()
 end, {
-    desc = 'Close hover or clear search',
+    desc = '关闭悬停提示或清除搜索',
 })
 
 -- 全选
@@ -100,24 +100,24 @@ map('v', '<A-d>', '"_d', {
 
 -- 撤销 (Undo) - 映射到 Alt+z
 map('n', '<A-z>', 'u', {
-    desc = 'Undo',
+    desc = '撤销',
 })
 map('v', '<A-z>', '<Esc>u', {
-    desc = 'Undo',
+    desc = '撤销',
 })
 map('i', '<A-z>', '<C-o>u', {
-    desc = 'Undo',
+    desc = '撤销',
 })
 
 -- 重做 (Redo) - 映射到 Alt+y
 map('n', '<A-y>', '<C-r>', {
-    desc = 'Redo',
+    desc = '重做',
 })
 map('v', '<A-y>', '<Esc><C-r>', {
-    desc = 'Redo',
+    desc = '重做',
 })
 map('i', '<A-y>', '<C-o><C-r>', {
-    desc = 'Redo',
+    desc = '重做',
 })
 
 -- =======================================================

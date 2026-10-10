@@ -8,7 +8,7 @@ return {
                 require('opencode').ask('@this: ')
             end,
             mode = { 'n', 'x' },
-            desc = 'opencode: 提问',
+            desc = '代码助手：提问',
         },
         {
             '<A-n>',
@@ -16,7 +16,7 @@ return {
                 require('opencode').select()
             end,
             mode = { 'n', 'x' },
-            desc = 'opencode: 菜单',
+            desc = '代码助手：操作菜单',
         },
     },
     config = function()

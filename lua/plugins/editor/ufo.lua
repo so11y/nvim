@@ -198,7 +198,7 @@ return {
                         end
                     end
                 end, {
-                    desc = '折叠预览 / Hover',
+                    desc = '折叠预览 / 悬停提示',
                 })
             end,
         },

@@ -8,13 +8,13 @@ return {
             desc = '下一个子词开头',
         },
         {
-            '<leader>jB',
+            '<leader>jb',
             "<cmd>lua require('spider').motion('b')<CR>",
             mode = { 'n', 'o', 'x' },
             desc = '上一个子词开头',
         },
         {
-            '<leader>jE',
+            '<leader>je',
             "<cmd>lua require('spider').motion('e')<CR>",
             mode = { 'n', 'o', 'x' },
             desc = '子词末尾',

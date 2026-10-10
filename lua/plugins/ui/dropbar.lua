@@ -56,7 +56,7 @@ return {
                 end
                 require('dropbar.api').pick()
             end,
-            desc = 'Winbar 快速跳转 (Dropbar)',
+            desc = '面包屑快速跳转',
         },
         -- {
         --     '<Leader>wd',

@@ -37,4 +37,4 @@ $env:NVIM_APPNAME = $appName
 $env:NEOVIM_BIN = Join-Path $editorBin 'nvim.exe'
 $env:Path = $editorBin + ';' + $env:Path
 & (Join-Path $PSScriptRoot 'notify-environment.ps1')
-Write-Output "Activated $appName; existing editor sessions are preserved. Set the two VSCode keys described in upgrade-plan.md."
+Write-Output "Activated $appName; existing editor sessions are preserved. For VSCode, set vscode-neovim.neovimExecutablePaths.win32 to the pinned nvim.exe and vscode-neovim.NVIM_APPNAME to $appName."

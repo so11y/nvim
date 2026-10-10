@@ -10,7 +10,7 @@ return {
                     require('config.format').format()
                 end,
                 mode = { 'n', 'i' },
-                desc = 'Format buffer with LSP',
+                desc = '格式化代码',
             },
         },
         config = function()

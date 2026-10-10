@@ -46,11 +46,11 @@ function M.setup()
     end
     vim.keymap.set('x', '<CR>', 'an', {
         remap = true,
-        desc = 'Expand syntax selection',
+        desc = '扩展语法选区',
     })
     vim.keymap.set('x', '<BS>', 'in', {
         remap = true,
-        desc = 'Shrink syntax selection',
+        desc = '收缩语法选区',
     })
 end
 

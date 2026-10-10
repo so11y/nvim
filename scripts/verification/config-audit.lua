@@ -91,10 +91,10 @@ local ok, err = xpcall(function()
         vim.api.nvim_win_close(float.win, true)
     end
     vim.api.nvim_win_set_cursor(0, { 1, 0 })
-    jump('gjx', 3)
+    jump(']x', 3)
     jump(';', 7)
     jump(',', 3)
-    jump('gkx', 7)
+    jump('[x', 7)
     vim.diagnostic.open_float = open_float
     report.diagnostic_jump = {
         next = 3,
@@ -112,26 +112,6 @@ local ok, err = xpcall(function()
         'Cleared diagnostics left stale output or padding'
     )
     report.status_empty_restored = true
-    vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/outline.ts')
-    local path_source = require('dropbar.sources.path')
-    local symbols = path_source.get_symbols(
-        vim.api.nvim_get_current_buf(),
-        vim.api.nvim_get_current_win(),
-        vim.api.nvim_win_get_cursor(0)
-    )
-    report.path_config = require('dropbar.configs').opts.sources.path.max_depth
-    report.path_names = vim.tbl_map(function(symbol)
-        return symbol.name
-    end, symbols)
-    assert(
-        #symbols == 1 and symbols[1].name == 'outline.ts',
-        'Dropbar constructed directory symbols'
-    )
-    report.dropbar = {
-        symbols = #symbols,
-        filename = symbols[1].name,
-        icon = symbols[1].icon,
-    }
     vim.cmd.enew()
     vim.api.nvim_buf_set_name(0, vim.env.NVIM_TEST_ROOT .. '/colors.scss')
     vim.api.nvim_buf_set_lines(

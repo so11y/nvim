@@ -5,7 +5,6 @@ local function main()
         'heirline.nvim',
         'catppuccin',
         'nvim-web-devicons',
-        'dropbar.nvim',
     }) do
         vim.opt.rtp:prepend(data .. '/lazy/' .. name)
     end
@@ -88,56 +87,6 @@ local function main()
         report.statusline[i] = pair
     end
     vim.diagnostic.get, vim.diagnostic.count = get, count
-    package.loaded['custom.heirline.components'] =
-        dofile(current .. '/components.lua')
-    local source = require('dropbar.sources.path')
-    local options = require('dropbar.configs').opts.sources.path
-    local stat = vim.uv.fs_stat
-    local stats = 0
-    vim.uv.fs_stat = function(...)
-        stats = stats + 1
-        return stat(...)
-    end
-    local function path_sample(depth)
-        options.max_depth = depth
-        stats = 0
-        local start, symbols = vim.uv.hrtime(), nil
-        for _ = 1, 200 do
-            symbols = source.get_symbols(
-                vim.api.nvim_get_current_buf(),
-                vim.api.nvim_get_current_win(),
-                { 1, 0 }
-            )
-        end
-        local last = symbols[#symbols]
-        return {
-            ms = (vim.uv.hrtime() - start) / 1e6,
-            stat_calls = stats,
-            symbols = #symbols,
-            filename = last.name,
-            icon = last.icon,
-            icon_hl = last.icon_hl,
-        }
-    end
-    path_sample(16)
-    path_sample(1)
-    report.dropbar = {}
-    for i = 1, 5 do
-        local pair = {}
-        if i % 2 == 0 then
-            pair.after, pair.before = path_sample(1), path_sample(16)
-        else
-            pair.before, pair.after = path_sample(16), path_sample(1)
-        end
-        assert(
-            pair.before.filename == pair.after.filename
-                and pair.before.icon == pair.after.icon
-                and pair.before.icon_hl == pair.after.icon_hl,
-            'Filename symbol changed'
-        )
-        report.dropbar[i] = pair
-    end
-    vim.uv.fs_stat = stat
     print(vim.json.encode(report))
 end
 

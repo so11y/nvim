@@ -1,6 +1,0 @@
-{
-  "reverse_repeat": "outer(first(a,b,c), second(d,e));",
-  "errmsg": "",
-  "nested_swap": "outer(first(b,a,c), second(d,e));",
-  "dot_repeat": "outer(first(b,c,a), second(d,e));"
-}

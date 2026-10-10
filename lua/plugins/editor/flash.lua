@@ -15,7 +15,7 @@ return {
             function()
                 require('flash').jump()
             end,
-            desc = 'Flash Jump',
+            desc = '快速跳转',
         },
         {
             '<leader>js',
@@ -24,7 +24,7 @@ return {
                 vim.cmd('normal! v')
                 require('flash').jump()
             end,
-            desc = 'Visual Select with Flash',
+            desc = '快速选择',
         },
         {
             '<leader>js',
@@ -32,7 +32,7 @@ return {
             function()
                 require('flash').jump()
             end,
-            desc = 'Extend Selection with Flash',
+            desc = '快速扩展选区',
         },
     },
 }

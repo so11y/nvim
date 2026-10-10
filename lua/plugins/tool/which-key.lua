@@ -8,6 +8,17 @@ return {
         end,
         opts = {
             preset = 'modern',
+            sort = {
+                function(item)
+                    if item.mapping and not item.mapping.preset then
+                        return 0
+                    end
+                    return item.keymap and 1 or 2
+                end,
+                'manual',
+                'alphanum',
+                'mod',
+            },
             win = {
                 border = 'rounded',
                 title = true,

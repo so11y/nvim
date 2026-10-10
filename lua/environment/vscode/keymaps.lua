@@ -108,10 +108,10 @@ vim.api.nvim_create_autocmd('User', {
 
 map({ 'n', 'i' }, '<A-F>', function()
     vscode.action('editor.action.formatDocument')
-end, { desc = 'Format buffer' })
+end, { desc = '格式化代码' })
 map('x', '<CR>', function()
     vscode.action('editor.action.smartSelect.expand')
-end, { desc = 'Expand syntax selection' })
+end, { desc = '扩展语法选区' })
 map('x', '<BS>', function()
     vscode.action('editor.action.smartSelect.shrink')
-end, { desc = 'Shrink syntax selection' })
+end, { desc = '收缩语法选区' })

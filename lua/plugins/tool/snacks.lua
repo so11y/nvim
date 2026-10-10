@@ -23,29 +23,29 @@ return {
                         {
                             icon = ' ',
                             key = 'f',
-                            desc = 'Find projects',
+                            desc = '选择项目',
                             action = ':lua  Snacks.picker.projects()',
                         }, --  {
                         --     icon = " ",
                         --     key = "n",
-                        --     desc = "New File",
+                        --     desc = "新建文件",
                         --     action = ":ene | startinsert"
                         -- },
                         {
                             icon = ' ',
                             key = 'g',
-                            desc = 'Find Text',
+                            desc = '搜索文本',
                             action = ":lua Snacks.dashboard.pick('live_grep')",
                         }, -- {
                         --     icon = " ",
                         --     key = "r",
-                        --     desc = "Recent Files",
+                        --     desc = "最近文件",
                         --     action = ":lua Snacks.dashboard.pick('recent_files')"
                         -- },
                         {
                             icon = '󰦛 ',
                             key = 's',
-                            desc = 'Restore Session',
+                            desc = '恢复会话',
                             action = function()
                                 require('persistence').load({
                                     last = true,
@@ -55,7 +55,7 @@ return {
                         {
                             icon = ' ',
                             key = 'c',
-                            desc = 'Config',
+                            desc = '配置文件',
                             action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})",
                         },
                     },
@@ -322,7 +322,7 @@ return {
                 function()
                     require('snacks').terminal('opencode')
                 end,
-                desc = 'opencode（浮窗）',
+                desc = '代码助手（浮窗）',
                 mode = { 'n', 't' },
             }, -- Notification
             {

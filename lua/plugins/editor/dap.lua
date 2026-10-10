@@ -20,35 +20,35 @@ return {
                     dap.continue()
                 end
             end,
-            desc = 'Debug: Start/Continue',
+            desc = '调试：启动或继续',
         },
         {
             '<F10>',
             function()
                 require('dap').step_over()
             end,
-            desc = 'Debug: Step Over',
+            desc = '调试：单步越过',
         },
         {
             '<F11>',
             function()
                 require('dap').step_into()
             end,
-            desc = 'Debug: Step Into',
+            desc = '调试：单步进入',
         },
         {
             '<F12>',
             function()
                 require('dap').step_out()
             end,
-            desc = 'Debug: Step Out',
+            desc = '调试：单步跳出',
         },
         {
             '<leader>db',
             function()
                 require('dap').toggle_breakpoint()
             end,
-            desc = 'Debug: Toggle Breakpoint',
+            desc = '调试：切换断点',
         },
     },
     config = function()
