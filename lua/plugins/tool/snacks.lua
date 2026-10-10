@@ -415,7 +415,9 @@ return {
             {
                 '<leader>su',
                 function()
-                    require('snacks').picker.undo()
+                    require('snacks').picker.undo({
+                        focus = 'list',
+                    })
                 end,
                 desc = '撤消历史记录',
             },

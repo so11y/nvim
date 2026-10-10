@@ -212,7 +212,7 @@ M.FileType = {
     end,
     hl = {
         fg = utils.get_highlight('Type').fg,
-        bold = true,
+        bold = false,
     },
 }
 
