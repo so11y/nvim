@@ -10,7 +10,7 @@ return {
     },
     keys = {
         {
-            '<leader>jw',
+            '<leader>jj',
             mode = { 'n', 'x', 'o' },
             function()
                 require('flash').jump()
@@ -18,7 +18,7 @@ return {
             desc = 'Flash Jump',
         },
         {
-            '<leader>sw',
+            '<leader>js',
             mode = { 'n' },
             function()
                 vim.cmd('normal! v')
@@ -27,7 +27,7 @@ return {
             desc = 'Visual Select with Flash',
         },
         {
-            '<leader>sw',
+            '<leader>js',
             mode = { 'x' },
             function()
                 require('flash').jump()

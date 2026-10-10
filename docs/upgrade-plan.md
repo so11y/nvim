@@ -4,6 +4,8 @@
 
 ## 执行顺序
 
+已完成阶段保留当时的工作与验收记录；当前快捷键及功能范围遵循 D14，速查见 README。
+
 | 阶段 | 依赖 | 工作与主要文件 | 验收出口 | 当前状态 |
 | --- | --- | --- | --- | --- |
 | P0 基线/隔离 | 无 | 保存 Git、插件、运行时、VSCode/环境/GUI 备份；创建 codex/upgrade-nvim-0.12 工作树与独立数据 | 隔离测试不会替换运行中目录 | 完成；旧版资产已按 D6 清理 |
@@ -26,7 +28,7 @@
 
 - 原生 LSP：Mason 负责安装；config/lsp.lua 负责普通服务器启用、能力、诊断和事件；rustaceanvim 负责 Rust。删除 Conform 与独立 nvim-eslint 实现。状态栏读取同一个格式客户端选择规则。
 - 格式化：config/format.lua 通过原生客户端同步请求与 apply_text_edits；同时处理 RPC 错误和超时。efm 通过 prettierd/StyLua，Rust 经 RA 调用项目 rustfmt。ESLint 不参与文档格式化。
-- Tree-sitter：从 master 集成迁移到 main，显式高亮/缩进/新文本对象；自定义跳转和参数交换保留 Vue 注入树。选区按 D7 使用原生语法节点；其他精确文本对象保持语法树职责。
+- Tree-sitter：从 master 集成迁移到 main，显式高亮/缩进/新文本对象；自定义跳转保留 Vue 注入树。选区按 D7 使用原生语法节点；其他精确文本对象保持语法树职责。
 - 启动：Rust、DAP、Neo-tree、GrugFar、Showkeys、Flash、opencode 按使用入口加载；Mason 与 mason-lspconfig 按安装管理命令加载，工具 PATH 由 runtime 设置；日常启动不安装工具。
 - 宿主：独立编辑器/GUI 使用新 profile；VSCode 语言、格式化、折叠、选区和大纲交给宿主。未增加额外 init/RTP 引导文件。
 
@@ -70,7 +72,6 @@ $env:NVIM_VSCODE_RUNTIME = 'C:\Users\Administrator\.vscode\extensions\asvetliako
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs breadcrumbs
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs navigation-performance
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs vue-textobjects.lua
-& "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs parameter-repeat.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs interactions.lua
 & "$nodeUpgrade\node.exe" .\scripts\verification\check-ui.mjs vue-folding.lua
 $env:NVIM_TEST_VUE_FIRST = '1'

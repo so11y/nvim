@@ -276,18 +276,6 @@ local rust = scratch({
     'fn loops() { loop { break; } if true { f(3, 4); } let s = "hé\\nllo"; let r = r##"raw 中 text"##; }',
     'fn macros() { let v = vec![1, 2]; custom!{a, b}; }',
 }, 'rust')
-vim.api.nvim_win_set_cursor(0, { 2, 14 })
-require('config.parameter_swap').operator()
-assert(
-    vim.api.nvim_get_current_line() == 'fn main() { f(2, 1); }',
-    'Rust call arguments did not swap'
-)
-vim.api.nvim_win_set_cursor(0, { 1, 5 })
-require('config.parameter_swap').operator()
-assert(
-    vim.api.nvim_get_current_line() == 'fn f(b: i32, a: i32) -> i32 { a + b }',
-    'Rust declaration parameters did not swap'
-)
 local query = vim.treesitter.query.get('rust', 'textobjects')
 for _, capture in ipairs({
     'function.inner',

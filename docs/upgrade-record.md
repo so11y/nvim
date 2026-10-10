@@ -197,3 +197,16 @@ Neovim 0.12.5 原生 Hover 为 Markdown 浮窗设置 `conceallevel=2`，但默�
 按 D13 调整 UFO 提供器选择，删除 Vue 专用 LSP 折叠请求；现有 Vue 范围验收改为包含结束标签，HTML/Vue 配色验收改用实际生成的折叠并检查开标签属性。约定及现行分析已同步；升级计划中的已完成阶段和旧执行证据保留为历史记录。
 
 独立临时工程的真实 UI 验收全部通过：[先开 TypeScript](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/element-fold-vue-ts-first-20261009.json)与[先开 Vue](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/element-fold-vue-first-20261009.json)均覆盖 JS/TS SFC 各 9 个区块、函数、条件、模板和样式范围、预览、展开、Vue 服务器断开及普通 TypeScript 折叠；[标签配色与范围](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/element-fold-fold-colors-20261009.json)确认 HTML/Vue 双 `<ul>` 的结束标签随元素折入，`class`、`v-if`、`v-for` 属性保留，四类标签前景色及背景检查通过，`errmsg` 均为空。修改文件的 StyLua、JavaScript 语法、82 个 Lua 文件语法及 Git diff 检查通过。
+
+## 快捷键分组整理（2026-10-10）
+
+按 D14 更新独立编辑器与 VSCode 的当前入口，速查见 [README](C:/Users/Administrator/AppData/Local/nvim/README.md)。
+
+- LSP 重命名、代码操作分别统一为 `grn`、`gra`，删除 Leader 别名；真实 Vue 标签及脚本重命名、Tiny 标签菜单与 VSCode 宿主动作验证通过。
+- 实际加载后的 Leader 分组与旧键移除验证通过；`gr` 和 `<leader>w` 无短键动作冲突。Flash 使用 `jj`，子词向前跳转使用小写 `jw`。
+- 删除未使用的参数交换实现与专属检查，清理当前验收脚本中的旧 AST 键位；保留的注入树、计数/边界及重复跳转检查通过。多光标实时编辑和 Esc 退出检查通过。
+- 完整 linked-tags UI 回归受到原有 VM 启动阶段残留 `E716: Redo` 的影响；专门的本次 LSP 检查单独记录该启动状态，重命名与菜单交互无错误。结果见 [快捷键证据](C:/Users/Administrator/AppData/Local/nvim/docs/evidence/keymaps-20261010.json)。
+
+同日按用户后续要求将大纲从 `<A-o>` 迁到 `<leader>co`，与 `<leader>ch` 同属代码组；独立编辑器和 VSCode 均移除旧入口。现有 Unicode 大纲定位检查与 VSCode `outline.focus` 宿主动作检查通过，StyLua、84 个 Lua 文件语法及差异检查通过；结果补入上述快捷键证据。
+
+最终复查：普通、可视、Select 与操作符模式共 34 条映射检查通过；18 个废弃键在各模式均无残留，10 个功能分组前缀无独立动作抢占。VSCode 宿主动作及差异检查通过，原生默认 `grn/gra/grr/gri/grt` 与安装运行时核对一致。VM 初始化配置与变更前一致；两者都可复现插件保留的 `E716` 键不存在提示，基线对照已补入证据。

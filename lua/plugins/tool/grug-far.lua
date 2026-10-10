@@ -13,7 +13,7 @@ return {
 
         keys = {
             {
-                '<leader>r',
+                '<leader>sr',
                 function()
                     local grug = require('grug-far')
                     local ext = vim.bo.buftype

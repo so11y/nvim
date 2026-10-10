@@ -153,11 +153,5 @@ return {
             expr = true,
             desc = '在所有光标后插入',
         },
-        {
-            'mcc',
-            '<Cmd>VMClear<CR>',
-            mode = { 'n', 'x' },
-            desc = '取消所有光标',
-        },
     },
 }

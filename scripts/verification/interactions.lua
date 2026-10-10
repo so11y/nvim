@@ -16,7 +16,7 @@ local ok, err = xpcall(function()
         0,
         { 1, assert(line:find('return 1', 1, true)) - 1 }
     )
-    vim.fn.maparg('<A-o>', 'n', false, true).callback()
+    vim.fn.maparg('<leader>co', 'n', false, true).callback()
     local p
     assert(
         vim.wait(10000, function()

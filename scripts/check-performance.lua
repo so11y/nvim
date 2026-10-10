@@ -32,7 +32,7 @@ local ok, err = xpcall(function()
         )
         report.queries[lang] = #query.captures
     end
-    local jump = vim.fn.maparg('gjf', 'n', false, true).callback
+    local jump = vim.fn.maparg(']f', 'n', false, true).callback
     local components = require('custom.heirline.components')
     for _, n in ipairs({ 1000, 5000, 20000 }) do
         local lines = {}
@@ -69,7 +69,7 @@ local ok, err = xpcall(function()
                 vim.api.nvim_win_get_cursor(0)[1] == 257,
                 'Forward motion missed next chunk'
             )
-            vim.fn.maparg('gkf', 'n', false, true).callback()
+            vim.fn.maparg('[f', 'n', false, true).callback()
             assert(
                 vim.api.nvim_win_get_cursor(0)[1] == 253,
                 'Backward motion missed previous chunk'
@@ -177,17 +177,6 @@ local ok, err = xpcall(function()
     vim.fn.maparg(',', 'n', false, true).callback()
     assert(vim.api.nvim_win_get_cursor(0)[1] == 2, 'Reverse repeat failed')
     report.checks.injected_motion_and_repeat = true
-    vim.api.nvim_win_set_cursor(0, { 3, 16 })
-    vim.fn.maparg('<Space>ra', 'n', false, true).callback()
-    vim.api.nvim_feedkeys('', 'x', false)
-    assert(
-        vim.api
-            .nvim_buf_get_lines(buf, 2, 3, false)[1]
-            :find('b: number, a: number', 1, true),
-        'Injected parameter swap failed: '
-            .. vim.api.nvim_buf_get_lines(buf, 2, 3, false)[1]
-    )
-    report.checks.injected_swap = true
     local vue_lines = { '<script setup lang="ts">' }
     for i = 1, 254 do
         vue_lines[#vue_lines + 1] = '// filler ' .. i
@@ -214,7 +203,7 @@ local ok, err = xpcall(function()
         vim.api.nvim_win_get_cursor(0)[1] == 513,
         'Vue injected motion missed distant chunk'
     )
-    vim.fn.maparg('gkf', 'n', false, true).callback()
+    vim.fn.maparg('[f', 'n', false, true).callback()
     assert(
         vim.api.nvim_win_get_cursor(0)[1] == 256,
         'Vue injected backward motion missed earlier chunk'
@@ -237,7 +226,7 @@ local ok, err = xpcall(function()
     vim.bo[nested_buf].filetype = 'javascript'
     vim.treesitter.get_parser(nested_buf):parse(true)
     vim.api.nvim_win_set_cursor(0, { 550, 0 })
-    vim.fn.maparg('gkf', 'n', false, true).callback()
+    vim.fn.maparg('[f', 'n', false, true).callback()
     assert(
         vim.api.nvim_win_get_cursor(0)[1] == 302,
         'Backward motion skipped nested function across long parent'

@@ -181,7 +181,7 @@ return {
                 })
 
                 local peek_winid = nil
-                vim.keymap.set('n', '<leader>h', function()
+                vim.keymap.set('n', '<leader>ch', function()
                     if peek_winid and vim.api.nvim_win_is_valid(peek_winid) then
                         vim.api.nvim_set_current_win(peek_winid)
                         local bufnr = vim.api.nvim_win_get_buf(peek_winid)
@@ -198,7 +198,7 @@ return {
                         end
                     end
                 end, {
-                    desc = '预览',
+                    desc = '折叠预览 / Hover',
                 })
             end,
         },

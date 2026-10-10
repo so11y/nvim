@@ -31,29 +31,34 @@ end, {
 })
 
 -- LSP
-map('n', '<leader>cr', function()
+map('n', 'grn', function()
     vscode.action('editor.action.rename')
-end, {
-    desc = '代码重命名',
-})
-
-map({ 'n', 'v' }, '<leader>ca', function()
+end, { desc = '重命名' })
+map({ 'n', 'x' }, 'gra', function()
     vscode.action('editor.action.quickFix')
-end, {
-    desc = 'Code Action',
-})
+end, { desc = '代码操作' })
 
-map('n', 'gr', function()
+map('n', 'grr', function()
     vscode.action('editor.action.goToReferences')
 end, {
     desc = '转到引用',
 })
 
-map('n', '<leader>h', function()
+map('n', 'gri', function()
+    vscode.action('editor.action.peekImplementation')
+end, { desc = '转到实现' })
+map('n', 'grt', function()
+    vscode.action('editor.action.peekTypeDefinition')
+end, { desc = '转到类型定义' })
+
+map('n', '<leader>ch', function()
     vscode.action('editor.action.showHover')
 end, {
     desc = '悬停提示',
 })
+map('n', '<leader>co', function()
+    vscode.action('outline.focus')
+end, { desc = '代码大纲' })
 
 map('n', 'za', function()
     vscode.action('editor.toggleFold')
@@ -62,24 +67,27 @@ end, {
 })
 
 -- 查找
-map('n', '<leader>fs', function()
+map('n', '<leader>ff', function()
     vscode.action('workbench.action.quickOpen')
 end, {
     desc = '文件查找',
 })
-map('n', '<leader>fg', function()
+map('n', '<leader>sg', function()
     vscode.action('workbench.action.findInFiles')
 end, {
     desc = '全局搜索',
 })
+map({ 'n', 'x' }, '<leader>sr', function()
+    vscode.action('editor.action.startFindReplaceAction')
+end, { desc = '搜索替换（当前文件）' })
 
 -- 分屏（垂直/水平）
-map('n', '<leader>sv', function()
+map('n', '<leader>wv', function()
     vscode.action('workbench.action.splitEditorRight')
 end, {
     desc = '垂直分屏',
 })
-map('n', '<leader>sh', function()
+map('n', '<leader>ws', function()
     vscode.action('workbench.action.splitEditorDown')
 end, {
     desc = '水平分屏',
@@ -101,9 +109,6 @@ vim.api.nvim_create_autocmd('User', {
 map({ 'n', 'i' }, '<A-F>', function()
     vscode.action('editor.action.formatDocument')
 end, { desc = 'Format buffer' })
-map('n', '<A-o>', function()
-    vscode.action('outline.focus')
-end, { desc = 'Outline' })
 map('x', '<CR>', function()
     vscode.action('editor.action.smartSelect.expand')
 end, { desc = 'Expand syntax selection' })

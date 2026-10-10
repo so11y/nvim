@@ -84,7 +84,7 @@ local autocmds={}
 for _,autocmd in ipairs(vim.api.nvim_get_autocmds({event='CursorMoved',buffer=0})) do
  autocmds[#autocmds+1]={group=autocmd.group_name,desc=autocmd.desc}
 end
-return {line_count=vim.api.nvim_buf_line_count(0),filetype=vim.bo.filetype,has_motion=vim.fn.maparg('gjf','n')~='',cursor_moved=autocmds}`,[]]);
+return {line_count=vim.api.nvim_buf_line_count(0),filetype=vim.bo.filetype,has_motion=vim.fn.maparg(']f','n')~='',cursor_moved=autocmds}`,[]]);
   await delay(1500);
   const samples=[];
   async function measure(key,mapped,start,expected,steps=300,ignoreCursorMoved=false){
@@ -125,18 +125,18 @@ vim.g.navigation_done=0`,[]]);
   }
   await rpc('nvim_win_set_cursor',[0,[1,7]]);
   const ast=[];
-  const first=await inputAndWait('gjf');
+  const first=await inputAndWait(']f');
   if(first.cursor[0]!==5)throw new Error('AST forward jump failed: '+JSON.stringify({setup,first}));
-  ast.push({keys:'gjf',...first});
-  const counted=await inputAndWait('3gjf');
-  ast.push({keys:'3gjf',...counted});
+  ast.push({keys:']f',...first});
+  const counted=await inputAndWait('3]f');
+  ast.push({keys:'3]f',...counted});
   await rpc('nvim_win_set_cursor',[0,first.cursor]);
-  for(let i=0;i<3;i++)ast.push({keys:'gjf repeated',...await inputAndWait('gjf')});
+  for(let i=0;i<3;i++)ast.push({keys:']f repeated',...await inputAndWait(']f')});
   if(JSON.stringify(ast.at(-1).cursor)!==JSON.stringify(counted.cursor))throw new Error('AST count differs from three jumps: '+JSON.stringify(ast));
-  const backward=await inputAndWait('gkf');
+  const backward=await inputAndWait('[f');
   const repeatNext=await inputAndWait(';');
   const repeatPrevious=await inputAndWait(',');
-  ast.push({keys:'gkf',...backward},{keys:';',...repeatNext},{keys:',',...repeatPrevious});
+  ast.push({keys:'[f',...backward},{keys:';',...repeatNext},{keys:',',...repeatPrevious});
   if(JSON.stringify(repeatNext.cursor)!==JSON.stringify(counted.cursor)||JSON.stringify(repeatPrevious.cursor)!==JSON.stringify(backward.cursor))throw new Error('AST repeat direction failed: '+JSON.stringify(ast));
   const before=await rpc('nvim_exec_lua',[
    "vim.api.nvim_win_set_cursor(0,{2,3}); return #vim.api.nvim_get_current_line()",[]]);
@@ -188,10 +188,10 @@ local line=vim.api.nvim_buf_get_lines(0,5,6,false)[1]
 local first=assert(line:find('你',1,true))-1
 local last=assert(line:find('😀',1,true))-1
 vim.api.nvim_win_set_cursor(0,{6,first})
-return {first=first,last=last,leader=vim.g.mapleader,mapped=vim.fn.maparg('<leader>ca','x')~=''}`,[]]);
+return {first=first,last=last,mapped=vim.fn.maparg('gra','x')~=''}`,[]]);
   await rpc('nvim_input',['v']);await delay(50);
   await rpc('nvim_win_set_cursor',[0,[6,setup.last]]);
-  await rpc('nvim_input',[setup.leader+'ca']);await delay(150);
+  await rpc('nvim_input',['gra']);await delay(150);
   const visual=await rpc('nvim_exec_lua',[`local state=_G.__tag_ui
 local result={range=state.range,mode=vim.fn.mode(),errmsg=vim.v.errmsg}
 state.range=nil
@@ -206,7 +206,7 @@ vim.api.nvim_win_set_cursor(0,{10,start})
 return {start=start,finish=finish}`,[]]);
   await rpc('nvim_input',['v']);await delay(50);
   await rpc('nvim_win_set_cursor',[0,[11,selection.finish]]);
-  await rpc('nvim_input',[setup.leader+'ca']);await delay(150);
+  await rpc('nvim_input',['gra']);await delay(150);
   const multiline=await rpc('nvim_exec_lua',[`local state=_G.__tag_ui
 require('tiny-code-action').code_action=state.original
 return {range=state.range,errmsg=vim.v.errmsg}`,[]]);
@@ -382,7 +382,7 @@ return {lines=vim.api.nvim_buf_get_lines(0,0,-1,false),height=vim.api.nvim_win_g
    const lua=code=>rpc('nvim_exec_lua',[code,[]]);
    await lua("vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.vue'); local b=vim.api.nvim_get_current_buf(); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=b,name='vue_ls'})>0 and #vim.lsp.get_clients({bufnr=b,name='vtsls'})>0 end,50)); local c=vim.lsp.get_clients({bufnr=b,name='vue_ls'})[1]; assert(vim.wait(5000,function() return vim.api.nvim_get_namespaces()['config.linked_tags:'..b] end,20))");
    await delay(200);
-   const vue=await lua("local b=vim.api.nvim_get_current_buf(); local c=vim.lsp.get_clients({bufnr=b,name='vue_ls'})[1]; vim.api.nvim_win_set_cursor(0,{5,3}); local params={textDocument={uri=vim.uri_from_bufnr(b)},position={line=4,character=3}}; local reply=c:request_sync('textDocument/linkedEditingRange',params,3000,b); assert(reply and reply.result and #reply.result.ranges==2,'Vue LSP linked response missing'); vim.api.nvim_exec_autocmds('CursorMoved',{buffer=b}); local ns=vim.api.nvim_get_namespaces()['config.linked_tags:'..b]; assert(vim.wait(5000,function() return ns and #vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true})==2 end,20),'Vue linked ranges missing'); return {client=c.name,extmarks=#vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true}),inc=vim.fn.exists(':IncRename'),gra_same=vim.fn.maparg('gra','n',false,true).callback==vim.fn.maparg('<leader>ca','n',false,true).callback}");
+   const vue=await lua("local b=vim.api.nvim_get_current_buf(); local c=vim.lsp.get_clients({bufnr=b,name='vue_ls'})[1]; vim.api.nvim_win_set_cursor(0,{5,3}); local params={textDocument={uri=vim.uri_from_bufnr(b)},position={line=4,character=3}}; local reply=c:request_sync('textDocument/linkedEditingRange',params,3000,b); assert(reply and reply.result and #reply.result.ranges==2,'Vue LSP linked response missing'); vim.api.nvim_exec_autocmds('CursorMoved',{buffer=b}); local ns=vim.api.nvim_get_namespaces()['config.linked_tags:'..b]; assert(vim.wait(5000,function() return ns and #vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true})==2 end,20),'Vue linked ranges missing'); return {client=c.name,extmarks=#vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true}),inc=vim.fn.exists(':IncRename'),gra_canonical=vim.fn.maparg('gra','n',false,true).callback==require('config.code_action').open,old_lsp_keys=vim.fn.maparg('<leader>ca','n')~='' or vim.fn.maparg('<leader>cr','n')~=''}");
    await rpc('nvim_input',['ciw']);await delay(120);
    const empty=await lua("local b=vim.api.nvim_get_current_buf(); local ns=vim.api.nvim_get_namespaces()['config.linked_tags:'..b]; return {mode=vim.fn.mode(),open=vim.api.nvim_buf_get_lines(0,4,5,false)[1],close=vim.api.nvim_buf_get_lines(0,12,13,false)[1],extmarks=#vim.api.nvim_buf_get_extmarks(0,ns,0,-1,{details=true}),errmsg=vim.v.errmsg}");
    await rpc('nvim_input',['s']);await delay(120);
@@ -392,7 +392,7 @@ return {lines=vim.api.nvim_buf_get_lines(0,0,-1,false),height=vim.api.nvim_win_g
    await rpc('nvim_input',['<Esc>']);await delay(50);
    await lua('vim.cmd.undo()');await delay(100);
    const undone=await lua("return {open=vim.api.nvim_buf_get_lines(0,4,5,false)[1],close=vim.api.nvim_buf_get_lines(0,12,13,false)[1],errmsg=vim.v.errmsg}");
-   if(vue.inc!==0||!vue.gra_same||vue.extmarks!==2||partial.mode!=='i'||!partial.open.includes('<s ')||!partial.close.includes('</s>')||full.mode!=='i'||!full.open.includes('<section ')||!full.close.includes('</section>')||!undone.open.includes('<div ')||!undone.close.includes('</div>')||partial.errmsg||full.errmsg||undone.errmsg)throw new Error('Vue live linked editing failed: '+JSON.stringify({vue,empty,partial,full,undone}));
+   if(vue.inc!==0||!vue.gra_canonical||vue.old_lsp_keys||vue.extmarks!==2||partial.mode!=='i'||!partial.open.includes('<s ')||!partial.close.includes('</s>')||full.mode!=='i'||!full.open.includes('<section ')||!full.close.includes('</section>')||!undone.open.includes('<div ')||!undone.close.includes('</div>')||partial.errmsg||full.errmsg||undone.errmsg)throw new Error('Vue live linked editing failed: '+JSON.stringify({vue,empty,partial,full,undone}));
    await lua("vim.api.nvim_win_set_cursor(0,{9,7}); vim.api.nvim_exec_autocmds('CursorMoved',{buffer=0})");await delay(200);
    await rpc('nvim_input',['caw']);await delay(120);
    const cawEmpty=await lua("return {mode=vim.fn.mode(),open=vim.api.nvim_buf_get_lines(0,8,9,false)[1],close=vim.api.nvim_buf_get_lines(0,11,12,false)[1],errmsg=vim.v.errmsg}");
@@ -407,7 +407,7 @@ return {lines=vim.api.nvim_buf_get_lines(0,0,-1,false),height=vim.api.nvim_win_g
    await rpc('nvim_input',['<Esc>']);await delay(50);
    if(closingEdit.mode!=='i'||!closingEdit.open.includes('<Aside>')||!closingEdit.close.includes('</Aside>')||closingEdit.errmsg)throw new Error('Vue closing-tag edit failed: '+JSON.stringify(closingEdit));
    await lua("vim.api.nvim_win_set_cursor(0,{5,3}); _G.__linked_input=vim.ui.input; vim.ui.input=function(_,done) done('article') end");
-   await rpc('nvim_input',[' cr']);await delay(500);
+   await rpc('nvim_input',['grn']);await delay(500);
    const tagRename=await lua("local lines=vim.api.nvim_buf_get_lines(0,0,-1,false); vim.ui.input=_G.__linked_input; return {open=lines[5],close=lines[13],errmsg=vim.v.errmsg}");
    if(!tagRename.open.includes('<article ')||!tagRename.close.includes('</article>')||tagRename.errmsg)throw new Error('Vue tag LSP rename failed: '+JSON.stringify(tagRename));
    await lua("vim.api.nvim_buf_set_lines(0,12,12,false,{'    <LiveTag'}); vim.api.nvim_win_set_cursor(0,{13,0})");
@@ -416,7 +416,7 @@ return {lines=vim.api.nvim_buf_get_lines(0,0,-1,false),height=vim.api.nvim_win_g
    await rpc('nvim_input',['<Esc>']);await delay(50);
    if(!autoClose.lines.join(' ').includes('</LiveTag>')||autoClose.errmsg)throw new Error('Vue automatic tag closing failed: '+JSON.stringify(autoClose));
    await lua("vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/App.vue'); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=0,name='vtsls'})>0 and #vim.lsp.get_clients({bufnr=0,name='vue_ls'})>0 end,50)); vim.api.nvim_win_set_cursor(0,{3,6}); _G.__linked_input=vim.ui.input; vim.ui.input=function(_,done) done('renamedCount') end");
-   await rpc('nvim_input',[' cr']);await delay(500);
+   await rpc('nvim_input',['grn']);await delay(500);
    const codeRename=await lua("local lines=vim.api.nvim_buf_get_lines(0,0,-1,false); vim.ui.input=_G.__linked_input; return {declaration=lines[3],body=lines[5],template=lines[7],errmsg=vim.v.errmsg}");
    if(!codeRename.declaration.includes('renamedCount')||!codeRename.body.includes('renamedCount')||!codeRename.template.includes('renamedCount')||codeRename.errmsg)throw new Error('Vue script LSP rename failed: '+JSON.stringify(codeRename));
    await lua("vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.html'); local b=vim.api.nvim_get_current_buf(); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=b,name='html'})>0 end,50)); assert(vim.wait(5000,function() return vim.api.nvim_get_namespaces()['config.linked_tags:'..b] end,20))");
@@ -476,7 +476,7 @@ return {rows=rows,errmsg=vim.v.errmsg}`,[]]);
   if(result.failures && Object.keys(result.failures).length)throw new Error(JSON.stringify(result.failures));
   if(result.error || result.errmsg)throw new Error(result.error || result.errmsg);
  }
- if(host){result.hostActions=hostActions;for(const name of ['editor.action.formatDocument','outline.focus','editor.toggleFold','editor.action.smartSelect.expand','editor.action.smartSelect.shrink']){if(!hostActions.some(a=>a.method==='vscode-action' && a.params[0]===name))throw new Error('Host action was not emitted: '+name);}}
+ if(host){result.hostActions=hostActions;for(const name of result.expected_actions){if(!hostActions.some(a=>a.method==='vscode-action' && a.params[0]===name))throw new Error('Host action was not emitted: '+name);}}
  writeFileSync(output,JSON.stringify(result,null,2)+'\n');
  await rpc('nvim_exec_lua',["vim.schedule(function() vim.cmd('qa!') end)",[]]);
  console.log('PASS '+suite+' -> '+output);

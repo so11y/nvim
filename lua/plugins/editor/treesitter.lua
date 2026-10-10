@@ -63,12 +63,6 @@ return {
                     )
                 end, { desc = 'Select ' .. capture })
             end
-            vim.keymap.set('n', '<leader>ra', function()
-                require('config.parameter_swap').swap(1)
-            end, { desc = 'Swap next parameter' })
-            vim.keymap.set('n', '<leader>rA', function()
-                require('config.parameter_swap').swap(-1)
-            end, { desc = 'Swap previous parameter' })
         end,
     },
 }

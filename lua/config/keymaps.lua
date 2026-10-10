@@ -185,10 +185,10 @@ map({ 'n', 'i', 'v' }, '<A-s>', '<Esc>:w<CR>', {
 })
 
 -- 分屏
-map('n', '<leader>sv', ':vsplit<CR>', {
+map('n', '<leader>wv', ':vsplit<CR>', {
     desc = '垂直分屏',
 })
-map('n', '<leader>sh', ':split<CR>', {
+map('n', '<leader>ws', ':split<CR>', {
     desc = '水平分屏',
 })
 

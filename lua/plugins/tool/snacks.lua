@@ -216,7 +216,7 @@ return {
                 desc = '打开 LazyGit',
             },
             {
-                '<A-o>',
+                '<leader>co',
                 function()
                     local cursor = vim.api.nvim_win_get_cursor(0)
                     local line = vim.api.nvim_get_current_line()
@@ -267,7 +267,7 @@ return {
                         },
                     })
                 end,
-                desc = 'outline',
+                desc = '代码大纲',
             },
             {
                 '<A-w>',
@@ -326,7 +326,7 @@ return {
                 mode = { 'n', 't' },
             }, -- Notification
             {
-                '<leader>n',
+                '<leader>sn',
                 function()
                     require('snacks').picker.notifications()
                 end,
@@ -341,14 +341,21 @@ return {
                         },
                     })
                 end,
-                desc = '文件查找',
+                desc = '文件内搜索',
             },
             {
-                '<leader>fs',
+                '<leader>ff',
                 function()
                     require('snacks').picker.files()
                 end,
                 desc = '文件查找',
+            },
+            {
+                '<leader>sg',
+                function()
+                    require('snacks').picker.grep()
+                end,
+                desc = '全局搜索',
             },
             {
                 'gd',
@@ -360,16 +367,26 @@ return {
                 desc = '转到定义',
             },
             {
-                'gr',
+                'grr',
                 function()
                     Snacks.picker.lsp_references({
                         focus = 'list',
                     })
                 end,
                 desc = '转到引用',
-            }, -- 4. 变量重命名 (保持原生 LSP 功能，但写在这里方便统一管理)
+            },
             {
-                '<leader>cr',
+                'gri',
+                vim.lsp.buf.implementation,
+                desc = '转到实现',
+            },
+            {
+                'grt',
+                vim.lsp.buf.type_definition,
+                desc = '转到类型定义',
+            },
+            {
+                'grn',
                 function()
                     if vim.bo.filetype == 'vue' then
                         local node = vim.treesitter.get_node()
@@ -399,12 +416,6 @@ return {
                     })
                 end,
                 desc = '诊断（工作区）',
-            },
-            {
-                '<leader>ca',
-                require('config.code_action').open,
-                mode = { 'n', 'x' },
-                desc = '代码操作',
             },
             {
                 'gra',

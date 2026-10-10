@@ -58,8 +58,8 @@ export async function verifyMulticursorUI(rpc) {
   await open(['one','middle','two']);
   await input('mc'); await input('jj'); await input('mc'); await input('mm'); await input('l'); await input('mi');
   await input('Z'); const manual=await expect('Manual marks and enabled movement',['oZne','middle','tZwo']);
-  await input('<Esc>'); await input('mcc');
-  if ((await state()).active) throw new Error('mcc did not clear cursors');
+  await input('<Esc>'); await input('<Esc>');
+  if ((await state()).active) throw new Error('Escape did not clear cursors');
 
   await open(['abc','abc']);
   await input('<A-J>'); await input('ma'); await input('!');

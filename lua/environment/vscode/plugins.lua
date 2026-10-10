@@ -7,14 +7,22 @@ return {
         'vscode-neovim/vscode-multi-cursor.nvim',
         event = 'VeryLazy',
         opts = {
-            default_mappings = true, -- 保留默认的 mc, mcc, mi, ma 等
+            default_mappings = true, -- 保留默认的 mc、mi、ma 等
         },
         config = function(_, opts)
             local mc = require('vscode-multi-cursor')
             local vsc = require('vscode')
             mc.setup(opts)
+            vim.keymap.del('n', 'mcc')
 
             local map = vim.keymap.set
+            local escape = vim.fn.maparg('<Esc>', 'n', false, true).callback
+            map('n', '<Esc>', function()
+                mc.cancel()
+                escape()
+            end, {
+                desc = '取消光标、关闭预览或清除搜索',
+            })
 
             map({ 'n', 'x', 'i' }, 'gb', function()
                 mc.addSelectionToNextFindMatch()
@@ -36,7 +44,6 @@ return {
             -- 其他默认映射提醒：
             -- mc : 在当前位置手动创建光标/选择
             -- mi : 在所有光标处进入 Insert 模式
-            -- mcc: 取消所有光标
         end,
     },
 }

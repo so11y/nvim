@@ -21,41 +21,53 @@ return {
                 row = -2, -- 距离底部 2 行（留出状态栏位置）
                 col = -1,
             },
-            -- 这里配置你的菜单分组名称
             spec = {
+                {
+                    '<leader>f',
+                    group = '文件/项目',
+                },
+                {
+                    '<leader>s',
+                    group = '搜索/历史',
+                    mode = { 'n', 'x' },
+                },
+                {
+                    '<leader>c',
+                    group = '代码',
+                },
+                {
+                    '<leader>d',
+                    group = '调试',
+                },
                 {
                     '<leader>g',
                     group = 'Git',
                 },
                 {
-                    '<leader>s',
-                    group = '🖥️ 分屏与搜索',
-                    mode = 'v',
-                },
-                {
-                    '<leader>f',
-                    group = '🔍 文件与查找',
-                },
-                {
-                    '<leader>c',
-                    group = '💻 代码/LSP/复制',
-                    mode = { 'n', 'v' },
-                },
-                {
                     '<leader>j',
-                    group = '🚀  flash 跳转',
+                    group = '跳转',
+                    mode = { 'n', 'x', 'o' },
+                },
+                {
+                    '<leader>w',
+                    group = '窗口',
                 },
                 {
                     '<leader>x',
-                    group = '❌ 诊断/错误',
+                    group = '诊断',
                 },
                 {
-                    '<leader>s',
-                    group = 'Snacks',
+                    '<leader>q',
+                    group = '退出',
                 },
                 {
                     'g',
-                    group = '🎯定位/跳转',
+                    group = '导航/代码',
+                },
+                {
+                    'gr',
+                    group = 'LSP',
+                    mode = { 'n', 'x' },
                 },
             },
         },

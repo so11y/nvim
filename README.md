@@ -51,7 +51,6 @@
 | n, i, v | `<A-y>` | 重做 |
 | n | `<A-u>` | 后退跳转位置 |
 | n | `<A-i>` | 前进跳转位置 |
-| n | `<A-o>` | 代码大纲 |
 
 ---
 
@@ -63,8 +62,8 @@
 
 | 按键 | 功能 |
 |------|------|
-| `<leader>sv` | 垂直分屏 |
-| `<leader>sh` | 水平分屏 |
+| `<leader>wv` | 垂直分屏 |
+| `<leader>ws` | 水平分屏 |
 
 ---
 
@@ -100,7 +99,7 @@
 | `<A->>` | buffer 右移 |
 | `<A-1>` ~ `<A-3>` | 跳转到对应 buffer |
 | `<A-p>` | pin buffer (固定) |
-| `<A-w>` | 关闭当前 buffer |
+| `<A-w>` | 智能关闭窗口 / 删除缓冲区 |
 
 ---
 
@@ -126,15 +125,15 @@
 
 ### 子词跳转
 
-`nvim-spider` 按驼峰、下划线和数字边界移动；`<leader>` 是空格，`w` 为小写，`B` / `E` 为大写。
+`nvim-spider` 按驼峰、下划线和数字边界移动；`<leader>` 是空格，`w` 为小写，`B` / `E` 为大写；`jj` 用于 Flash，`jw` 用于子词跳转。
 
 | 模式 | 按键 | 功能 |
 |------|------|------|
-| n, x, o | `<leader>w` | 下一个子词开头 |
-| n, x, o | `<leader>B` | 上一个子词开头 |
-| n, x, o | `<leader>E` | 子词末尾 |
+| n, x, o | `<leader>jw` | 下一个子词开头 |
+| n, x, o | `<leader>jB` | 上一个子词开头 |
+| n, x, o | `<leader>jE` | 子词末尾 |
 
-可用 `v<leader>E` 选到子词末尾，或 `d<leader>E` / `c<leader>E` 删除 / 替换到子词末尾。
+可用 `v<leader>jE` 选到子词末尾，或 `d<leader>jE` / `c<leader>jE` 删除 / 替换到子词末尾。
 
 ### 多光标
 
@@ -149,7 +148,6 @@
 | n, x | `mm` | 独立编辑器中启用全部光标，然后用普通移动键一起移动 |
 | n, x | `mi` | 在所有光标前插入 |
 | n, x | `ma` | 在所有光标后插入 |
-| n | `mcc` | 取消所有光标 |
 
 独立编辑器中，输入、退格和换行会实时同步到其他光标。普通模式按 `<Esc>` 退出多光标；插入模式先按 `<Esc>` 返回普通模式，再按一次退出。`mc` 可逐个标记不同位置，然后用 `mm` 启用全部光标并一起移动，或用 `mi` / `ma` 开始同时编辑。多光标期间暂停补全和自动括号，退出后自动恢复。
 
@@ -193,11 +191,14 @@
 
 保存和手动格式化使用同一原生 LSP 入口；独立编辑器由 efm / rust-analyzer 执行，VSCode 使用宿主格式器。失败显示通知并保留原内容。
 
-### 折叠代码预览
+### 大纲与代码预览
 
 | 按键 | 功能 |
 |------|------|
-| `<leader>k` | 预览折叠代码 |
+| `<leader>co` | 代码大纲（outline） |
+| `<leader>ch` | 预览折叠代码；无折叠时显示 LSP Hover |
+
+再次按 `<leader>ch` 可进入预览窗口，`Esc` 关闭；VSCode 的 `co/ch` 分别打开宿主大纲和 Hover。
 
 ---
 
@@ -245,19 +246,26 @@ Neogit 中先按菜单键，再按动作键，例如 `b c` 表示先按 `b`，�
 
 | 按键 | 功能 |
 |------|------|
-| `<leader>jw` | 跳转到单词 (光标处) |
-| `<leader>sw` | 选中到单词 (光标处) |
+| `<leader>jj` | 跳转到单词 (光标处) |
+| `<leader>js` | 选中到单词 (光标处) |
 
-### Snacks 工具
+### 文件、搜索与历史
 
 | 按键 | 功能 |
 |------|------|
-| `<leader>fs` | 文件搜索 |
-| `<leader>n` | 通知历史 |
+| `<leader>ff` | 文件搜索 |
+| `<leader>fp` | 项目选择器 |
+| `<A-f>` | 当前文件内搜索 |
+| `<leader>sg` | 全局文本搜索 |
+| `<leader>sr` | 搜索替换（默认当前文件） |
+| `<leader>sn` | 通知历史 |
+| `<leader>su` | 撤销历史 |
 
 ---
 
 ## LSP 功能
+
+`gd` 保留定义跳转；`gr` 作为 LSP 分组前缀，按完整组合触发动作。VSCode 的对应入口调用宿主语言功能。
 
 Code Action 菜单与修改预览：
 
@@ -266,13 +274,15 @@ Code Action 菜单与修改预览：
 | 按键 | 功能 |
 |------|------|
 | `gd` | 跳转到定义 |
-| `gr` | 查找引用 |
-| `<leader>cr` | 重命名 |
-| `<leader>ca` | 代码操作菜单 |
+| `grr` | 查找引用 |
+| `gri` | 跳转到实现 |
+| `grt` | 跳转到类型定义 |
+| `grn` | 重命名 |
+| `gra` | 代码操作菜单（普通 / 可视模式） |
 | `[x` | 上一条诊断 |
 | `]x` | 下一条诊断 |
+| `<leader>xf` | 当前文件诊断列表 |
 | `<leader>xx` | 工作区诊断列表 |
-| `<leader>su` | 撤销历史 |
 
 ---
 
@@ -290,7 +300,7 @@ Code Action 菜单与修改预览：
 |------|------|
 | `<F5>` | 启动/继续；Rust 首次打开 Cargo 调试目标 |
 | `<F10>` / `<F11>` / `<F12>` | 单步越过 / 进入 / 跳出 |
-| `<leader>b` | 切换断点 |
+| `<leader>db` | 切换断点 |
 
 Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 
@@ -323,14 +333,13 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 | `A-k` | 向上移动 / 上一补全 |
 | `A-u` | 后退跳转 |
 | `A-i` | 前进跳转 |
-| `A-o` | 代码大纲 |
 | `A-c` | 复制到剪贴板 |
 | `A-v` | 粘贴 |
 | `A-x` | 剪切 |
 | `A-/` | 注释/取消注释 |
 | `A-b` | 切换文件树 |
 | `A-e` | 定位当前文件 |
-| `A-w` | 关闭 buffer |
+| `A-w` | 智能关闭窗口 / 删除缓冲区 |
 | `A-t` | 打开终端 |
 | `A-p` | Pin buffer |
 | `A-h/l` | 上/下一 buffer |
@@ -344,25 +353,35 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 
 ### Leader 组合键
 
-| 按键 | 功能 |
-|------|------|
-| `<leader>sv` | 垂直分屏 |
-| `<leader>sh` | 水平分屏 |
-| `<leader>gt` | LazyGit |
-| `<leader>gn` | Neogit |
-| `<leader>gd` | Git 差异 |
-| `<leader>gh` | Git 历史 |
-| `<leader>jw` | Flash 跳转 |
-| `<leader>sw` | Flash 选区 |
-| `<leader>fp` | 项目选择器 |
-| `<leader>k` | 折叠预览 |
-| `<leader>n` | 通知历史 |
-| `<leader>fs` | 文件搜索 |
-| `<leader>cr` | 重命名 |
-| `<leader>xx` | 诊断列表 |
-| `<leader>ca` | 代码操作 |
-| `<leader>su` | 撤销历史 |
+`<leader>` 是空格。分组名称也显示在 which-key 中。
 
+| 分组 | 按键 | 功能 |
+|------|------|------|
+| 文件 `f` | `<leader>ff` | 文件搜索 |
+| 文件 `f` | `<leader>fp` | 项目选择器 |
+| 窗口 `w` | `<leader>wv` | 垂直分屏 |
+| 窗口 `w` | `<leader>ws` | 水平分屏 |
+| 搜索 `s` | `<leader>sg` | 全局搜索 |
+| 搜索 `s` | `<leader>sr` | 搜索替换（默认当前文件） |
+| 搜索 `s` | `<leader>sn` | 通知历史 |
+| 搜索 `s` | `<leader>su` | 撤销历史 |
+| 代码 `c` | `<leader>co` | 代码大纲 |
+| 代码 `c` | `<leader>ch` | 折叠预览 / Hover |
+| 调试 `d` | `<leader>db` | 切换断点 |
+| 跳转 `j` | `<leader>jj` | Flash 跳转 |
+| 跳转 `j` | `<leader>js` | Flash 选区 |
+| 跳转 `j` | `<leader>jw` | 下一个子词开头 |
+| 跳转 `j` | `<leader>jB` | 上一个子词开头 |
+| 跳转 `j` | `<leader>jE` | 子词末尾 |
+| Git `g` | `<leader>gt` | LazyGit |
+| Git `g` | `<leader>gn` | Neogit |
+| Git `g` | `<leader>gd` | Git 差异 |
+| Git `g` | `<leader>gh` | Git 历史 |
+| 诊断 `x` | `<leader>xf` | 当前文件诊断 |
+| 诊断 `x` | `<leader>xx` | 工作区诊断 |
+| 退出 `q` | `<leader>qq` | 退出 Neovim |
+
+`ff/sg/sr/wv/ws/co/ch` 和 LSP 入口在 VSCode 中调用宿主。项目、历史、Git 菜单及 DAP 等功能按各自插件的环境启用范围使用。
 
 ## Treesitter 文本对象与跳转
 
@@ -428,11 +447,3 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 | nxo | `F` | 向前查找字符 (原生增强，可被 `;` 重复) |
 | nxo | `t` | 向后查找字符前 (原生增强，可被 `;` 重复) |
 | nxo | `T` | 向前查找字符后 (原生增强，可被 `;` 重复) |
-
-### 4. 代码交换 (Swap)
-*用于快速交换参数位置，重构代码时非常有用。*
-
-| 模式 | 按键 | 功能 |
-|:---:|:---|:---|
-| n | `<leader>ra` | 将当前参数与 **下一个** 参数交换 |
-| n | `<leader>rA` | 将当前参数与 **上一个** 参数交换 |
