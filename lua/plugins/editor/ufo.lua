@@ -153,6 +153,13 @@ return {
             config = function(_, opts)
                 local ufo = require('ufo')
                 ufo.setup(opts)
+                -- 保留 foldlevel，避免刷新折叠范围后自动全部折叠。
+                vim.keymap.set('n', 'zR', ufo.openAllFolds, {
+                    desc = '展开全部折叠',
+                })
+                vim.keymap.set('n', 'zM', ufo.closeAllFolds, {
+                    desc = '关闭全部折叠',
+                })
                 vim.api.nvim_create_autocmd('LspAttach', {
                     group = vim.api.nvim_create_augroup(
                         'config.folding',
