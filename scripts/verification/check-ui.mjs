@@ -62,13 +62,16 @@ try{
   }
   result={results};
  }else if(suite==='breadcrumbs'){
-  await rpc('nvim_exec_lua',["vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/App.vue'); assert(vim.wait(5000,function() return vim.treesitter.get_parser(0,nil,{error=false})~=nil end,50))",[]]);
-  const barState=()=>rpc('nvim_exec_lua',["return {winbar=vim.wo.winbar,loaded=package.loaded['dropbar']~=nil,errmsg=vim.v.errmsg}",[]]);
-  const phases=[await barState()];
-  await rpc('nvim_input',[' wd']);await delay(200);phases.push(await barState());
-  await rpc('nvim_input',[' wd']);await delay(100);phases.push(await barState());
-  if(phases[0].winbar!==''||phases[0].loaded||phases[1].winbar===''||!phases[1].loaded||phases[2].winbar!==''||phases.some(p=>p.errmsg))throw new Error('Breadcrumb default-off or toggle failed: '+JSON.stringify(phases));
-  result={phases};
+  await rpc('nvim_exec_lua',["vim.v.errmsg=''; vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/App.vue')",[]]);
+  await rpc('nvim_input',['jj']);await delay(100);
+  result=await rpc('nvim_exec_lua',[`local autocmds=0
+for _,cmd in ipairs(vim.api.nvim_get_autocmds({})) do
+ if cmd.group_name and cmd.group_name:lower():find('dropbar',1,true) then autocmds=autocmds+1 end
+end
+return {configured=require('lazy.core.config').plugins['dropbar.nvim']~=nil,
+ loaded=package.loaded['dropbar']~=nil,winbar=vim.wo.winbar,autocmds=autocmds,
+ picker=vim.fn.maparg('<Space>;','n'),toggle=vim.fn.maparg('<Space>wd','n'),errmsg=vim.v.errmsg}`,[]]);
+  if(result.configured||result.loaded||result.winbar!==''||result.autocmds||result.picker||result.toggle||result.errmsg)throw new Error('Breadcrumb plugin was not disabled: '+JSON.stringify(result));
  }else if(suite==='navigation-performance'){
   const setup=await rpc('nvim_exec_lua',[`vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts')
 assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=0,name='vtsls'})>0 end,50))
@@ -460,6 +463,9 @@ return {rows=rows,errmsg=vim.v.errmsg}`,[]]);
   const screen=rendered.rows.join('\n');
   if(foldState.buftype!=='nofile'||foldState.filetype!=='markdown'||foldState.errmsg||foldState.messages.includes('UnhandledPromiseRejection')||phases[0].wins.length!==1||!phases[0].hover?.first.startsWith('```')||phases[1].wins.length||phases[2].wins.length!==1||phases[3].current!==phases[3].wins[0]||phases[3].hover?.conceallevel!==2||!phases[3].hover?.concealcursor.includes('n')||screen.includes('```')||!screen.includes('function demo')||rendered.errmsg||phases[4].wins.length||phases.some(p=>p.errmsg))throw new Error('Hover folding, Markdown conceal or Esc behavior failed: '+JSON.stringify({foldState,phases,rendered}));
   result={foldState,phases,rendered};
+ }else if(suite==='multicursor'){
+  const {verifyMulticursorUI}=await import('./multicursor-ui.mjs');
+  result=await verifyMulticursorUI(rpc);
  }else if(suite==='git'){
   const {verifyGitUI}=await import('./git-ui.mjs');
   result=await verifyGitUI(rpc);

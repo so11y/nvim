@@ -1,0 +1,295 @@
+{
+  "root": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\nvim-multicursor-ui-mAuqfz",
+  "realtime": [
+    {
+      "label": "First character before Escape",
+      "mode": "i",
+      "cursor": [
+        3,
+        1
+      ],
+      "messages": "",
+      "regions": 3,
+      "lines": [
+        "Xabc",
+        "Xabc",
+        "Xabc"
+      ],
+      "active": true
+    },
+    {
+      "label": "Continuous input",
+      "mode": "i",
+      "cursor": [
+        3,
+        5
+      ],
+      "messages": "",
+      "regions": 3,
+      "lines": [
+        "XABCDabc",
+        "XABCDabc",
+        "XABCDabc"
+      ],
+      "active": true
+    },
+    {
+      "label": "Chinese input",
+      "mode": "i",
+      "cursor": [
+        3,
+        11
+      ],
+      "messages": "",
+      "regions": 3,
+      "lines": [
+        "XABCD中文abc",
+        "XABCD中文abc",
+        "XABCD中文abc"
+      ],
+      "active": true
+    },
+    {
+      "label": "Backspace",
+      "mode": "i",
+      "cursor": [
+        3,
+        8
+      ],
+      "messages": "",
+      "regions": 3,
+      "lines": [
+        "XABCD中abc",
+        "XABCD中abc",
+        "XABCD中abc"
+      ],
+      "active": true
+    },
+    {
+      "label": "Parenthesis",
+      "mode": "i",
+      "cursor": [
+        3,
+        9
+      ],
+      "messages": "",
+      "regions": 3,
+      "lines": [
+        "XABCD中(abc",
+        "XABCD中(abc",
+        "XABCD中(abc"
+      ],
+      "active": true
+    },
+    {
+      "label": "Newline",
+      "mode": "i",
+      "cursor": [
+        6,
+        0
+      ],
+      "messages": "",
+      "regions": 3,
+      "lines": [
+        "XABCD中(",
+        "abc",
+        "XABCD中(",
+        "abc",
+        "XABCD中(",
+        "abc"
+      ],
+      "active": true
+    },
+    {
+      "label": "Input after newline",
+      "mode": "i",
+      "cursor": [
+        6,
+        6
+      ],
+      "messages": "",
+      "regions": 3,
+      "lines": [
+        "XABCD中(",
+        "同步abc",
+        "XABCD中(",
+        "同步abc",
+        "XABCD中(",
+        "同步abc"
+      ],
+      "active": true
+    }
+  ],
+  "manual": {
+    "label": "Manual marks and enabled movement",
+    "mode": "i",
+    "cursor": [
+      3,
+      2
+    ],
+    "messages": "",
+    "regions": 2,
+    "lines": [
+      "oZne",
+      "middle",
+      "tZwo"
+    ],
+    "active": true
+  },
+  "append": {
+    "label": "Append after each cursor",
+    "mode": "i",
+    "cursor": [
+      2,
+      2
+    ],
+    "messages": "",
+    "regions": 2,
+    "lines": [
+      "a!bc",
+      "a!bc"
+    ],
+    "active": true
+  },
+  "matches": {
+    "label": "Replace selected occurrences",
+    "mode": "i",
+    "cursor": [
+      2,
+      3
+    ],
+    "regions": 2,
+    "messages": "",
+    "lines": [
+      "bar = 1",
+      "bar = 2",
+      "other = 3"
+    ],
+    "active": true
+  },
+  "insertMatches": {
+    "label": "Select matches while inserting",
+    "mode": "i",
+    "cursor": [
+      2,
+      1
+    ],
+    "regions": 2,
+    "messages": "",
+    "lines": [
+      "Xfoo",
+      "Xfoo"
+    ],
+    "active": true
+  },
+  "enter": {
+    "label": "Enter appends at all cursors",
+    "mode": "i",
+    "cursor": [
+      2,
+      2
+    ],
+    "regions": 2,
+    "messages": "",
+    "lines": [
+      "aQbc",
+      "aQbc"
+    ],
+    "active": true
+  },
+  "insertAdd": {
+    "label": "Add cursors while inserting",
+    "mode": "i",
+    "cursor": [
+      3,
+      1
+    ],
+    "regions": 3,
+    "messages": "",
+    "lines": [
+      "Tabc",
+      "Tabc",
+      "Tabc"
+    ],
+    "active": true
+  },
+  "insertAtColumn": {
+    "label": "Keep insertion column when adding cursors",
+    "mode": "i",
+    "cursor": [
+      2,
+      2
+    ],
+    "regions": 2,
+    "messages": "",
+    "lines": [
+      "aTbc",
+      "aTbc"
+    ],
+    "active": true
+  },
+  "insertAtEnd": {
+    "mode": "i",
+    "cursor": [
+      2,
+      4
+    ],
+    "regions": 2,
+    "messages": "",
+    "lines": [
+      "abcT ",
+      "abcT "
+    ],
+    "active": true
+  },
+  "visualAdd": {
+    "label": "Edit cursors added from visual mode",
+    "mode": "i",
+    "cursor": [
+      2,
+      2
+    ],
+    "regions": 2,
+    "messages": "",
+    "lines": [
+      "aWbc",
+      "aWbc"
+    ],
+    "active": true
+  },
+  "paste": {
+    "label": "Paste at all cursors",
+    "mode": "i",
+    "cursor": [
+      2,
+      5
+    ],
+    "regions": 2,
+    "messages": "",
+    "lines": [
+      "PASTEabc",
+      "PASTEabc"
+    ],
+    "active": true
+  },
+  "restoredPairs": {
+    "label": "Automatic pairs after exiting",
+    "mode": "i",
+    "cursor": [
+      1,
+      1
+    ],
+    "regions": 0,
+    "messages": "",
+    "lines": [
+      "()"
+    ],
+    "active": false
+  },
+  "integrations": {
+    "completion_paused": true,
+    "autopairs_paused": true,
+    "restored": true
+  },
+  "messages": ""
+}

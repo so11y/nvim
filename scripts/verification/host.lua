@@ -10,6 +10,7 @@ for _, name in ipairs({
     'snacks.nvim',
     'neogit',
     'codediff.nvim',
+    'vim-visual-multi',
 }) do
     assert(not config.plugins[name], 'Host loaded ' .. name)
     blocked[#blocked + 1] = name

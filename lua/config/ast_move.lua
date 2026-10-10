@@ -5,9 +5,7 @@ local M = {
         d = 'conditional.outer',
         l = 'loop.outer',
         c = 'call.outer',
-        q = 'string.outer',
         s = 'statement.outer',
-        b = 'block.outer',
     },
 }
 local cache, wanted = {}, {}

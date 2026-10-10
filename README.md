@@ -1,6 +1,8 @@
 # Neovim 配置快捷键文档
 
-日常配置已部署到 `nvim` profile：新终端使用 `nvim` / `neovide`，现有 VSCode 窗口保存后执行 **VSCode-Neovim: Restart**。完整[升级分析](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-analysis.md)、[执行计划与回退](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-plan.md)、[验收记录](C:/Users/Administrator/AppData/Local/nvim/docs/upgrade-record.md)已保存。
+![Neovim 启动页](docs/images/nvim-startup.png)
+
+![Fulate TSX 代码与左侧文件树](docs/images/nvim-fulate-overview.png)
 
 ## 目录
 
@@ -54,6 +56,10 @@
 ---
 
 ## 分屏操作
+
+组件示例与组件实现并排查看：
+
+![Fulate 组件代码的双栏分屏](docs/images/nvim-fulate-splits.png)
 
 | 按键 | 功能 |
 |------|------|
@@ -118,13 +124,25 @@
 | v | `<A-j>` | 向下移动选区 |
 | v | `<A-k>` | 向上移动选区 |
 
-### 多光标
+### 子词跳转
 
-独立 Neovim / Neovide 使用 `multicursor.nvim`；VSCode 环境使用宿主多光标及原有 `vscode-multi-cursor.nvim`。
+`nvim-spider` 按驼峰、下划线和数字边界移动；`<leader>` 是空格，`w` 为小写，`B` / `E` 为大写。
 
 | 模式 | 按键 | 功能 |
 |------|------|------|
-| n, x, i | `gb` | 选中下一个相同的词或选区 |
+| n, x, o | `<leader>w` | 下一个子词开头 |
+| n, x, o | `<leader>B` | 上一个子词开头 |
+| n, x, o | `<leader>E` | 子词末尾 |
+
+可用 `v<leader>E` 选到子词末尾，或 `d<leader>E` / `c<leader>E` 删除 / 替换到子词末尾。
+
+### 多光标
+
+独立 Neovim / Neovide 使用 `vim-visual-multi` 实时同步输入；VSCode 环境使用宿主多光标及原有 `vscode-multi-cursor.nvim`。
+
+| 模式 | 按键 | 功能 |
+|------|------|------|
+| n, x, i | `gb` | 首次选中当前词，再按选中下一个相同的词或选区 |
 | n, x, i | `<A-J>` | 向下添加光标（Alt+Shift+J） |
 | n, x, i | `<A-K>` | 向上添加光标（Alt+Shift+K） |
 | n, x | `mc` | 手动创建光标；独立编辑器中再次按下可移除 |
@@ -133,7 +151,7 @@
 | n, x | `ma` | 在所有光标后插入 |
 | n | `mcc` | 取消所有光标 |
 
-独立编辑器中，输入内容在退出插入模式时同步到其他光标。普通模式按 `<Esc>` 退出多光标；插入模式先按 `<Esc>` 返回普通模式，再按一次退出。`mc` 可逐个标记不同位置，然后用 `mm` 启用全部光标并一起移动，或用 `mi` / `ma` 开始同时编辑。
+独立编辑器中，输入、退格和换行会实时同步到其他光标。普通模式按 `<Esc>` 退出多光标；插入模式先按 `<Esc>` 返回普通模式，再按一次退出。`mc` 可逐个标记不同位置，然后用 `mm` 启用全部光标并一起移动，或用 `mi` / `ma` 开始同时编辑。多光标期间暂停补全和自动括号，退出后自动恢复。
 
 ### 删除/剪切
 
@@ -196,6 +214,12 @@
 
 CodeDiff 中用 `]c` / `[c` 切换差异块，`]f` / `[f` 切换文件，`q` 关闭视图并返回。看完差异后按 `<leader>gt` 或 `<leader>gn` 进行 Git 操作。
 
+![CodeDiff 对比 Fulate 按钮组件的真实提交](docs/images/nvim-fulate-codediff.png)
+
+LazyGit 的分支列表、提交文件与补丁预览：
+
+![LazyGit 查看 Fulate 的分支和代码补丁](docs/images/nvim-fulate-lazygit.png)
+
 Neogit 中先按菜单键，再按动作键，例如 `b c` 表示先按 `b`，再按 `c`：
 
 | 按键 | 功能 |
@@ -210,6 +234,8 @@ Neogit 中先按菜单键，再按动作键，例如 `b c` 表示先按 `b`，�
 | `p u` / `P u` | 从上游拉取 / 推送到上游 |
 | `d d` | 在 CodeDiff 中查看光标所在文件或提交的差异 |
 | `?` | 查看操作菜单 |
+
+![Neogit 的近期提交与分支操作菜单](docs/images/nvim-fulate-neogit.png)
 
 ---
 
@@ -232,6 +258,10 @@ Neogit 中先按菜单键，再按动作键，例如 `b c` 表示先按 `b`，�
 ---
 
 ## LSP 功能
+
+Code Action 菜单与修改预览：
+
+![Fulate TSX 代码的 Code Action 菜单与预览](docs/images/nvim-fulate-code-actions.png)
 
 | 按键 | 功能 |
 |------|------|
@@ -265,6 +295,8 @@ Neogit 中先按菜单键，再按动作键，例如 `b c` 表示先按 `b`，�
 Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 
 ### 补全 (Blink)
+
+![Blink 组件属性补全与类型提示](docs/images/nvim-blink-completion.png)
 
 | 按键 | 功能 |
 |------|------|
@@ -336,7 +368,7 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 
 > **说明**：
 > *   **模式**：`n`=普通模式, `x`=可视模式, `o`=操作符等待模式 (例如按 `d` 后接的按键)
-> *   **核心逻辑**：基于语法树智能识别代码结构，而非简单的正则匹配。
+> *   **核心逻辑**：代码结构由 Tree-sitter 识别；`iq` / `ib` 由 mini.ai 提供，优先当前行，找不到时向后搜索，范围为光标前后 50 行。
 
 ### 1. 代码选中 (Select)
 *通常在可视模式 `v` 下使用，或配合操作符 `d` (删除)、`c` (修改)、`y` (复制) 使用。*
@@ -356,13 +388,15 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 | xo | `ia` | 选中 参数 **内容** |
 | xo | `as` | 选中 **整个** 语句/声明 |
 | xo | `is` | 选中 语句/声明 **内容** |
-| xo | `aq` | 选中 **整个** 字符串 (含引号) |
-| xo | `iq` | 选中 字符串 **内容** (不含引号) |
+| xo | `ib` | 选中 圆括号、方括号或花括号 **内部**（mini.ai） |
+| xo | `iq` | 选中 单引号、双引号或反引号 **内部**（mini.ai） |
 
 ### 2. 代码跳转 (Move)
 *支持在普通模式快速跳转，或在可视模式下扩展选区。*
 *`]` = 下一个，`[` = 上一个。*
 *`a/b/d/l/q/s` 的组合覆盖同名原生跳转，诊断使用 `[x` / `]x`。*
+
+`[b` / `]b` 按左括号位置依次跳转，包含嵌套括号；`[q` / `]q` 按起始引号位置依次跳转。匹配规则和默认前后 50 行范围分别与 `ib` / `iq` 一致。`2]b` / `2]q` 等同于连续跳转两次。
 
 | 模式 | 按键 | 功能 |
 |:---:|:---|:---|
@@ -376,12 +410,12 @@ Node 的 debugger 暂停若弹出菜单，选择 Resume stopped thread。
 | nxo | `[l` | 跳转到 **上一个** 循环 |
 | nxo | `]c` | 跳转到 **下一个** 方法调用 |
 | nxo | `[c` | 跳转到 **上一个** 方法调用 |
-| nxo | `]q` | 跳转到 **下一个** 字符串 |
-| nxo | `[q` | 跳转到 **上一个** 字符串 |
+| nxo | `]q` | 跳转到 **下一个** 成对引号的起始引号（单引号、双引号、反引号） |
+| nxo | `[q` | 跳转到 **上一个** 成对引号的起始引号（单引号、双引号、反引号） |
 | nxo | `]s` | 跳转到 **下一个** 语句段落 |
 | nxo | `[s` | 跳转到 **上一个** 语句段落 |
-| nxo | `]b` | 跳转到 **下一个** 代码块 |
-| nxo | `[b` | 跳转到 **上一个** 代码块 |
+| nxo | `]b` | 跳转到 **下一个** 成对括号的左括号（`()`, `[]`, `{}`） |
+| nxo | `[b` | 跳转到 **上一个** 成对括号的左括号（`()`, `[]`, `{}`） |
 
 ### 3. 重复移动与原生查找
 *配置中增强了 `;` 和 `,` 的功能，使其不仅能重复 `f/t` 查找，还能重复上面的代码跳转。*

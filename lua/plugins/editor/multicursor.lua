@@ -1,11 +1,17 @@
 local function from_insert(key)
-    return '<Esc>' .. key .. (vim.fn.col('.') > 1 and 'a' or 'i')
+    return '<Esc>' .. key .. (vim.fn.col('.') > 1 and 'ma' or 'mi')
+end
+
+local function enable_cursors()
+    if vim.b.visual_multi == 1 then
+        vim.cmd('call b:VM_Selection.Maps.enable()')
+    end
 end
 
 local function start_insert(command)
-    local mc = require('multicursor-nvim')
-    if not mc.cursorsEnabled() then
-        mc.enableCursors()
+    if vim.b.visual_multi == 1 then
+        enable_cursors()
+        return '<Plug>(VM-' .. command .. ')'
     end
     if vim.fn.mode() == 'n' then
         return command
@@ -17,38 +23,58 @@ local function start_insert(command)
 end
 
 return {
-    'jake-stewart/multicursor.nvim',
-    branch = '1.0',
+    'mg979/vim-visual-multi',
+    event = 'VeryLazy',
+    init = function()
+        vim.g.VM_default_mappings = 0
+        vim.g.VM_live_editing = 1
+        vim.g.VM_set_statusline = 0
+        vim.g.VM_add_cursor_at_pos_no_mappings = 1
+        vim.g.VM_skip_shorter_lines = 0
+        vim.g.VM_maps = {
+            ['Find Under'] = 'gb',
+            ['Find Subword Under'] = 'gb',
+            ['Add Cursor Down'] = '<A-J>',
+            ['Add Cursor Up'] = '<A-K>',
+            ['Add Cursor At Pos'] = '',
+            ['Find Operator'] = '',
+            ['Select Operator'] = '',
+            J = '',
+            Undo = '<A-z>',
+            Redo = '<A-y>',
+        }
+        vim.g.VM_custom_remaps = { ['<CR>'] = 'a' }
+    end,
     keys = {
         {
             'gb',
-            function()
-                local mc = require('multicursor-nvim')
-                local inserting = vim.fn.mode(1) == 'niI'
-                mc.matchAddCursor(1)
-                if inserting then
-                    mc.feedkeys('i')
-                end
-            end,
-            mode = { 'n', 'x' },
-            desc = '选中下一个相同的词',
+            '<Plug>(VM-Find-Under)',
+            mode = 'n',
+            desc = '选中当前词或下一个相同的词',
         },
         {
             'gb',
-            '<C-o>gb',
+            '<Plug>(VM-Find-Subword-Under)',
+            mode = 'x',
+            desc = '选中下一个相同的选区',
+        },
+        {
+            'gb',
+            function()
+                local action = vim.b.visual_multi == 1
+                        and '<Plug>(VM-Find-Next)'
+                    or '<Plug>(VM-Find-Under)'
+                return '<Esc>' .. action .. 'mi'
+            end,
             mode = 'i',
+            expr = true,
             remap = true,
-            desc = '选中下一个相同的词',
+            desc = '选中当前词或下一个相同的词',
         },
         {
             '<A-J>',
-            function()
-                require('multicursor-nvim').lineAddCursor(
-                    1,
-                    { skipEmpty = false }
-                )
-            end,
-            mode = { 'n', 'x' },
+            '<Plug>(VM-Add-Cursor-Down)',
+            mode = 'n',
             desc = '向下添加光标',
         },
         {
@@ -62,14 +88,16 @@ return {
             desc = '向下添加光标',
         },
         {
+            '<A-J>',
+            '<Esc><A-J>',
+            mode = 'x',
+            remap = true,
+            desc = '向下添加光标',
+        },
+        {
             '<A-K>',
-            function()
-                require('multicursor-nvim').lineAddCursor(
-                    -1,
-                    { skipEmpty = false }
-                )
-            end,
-            mode = { 'n', 'x' },
+            '<Plug>(VM-Add-Cursor-Up)',
+            mode = 'n',
             desc = '向上添加光标',
         },
         {
@@ -83,12 +111,29 @@ return {
             desc = '向上添加光标',
         },
         {
+            '<A-K>',
+            '<Esc><A-K>',
+            mode = 'x',
+            remap = true,
+            desc = '向上添加光标',
+        },
+        {
             'mc',
-            function()
-                require('multicursor-nvim').toggleCursor()
-            end,
-            mode = { 'n', 'x' },
+            '<Plug>(VM-Add-Cursor-At-Pos)',
+            mode = 'n',
             desc = '手动添加或移除光标',
+        },
+        {
+            'mc',
+            '<Esc><Plug>(VM-Add-Cursor-At-Pos)',
+            mode = 'x',
+            desc = '手动添加或移除光标',
+        },
+        {
+            'mm',
+            enable_cursors,
+            mode = { 'n', 'x' },
+            desc = '启用所有光标',
         },
         {
             'mi',
@@ -110,23 +155,9 @@ return {
         },
         {
             'mcc',
-            function()
-                require('multicursor-nvim').clearCursors()
-            end,
+            '<Cmd>VMClear<CR>',
             mode = { 'n', 'x' },
             desc = '取消所有光标',
         },
     },
-    config = function()
-        local mc = require('multicursor-nvim')
-        mc.setup()
-        mc.addKeymapLayer(function(map)
-            map({ 'n', 'x' }, 'mm', function()
-                if not mc.cursorsEnabled() then
-                    mc.enableCursors()
-                end
-            end, { desc = '启用所有光标' })
-            map('n', '<Esc>', mc.clearCursors, { desc = '退出多光标' })
-        end)
-    end,
 }

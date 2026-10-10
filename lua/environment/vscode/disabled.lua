@@ -31,7 +31,7 @@ return {
     'MagicDuck/grug-far.nvim',
     'folke/lazydev.nvim',
     -- editor
-    'jake-stewart/multicursor.nvim',
+    'mg979/vim-visual-multi',
     'kevinhwang91/nvim-ufo',
     'mfussenegger/nvim-dap',
     'windwp/nvim-autopairs',

@@ -5,6 +5,9 @@ return {
         event = { 'InsertEnter', 'CmdlineEnter' },
         dependencies = { 'rafamadriz/friendly-snippets', 'mattn/emmet-vim' },
         opts = {
+            enabled = function()
+                return vim.b.visual_multi ~= 1
+            end,
             sources = {
                 providers = {
                     lsp = { async = true },

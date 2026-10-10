@@ -1,5 +1,6 @@
 return {
     'Bekaboo/dropbar.nvim',
+    enabled = false,
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
         local dropbar = require('dropbar')
@@ -57,13 +58,13 @@ return {
             end,
             desc = 'Winbar 快速跳转 (Dropbar)',
         },
-        {
-            '<Leader>wd',
-            function()
-                vim.wo.winbar = vim.wo.winbar == '' and '%{%v:lua.dropbar()%}'
-                    or ''
-            end,
-            desc = '切换面包屑',
-        },
+        -- {
+        --     '<Leader>wd',
+        --     function()
+        --         vim.wo.winbar = vim.wo.winbar == '' and '%{%v:lua.dropbar()%}'
+        --             or ''
+        --     end,
+        --     desc = '切换面包屑',
+        -- },
     },
 }
