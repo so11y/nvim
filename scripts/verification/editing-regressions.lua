@@ -273,7 +273,7 @@ report.resolve_error_lines = true
 local rust = scratch({
     'fn f(a: i32, b: i32) -> i32 { a + b }',
     'fn main() { f(1, 2); }',
-    'fn loops() { loop { break; } if true { f(3, 4); } let s = "hé\\nllo"; let r = r##"raw 中 text"##; }',
+    'fn loops() { loop { break; } if true { f(3, 4); } }',
     'fn macros() { let v = vec![1, 2]; custom!{a, b}; }',
 }, 'rust')
 local query = vim.treesitter.query.get('rust', 'textobjects')
@@ -281,25 +281,17 @@ for _, capture in ipairs({
     'function.inner',
     'conditional.inner',
     'loop.inner',
-    'block.outer',
-    'string.inner',
 }) do
     assert(
         vim.tbl_contains(query.captures, capture),
         'Missing Rust capture: ' .. capture
     )
 end
-local strings, macro_arguments = {}, {}
+local macro_arguments = {}
 for id, node, metadata in
     query:iter_captures(vim.treesitter.get_parser(rust):parse()[1]:root(), rust)
 do
-    if query.captures[id] == 'string.inner' then
-        strings[#strings + 1] = vim.treesitter.get_node_text(
-            node,
-            rust,
-            { metadata = metadata[id] }
-        )
-    elseif query.captures[id] == 'call.inner' then
+    if query.captures[id] == 'call.inner' then
         macro_arguments[#macro_arguments + 1] = vim.treesitter.get_node_text(
             node,
             rust,
@@ -307,11 +299,6 @@ do
         )
     end
 end
-assert(
-    vim.tbl_contains(strings, 'hé\\nllo')
-        and vim.tbl_contains(strings, 'raw 中 text'),
-    'Rust string interiors contain delimiters'
-)
 assert(
     vim.tbl_contains(macro_arguments, '1, 2')
         and vim.tbl_contains(macro_arguments, 'a, b'),

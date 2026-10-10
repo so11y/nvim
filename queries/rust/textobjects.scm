@@ -38,9 +38,3 @@
   (break_expression)
   (continue_expression)
 ] @statement.outer
-
-; Strings are not defined by the upstream Rust textobjects query.
-(string_literal) @string.outer
-((string_literal) @string.inner (#offset! @string.inner 0 1 0 -1))
-(raw_string_literal) @string.outer
-(raw_string_literal (string_content) @string.inner)

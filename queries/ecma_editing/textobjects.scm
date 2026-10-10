@@ -41,11 +41,3 @@
 ; 3. 最后写基础执行语句
 (expression_statement) @statement.outer
 (return_statement) @statement.outer
-
-
-
-; --- 字符串 (包含 #offset! 修复反引号 viq) ---
-(string) @string.outer
-(string (string_fragment) @string.inner)
-(template_string) @string.outer
-((template_string) @string.inner (#offset! @string.inner 0 1 0 -1))
