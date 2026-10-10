@@ -37,6 +37,10 @@ if vim.g.neovide then
     vim.o.guifont = 'FiraCode Nerd Font:h14'
     vim.opt.background = 'dark'
     vim.g.neovide_theme = 'dark'
+    vim.g.neovide_opacity = 0.9
+    vim.g.neovide_normal_opacity = 0.9
+    -- Windows 毛玻璃需要 Windows 11 22H2 及以上。
+    vim.g.neovide_window_blurred = true
     vim.g.neovide_scroll_animation_length = 0.16
     vim.g.neovide_position_animation_length = 0.1
 end
