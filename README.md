@@ -137,7 +137,7 @@ Vue 标签重命名交给 `vue_ls`，代码符号交给对应服务器。HTML/Vu
 
 独立编辑器使用 LazyGit、Neogit 管理 Git，CodeDiff 查看差异。Neogit 为英文菜单；CodeDiff 的兼容版本由插件配置和锁文件固定。
 
-CodeDiff 中 `]c` / `[c` 切换差异块，`]f` / `[f` 切换文件，`q` 关闭视图。Neogit 的菜单组合按顺序输入，例如 `b c`。
+CodeDiff 中 `]c` / `[c` 切换差异块，`]f` / `[f` 切换文件，`q` 或 `<A-w>` 退出差异页。Neogit 的菜单组合按顺序输入，例如 `b c`。
 
 | Neogit 按键 | 功能 |
 | --- | --- |

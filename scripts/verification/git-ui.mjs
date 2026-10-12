@@ -66,10 +66,17 @@ export async function verifyGitUI(rpc) {
   await input('q');
   await waitFor(() => lua("return vim.bo.buftype ~= 'terminal'"), 'Close LazyGit');
 
-  await input(' gh');
-  await waitFor(() => lua("return require('codediff.ui.lifecycle').get_mode(vim.api.nvim_get_current_tabpage()) == 'history'"), 'Open Git history');
-  await input('q');
-  await waitFor(async () => !(await hasDiff()), 'Close Git history');
+  const editorLayout = "local wins={}; for _,win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do if vim.api.nvim_win_get_config(win).relative == '' then wins[#wins+1]={win=win,buf=vim.api.nvim_win_get_buf(win)} end end; return {tab=vim.api.nvim_get_current_tabpage(),wins=wins}";
+  const beforeHistory = await lua(editorLayout);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    await input(' gh');
+    await waitFor(() => lua("return require('codediff.ui.lifecycle').get_mode(vim.api.nvim_get_current_tabpage()) == 'history'"), 'Open Git history');
+    await input('<A-w>');
+    await waitFor(async () => !(await hasDiff()), 'Close Git history with Alt+w');
+    const restored = await lua(editorLayout);
+    const closeError = await lua("return vim.v.errmsg");
+    if (JSON.stringify(restored) !== JSON.stringify(beforeHistory) || closeError) throw new Error('History close did not restore editor: ' + JSON.stringify({attempt,beforeHistory,restored,closeError}));
+  }
 
   // Create from an older branch, so choosing the wrong base cannot pass.
   const base = git('rev-parse', 'HEAD~1');

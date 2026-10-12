@@ -288,6 +288,17 @@ return {
                         return
                     end
 
+                    local codediff = package.loaded['codediff.ui.lifecycle']
+                    if
+                        codediff
+                        and codediff.get_session(
+                            vim.api.nvim_get_current_tabpage()
+                        )
+                    then
+                        vim.cmd('CodeDiff')
+                        return
+                    end
+
                     if not is_editor_window(winid) then
                         vim.cmd('close')
                         return
