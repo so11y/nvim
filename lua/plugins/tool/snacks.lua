@@ -75,7 +75,7 @@ return {
             indent = {
                 enabled = true,
                 animate = {
-                    enabled = true,
+                    enabled = false,
                     easing = 'outQuad',
                     duration = { step = 8, total = 160 },
                 },
@@ -84,7 +84,7 @@ return {
                     underline = false, -- underline the start of the scope
                 },
                 chunk = {
-                    enabled = true,
+                    enabled = false,
                 },
             },
             input = {

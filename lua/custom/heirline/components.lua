@@ -1,5 +1,3 @@
-local palette = require('catppuccin.palettes').get_palette('mocha')
-local utils = require('heirline.utils')
 local conditions = require('heirline.conditions')
 local devicons = require('nvim-web-devicons')
 
@@ -10,13 +8,6 @@ icons.diagnostics = {
     Info = '●',
     Hint = '',
 }
-local colors = {
-    diag_warn = utils.get_highlight('DiagnosticWarn').fg,
-    diag_error = utils.get_highlight('DiagnosticError').fg,
-    diag_hint = utils.get_highlight('DiagnosticHint').fg,
-    diag_info = utils.get_highlight('DiagnosticInfo').fg,
-}
-local dim_color = palette.surface1
 
 local M = {}
 M.Spacer = {
@@ -36,8 +27,8 @@ M.ScrollBar = {
         return string.rep(self.sbar[i], 2)
     end,
     hl = {
-        fg = palette.yellow,
-        bg = palette.surface0,
+        fg = 'yellow',
+        bg = 'surface0',
     },
 }
 
@@ -96,20 +87,20 @@ M.Mode = {
             t = 'TERM',
         },
         mode_colors = {
-            n = palette.lavender,
-            nt = dim_color,
-            i = palette.blue,
-            v = palette.mauve,
-            V = palette.mauve,
-            ['\22'] = palette.mauve,
-            c = palette.red,
-            s = palette.pink,
-            S = palette.pink,
-            ['\19'] = palette.pink,
-            R = palette.peach,
-            r = palette.peach,
-            ['!'] = palette.red,
-            t = palette.green,
+            n = 'lavender',
+            nt = 'dim',
+            i = 'blue',
+            v = 'mauve',
+            V = 'mauve',
+            ['\22'] = 'mauve',
+            c = 'red',
+            s = 'pink',
+            S = 'pink',
+            ['\19'] = 'pink',
+            R = 'peach',
+            r = 'peach',
+            ['!'] = 'red',
+            t = 'green',
         },
     },
     provider = function(self)
@@ -119,7 +110,7 @@ M.Mode = {
     hl = function(self)
         local mode = self.mode:sub(1, 1)
         return {
-            fg = palette.base,
+            fg = 'base',
             bg = self.mode_colors[mode],
             bold = true,
         }
@@ -145,7 +136,7 @@ M.MacroRecording = {
         {
             provider = '󰻃 ',
             hl = {
-                fg = palette.maroon,
+                fg = 'maroon',
             },
         },
         {
@@ -153,14 +144,14 @@ M.MacroRecording = {
                 return self.reg_recording
             end,
             hl = {
-                fg = palette.maroon,
+                fg = 'maroon',
                 italic = false,
                 bold = true,
             },
         },
         hl = {
-            fg = palette.text,
-            bg = palette.base,
+            fg = 'text',
+            bg = 'base',
         },
     },
     update = { 'RecordingEnter', 'RecordingLeave' },
@@ -175,7 +166,7 @@ M.Formatters = {
         local format = require('config.format')
         return format.label() .. (format.client() and '' or '?')
     end,
-    hl = { fg = dim_color, bold = false },
+    hl = { fg = 'dim', bold = false },
 }
 
 M.LSPActive = {
@@ -195,7 +186,7 @@ M.LSPActive = {
         return '  ' .. table.concat(names, ', ')
     end,
     hl = {
-        fg = dim_color,
+        fg = 'dim',
         bold = false,
     },
     on_click = {
@@ -211,7 +202,7 @@ M.FileType = {
         return vim.bo.filetype
     end,
     hl = {
-        fg = utils.get_highlight('Type').fg,
+        fg = 'filetype',
         bold = false,
     },
 }
@@ -227,7 +218,7 @@ M.Git = {
     end,
     hl = function(self)
         return {
-            fg = self.has_changes and palette.maroon or dim_color,
+            fg = self.has_changes and 'maroon' or 'dim',
         }
     end,
     provider = function(self)
@@ -263,26 +254,26 @@ M.Diagnostics = {
                 return self.errors > 0
                     and (self.error_icon .. self.errors .. ' ')
             end,
-            hl = { fg = colors.diag_error },
+            hl = { fg = 'diag_error' },
         },
         {
             provider = function(self)
                 return self.warnings > 0
                     and (self.warn_icon .. self.warnings .. ' ')
             end,
-            hl = { fg = colors.diag_warn },
+            hl = { fg = 'diag_warn' },
         },
         {
             provider = function(self)
                 return self.info > 0 and (self.info_icon .. self.info .. ' ')
             end,
-            hl = { fg = colors.diag_info },
+            hl = { fg = 'diag_info' },
         },
         {
             provider = function(self)
                 return self.hints > 0 and (self.hint_icon .. self.hints)
             end,
-            hl = { fg = colors.diag_hint },
+            hl = { fg = 'diag_hint' },
         },
         M.Spacer,
     },
@@ -298,7 +289,7 @@ M.FileIcon = {
     hl = function(self)
         return {
             fg = self.is_modified and not self.is_terminal and self.icon_color
-                or dim_color,
+                or 'dim',
         }
     end,
 }
@@ -309,7 +300,7 @@ M.FileName = {
             or vim.fn.fnamemodify(self.filename, ':t')
     end,
     hl = function(self)
-        return { fg = self.is_modified and self.icon_color or dim_color }
+        return { fg = self.is_modified and self.icon_color or 'dim' }
     end,
 }
 
@@ -326,9 +317,9 @@ M.FileNameBlock = {
         )
         self.icon = self.is_terminal and '' or icon
         local fg = icon_hl and vim.api.nvim_get_hl(0, { name = icon_hl }).fg
-        self.icon_color = fg and string.format('#%06x', fg) or dim_color
+        self.icon_color = fg and string.format('#%06x', fg) or 'dim'
     end,
-    hl = { fg = palette.text },
+    hl = { fg = 'text' },
     M.FileIcon,
     M.FileName,
 }
@@ -369,7 +360,7 @@ M.SearchOccurrence = {
         return active
     end,
     hl = {
-        fg = palette.sky,
+        fg = 'sky',
     },
     provider = function(self)
         local context = search_context()

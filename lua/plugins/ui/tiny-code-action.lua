@@ -8,7 +8,7 @@ return {
         picker = {
             'buffer',
             opts = {
-                auto_preview = true,
+                auto_preview = false,
                 height = 7,
                 min_width = 28,
                 max_width = 52,

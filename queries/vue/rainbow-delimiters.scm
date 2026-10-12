@@ -1,0 +1,3 @@
+(interpolation
+  "{{" @delimiter
+  "}}" @delimiter) @container

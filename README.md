@@ -14,6 +14,7 @@ which-key 按功能显示分组；所有当前 Leader 按键只在下表登记�
 | 搜索 `s` | `<leader>sr` | n, v | 搜索替换，默认当前文件 |
 | 搜索 `s` | `<leader>sn` | n | 通知历史 |
 | 搜索 `s` | `<leader>su` | n | 撤销历史 |
+| 搜索 `s` | `<leader>sc` | n | 配色主题，支持预览并记住选择 |
 | 代码 `c` | `<leader>co` | n | 代码大纲 |
 | 代码 `c` | `<leader>ch` | n | 折叠预览；无折叠时显示 Hover |
 | 跳转 `j` | `<leader>jj` | n, x, o | Flash 跳转 |
@@ -31,6 +32,8 @@ which-key 按功能显示分组；所有当前 Leader 按键只在下表登记�
 | 诊断 `x` | `<leader>xf` | n | 当前文件诊断 |
 | 诊断 `x` | `<leader>xx` | n | 工作区诊断 |
 | 退出 `q` | `<leader>qq` | n | 退出 Neovim |
+
+配色菜单提供 Catppuccin 和 GitHub Theme 的各个款式。上下移动可预览，回车确认并保存，`Esc` 取消；首次默认使用 Catppuccin。
 
 再次按代码预览键可进入浮窗，`Esc` 关闭。子词移动识别驼峰、下划线和数字边界；可配合 `v`、`d`、`c` 选中、删除或修改，例如 `d<leader>je`。
 

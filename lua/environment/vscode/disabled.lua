@@ -37,4 +37,5 @@ return {
     'windwp/nvim-autopairs',
     'windwp/nvim-ts-autotag',
     'catppuccin/nvim',
+    'projekt0n/github-nvim-theme',
 }
