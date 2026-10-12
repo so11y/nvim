@@ -173,6 +173,7 @@ return {
                 github_dark_default = {
                     ['@variable.parameter'] = { fg = '#ffa657' },
                     ['@vscode.member'] = { fg = '#e6edf3' },
+                    ['@tag.component.vue'] = { fg = '#ffa657' },
                     ['@type.builtin.typescript'] = { fg = '#79c0ff' },
                     ['@type.builtin.javascript'] = {
                         link = '@type.builtin.typescript',
