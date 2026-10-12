@@ -1,5 +1,21 @@
 local map = vim.keymap.set
 
+if vim.g.neovide then
+    local modes = { 'n', 'i', 'v', 'c', 't' }
+    local function zoom_in()
+        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * 1.1
+    end
+
+    map(modes, '<C-=>', zoom_in, { desc = '放大 Neovide 字体' })
+    map(modes, '<C-+>', zoom_in, { desc = '放大 Neovide 字体' })
+    map(modes, '<C-->', function()
+        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor / 1.1
+    end, { desc = '缩小 Neovide 字体' })
+    map(modes, '<C-0>', function()
+        vim.g.neovide_scale_factor = 1
+    end, { desc = '恢复 Neovide 默认字体大小' })
+end
+
 -- =======================================================
 -- 1. 禁用/覆盖原生 Vim 键位
 -- =======================================================
