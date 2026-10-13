@@ -21,12 +21,19 @@ return {
                 },
             },
         },
-        highlights = {
-            buffer_selected = {
-                bold = false, -- 禁用加粗
-                italic = false, -- 禁用斜体
-            },
-            error = {
+        highlights = function(defaults)
+            local highlights = defaults.highlights
+            for name, highlight in pairs(highlights) do
+                if name:match('_selected$') then
+                    highlight.bg = {
+                        attribute = 'bg',
+                        highlight = 'CursorLine',
+                    }
+                end
+            end
+            highlights.buffer_selected.bold = false -- 禁用加粗
+            highlights.buffer_selected.italic = false -- 禁用斜体
+            highlights.error = {
                 fg = {
                     attribute = 'fg',
                     highlight = 'DiagnosticError',
@@ -35,8 +42,9 @@ return {
                     attribute = 'bg',
                     highlight = 'BufferLineBackground',
                 },
-            },
-        },
+            }
+            return highlights
+        end,
     },
 
     keys = { -- 切换标签，使用相同的快捷键
