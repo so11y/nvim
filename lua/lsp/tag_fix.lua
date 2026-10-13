@@ -363,19 +363,24 @@ end
 local function wrap(params, callback, dispatchers)
     local target = params.arguments[1]
     local bufnr = vim.uri_to_bufnr(target.uri)
-    local function current()
-        return vim.api.nvim_buf_is_loaded(bufnr)
+    local function cancel_if_changed()
+        if
+            vim.api.nvim_buf_is_loaded(bufnr)
             and vim.api.nvim_get_current_buf() == bufnr
             and vim.uri_from_bufnr(bufnr) == target.uri
             and vim.api.nvim_buf_get_changedtick(bufnr)
                 == target.changedtick
-    end
-    if not current() then
+        then
+            return false
+        end
         vim.notify(
             '包裹标签已取消：目标缓冲区已变化',
             vim.log.levels.WARN
         )
         callback(nil, nil)
+        return true
+    end
+    if cancel_if_changed() then
         return
     end
 
@@ -384,59 +389,86 @@ local function wrap(params, callback, dispatchers)
             callback(nil, nil)
             return
         end
-        if not current() then
-            vim.notify(
-                '包裹标签已取消：目标缓冲区已变化',
-                vim.log.levels.WARN
-            )
+        if cancel_if_changed() then
+            return
+        end
+
+        local client = vim.lsp.get_clients({
+            bufnr = bufnr,
+            name = 'emmet_language_server',
+        })[1]
+        if not client or not client.initialized then
+            vim.notify('Emmet 语言服务器尚未就绪', vim.log.levels.WARN)
             callback(nil, nil)
             return
         end
 
-        require('lazy').load({ plugins = { 'emmet-vim' } })
-        local ok, expanded = pcall(
-            vim.fn['emmet#expandWord'],
-            vim.trim(abbr) .. '{$#}',
-            is_jsx(vim.bo[bufnr].filetype) and 'jsx' or 'html',
-            0
-        )
-        if not ok then
-            vim.notify('Emmet 缩写无效：' .. expanded, vim.log.levels.WARN)
-            callback(nil, nil)
-            return
-        end
-        local marker = expanded:find('$#', 1, true)
-        if not marker or expanded:find('$#', marker + 2, true) then
-            vim.notify(
-                'Emmet 缩写必须只产生一个包裹位置',
-                vim.log.levels.WARN
-            )
-            callback(nil, nil)
-            return
-        end
+        local placeholder = '__NVIM_EMMET_WRAP__'
+        local sent = client:request('emmet/expandAbbreviation', {
+            abbreviation = vim.trim(abbr) .. '{$#}',
+            language = vim.bo[bufnr].filetype,
+            options = {
+                text = placeholder,
+                options = { ['output.format'] = false },
+            },
+        }, function(err, snippet)
+            if err then
+                vim.notify(
+                    'Emmet 缩写展开失败：' .. err.message,
+                    vim.log.levels.WARN
+                )
+                callback(nil, nil)
+                return
+            end
+            if cancel_if_changed() then
+                return
+            end
 
-        local selected = target.range
-        local contents = vim.api.nvim_buf_get_text(
-            bufnr,
-            selected.start.line,
-            selected.start.character,
-            selected['end'].line,
-            selected['end'].character,
-            {}
-        )
-        expanded = expanded:gsub('\n$', '')
-        local replacement = expanded:sub(1, marker - 1)
-            .. table.concat(contents, '\n')
-            .. expanded:sub(marker + 2)
-        local result, err = dispatchers.server_request('workspace/applyEdit', {
-            edit = edit(target.uri, {
-                { range = selected, newText = replacement },
-            }),
-        })
-        if err or not result or not result.applied then
-            vim.notify('包裹标签未能应用编辑', vim.log.levels.ERROR)
+            local expanded =
+                tostring(require('vim.lsp._snippet_grammar').parse(snippet))
+            local marker = expanded:find(placeholder, 1, true)
+            if
+                not marker
+                or expanded:find(placeholder, marker + #placeholder, true)
+            then
+                vim.notify(
+                    'Emmet 缩写必须只产生一个包裹位置',
+                    vim.log.levels.WARN
+                )
+                callback(nil, nil)
+                return
+            end
+
+            local selected = target.range
+            local contents = vim.api.nvim_buf_get_text(
+                bufnr,
+                selected.start.line,
+                selected.start.character,
+                selected['end'].line,
+                selected['end'].character,
+                {}
+            )
+            local replacement = expanded:sub(1, marker - 1)
+                .. table.concat(contents, '\n')
+                .. expanded:sub(marker + #placeholder)
+            local result, apply_err =
+                dispatchers.server_request('workspace/applyEdit', {
+                    edit = edit(target.uri, {
+                        { range = selected, newText = replacement },
+                    }),
+                })
+            if apply_err or not result or not result.applied then
+                vim.notify(
+                    '包裹标签未能应用编辑',
+                    vim.log.levels.ERROR
+                )
+            end
+            callback(nil, nil)
+        end, bufnr)
+        if not sent then
+            vim.notify('Emmet 语言服务器已停止', vim.log.levels.WARN)
+            callback(nil, nil)
         end
-        callback(nil, nil)
     end)
 end
 

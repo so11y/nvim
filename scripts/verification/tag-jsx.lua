@@ -77,6 +77,16 @@ for _, extension in ipairs({ 'jsx', 'tsx' }) do
             end, 20),
             'tag_fix did not attach to .' .. extension
         )
+        assert(
+            vim.wait(5000, function()
+                local emmet = vim.lsp.get_clients({
+                    bufnr = bufnr,
+                    name = 'emmet_language_server',
+                })[1]
+                return emmet and emmet.initialized
+            end, 20),
+            'Emmet did not initialize for .' .. extension
+        )
         local client =
             vim.lsp.get_clients({ bufnr = bufnr, name = 'tag_fix' })[1]
         assert(client.offset_encoding == 'utf-8')

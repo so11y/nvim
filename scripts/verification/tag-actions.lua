@@ -9,6 +9,16 @@ local function open(name)
         end, 20),
         'tag_fix did not attach to ' .. name
     )
+    assert(
+        vim.wait(5000, function()
+            local emmet = vim.lsp.get_clients({
+                bufnr = 0,
+                name = 'emmet_language_server',
+            })[1]
+            return emmet and emmet.initialized
+        end, 20),
+        'Emmet did not initialize for ' .. name
+    )
     local client = vim.lsp.get_clients({ bufnr = 0, name = 'tag_fix' })[1]
     assert(client.offset_encoding == 'utf-8')
     assert(client:supports_method('textDocument/codeAction'))

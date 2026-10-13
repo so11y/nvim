@@ -6,6 +6,7 @@
   "mason": {
     "codelldb": "v1.12.3",
     "css-lsp": "4.10.0",
+    "emmet-language-server": "2.8.0",
     "eslint-lsp": "4.10.0",
     "html-lsp": "4.10.0",
     "js-debug-adapter": "v1.140.0",

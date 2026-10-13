@@ -2,6 +2,7 @@ local M = {
     servers = {
         'cssls',
         'efm',
+        'emmet_language_server',
         'eslint',
         'html',
         'jsonls',
@@ -17,6 +18,10 @@ function M.setup()
     vim.lsp.config('*', { capabilities = M.capabilities })
     vim.lsp.config('vtsls', require('lsp.vtsls'))
     vim.lsp.config('vue_ls', require('lsp.vue_ls'))
+    vim.lsp.config(
+        'emmet_language_server',
+        require('lsp.emmet_language_server')
+    )
     vim.lsp.config('tag_fix', {
         cmd = require('lsp.tag_fix').cmd,
         filetypes = { 'html', 'vue', 'javascriptreact', 'typescriptreact' },

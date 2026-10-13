@@ -3,7 +3,7 @@ return {
         'saghen/blink.cmp',
         version = '1.*',
         event = { 'InsertEnter', 'CmdlineEnter' },
-        dependencies = { 'rafamadriz/friendly-snippets', 'mattn/emmet-vim' },
+        dependencies = { 'rafamadriz/friendly-snippets' },
         opts = {
             enabled = function()
                 return vim.b.visual_multi ~= 1
@@ -22,6 +22,7 @@ return {
                         if
                             vim.bo.filetype ~= 'vue'
                             or opts.item.source_id ~= 'lsp'
+                            or opts.item.client_name == 'emmet_language_server'
                             or not opts.item.detail
                             or not opts.config.treesitter_highlighting
                         then
@@ -82,32 +83,8 @@ return {
                 ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
                 ['<CR>'] = { 'accept', 'fallback' },
                 ['<Tab>'] = {
-                    function(cmp)
-                        if cmp.is_visible() then
-                            return cmp.select_and_accept()
-                        end
-
-                        if cmp.snippet_active() then
-                            return cmp.snippet_forward()
-                        end
-
-                        local col = vim.fn.col('.') - 1
-                        local line = vim.api.nvim_get_current_line()
-                        local char_before = line:sub(col, col)
-
-                        if col > 0 and char_before:match('[%w%.%#%-]') then
-                            local key = vim.api.nvim_replace_termcodes(
-                                '<C-y>,',
-                                true,
-                                true,
-                                true
-                            )
-                            vim.api.nvim_feedkeys(key, 'i', true)
-                            return true
-                        end
-
-                        return false
-                    end,
+                    'select_and_accept',
+                    'snippet_forward',
                     'fallback',
                 },
                 -- S-Tab: 片段回退

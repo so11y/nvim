@@ -172,19 +172,7 @@ M.Formatters = {
 M.LSPActive = {
     condition = conditions.lsp_attached,
     update = { 'BufEnter', 'LspAttach', 'LspDetach' },
-    provider = function()
-        local names = {}
-        local clients = vim.lsp.get_clients({
-            bufnr = 0,
-        })
-        for _, server in pairs(clients) do
-            table.insert(names, server.name)
-        end
-        if #names == 0 then
-            return ''
-        end
-        return '  ' .. table.concat(names, ', ')
-    end,
+    provider = '  LSP',
     hl = {
         fg = 'dim',
         bold = false,
