@@ -6,6 +6,10 @@ local function normalize(root)
 end
 
 return {
+    -- emmet_language_server owns abbreviation completion.
+    settings = {
+        emmet = { showExpandedAbbreviation = 'never' },
+    },
     on_init = function(client, result)
         on_init(client, result)
         local handler = client.handlers['tsserver/request']

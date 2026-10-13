@@ -5,6 +5,7 @@ return {
         modes = {
             char = {
                 enabled = true,
+                autohide = true,
                 jump_labels = false,
                 multi_line = false,
                 char_actions = function()
