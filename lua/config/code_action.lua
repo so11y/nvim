@@ -105,6 +105,8 @@ M.picker = {
             width = 28,
             height = 1,
             border = 'rounded',
+            title = 'Code Actions',
+            title_pos = 'center',
             backdrop = false,
             { win = 'list', height = 1, border = 'none' },
         },
@@ -176,10 +178,6 @@ M.picker = {
     end,
     on_show = function(picker)
         vim.bo[picker.list.win.buf].filetype = 'code_action_menu'
-        vim.wo[picker.layout.root.win].winhighlight =
-            'Normal:BlinkCmpMenu,NormalNC:BlinkCmpMenu,FloatBorder:BlinkCmpMenuBorder'
-        vim.wo[picker.list.win.win].winhighlight =
-            'Normal:BlinkCmpMenu,NormalNC:BlinkCmpMenu,CursorLine:BlinkCmpMenuSelection,SnacksPickerListCursorLine:BlinkCmpMenuSelection'
         scrollbar_picker = picker
     end,
 }

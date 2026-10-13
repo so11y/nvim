@@ -71,10 +71,13 @@ return {
                         bg = colors.base,
                     },
                     BlinkCmpMenu = {
-                        bg = colors.base,
+                        link = 'NormalFloat',
                     },
                     BlinkCmpMenuBorder = {
-                        bg = colors.base,
+                        link = 'FloatBorder',
+                    },
+                    BlinkCmpMenuSelection = {
+                        link = 'Visual',
                     },
                     NeoTreeIndentMarker = {
                         fg = colors.surface0,
@@ -169,6 +172,9 @@ return {
                     ['@lsp.type.method.vue'] = { link = '@property' },
                     LspInlayHint = { bg = 'NONE' },
                     NormalFloat = { bg = 'NONE' },
+                    BlinkCmpMenu = { link = 'NormalFloat' },
+                    BlinkCmpMenuBorder = { link = 'FloatBorder' },
+                    BlinkCmpMenuSelection = { link = 'Visual' },
                 },
                 github_dark_default = {
                     ['@variable.parameter'] = { fg = '#ffa657' },

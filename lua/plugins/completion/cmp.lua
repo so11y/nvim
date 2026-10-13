@@ -17,6 +17,34 @@ return {
                 documentation = {
                     auto_show = true,
                     auto_show_delay_ms = 0,
+                    draw = function(opts)
+                        opts.default_implementation()
+                        if
+                            vim.bo.filetype ~= 'vue'
+                            or opts.item.source_id ~= 'lsp'
+                            or not opts.item.detail
+                            or not opts.config.treesitter_highlighting
+                        then
+                            return
+                        end
+
+                        -- Vue LSP signatures are TypeScript, not SFC markup.
+                        local docs = require('blink.cmp.lib.window.docs')
+                        local bufnr = opts.window:get_buf()
+                        local line_count = #docs.split_lines(opts.item.detail)
+                        vim.api.nvim_buf_clear_namespace(
+                            bufnr,
+                            require('blink.cmp.config').appearance.highlight_ns,
+                            0,
+                            line_count
+                        )
+                        docs.highlight_with_treesitter(
+                            bufnr,
+                            'typescript',
+                            0,
+                            line_count
+                        )
+                    end,
                 },
                 list = {
                     selection = {
@@ -50,6 +78,8 @@ return {
             keymap = {
                 preset = 'none',
                 ['<A-q>'] = { 'show', 'hide' },
+                ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
+                ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
                 ['<CR>'] = { 'accept', 'fallback' },
                 ['<Tab>'] = {
                     function(cmp)
