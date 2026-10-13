@@ -1,14 +1,24 @@
 return {
     'folke/flash.nvim',
+    event = 'VeryLazy',
     opts = {
         modes = {
             char = {
                 enabled = true,
-                jump_labels = true,
+                jump_labels = false,
+                multi_line = false,
+                char_actions = function()
+                    return {}
+                end,
+                keys = { 'f', 'F', 't', 'T' },
             },
         },
     },
     keys = {
+        { 'f', mode = { 'n', 'x', 'o' } },
+        { 'F', mode = { 'n', 'x', 'o' } },
+        { 't', mode = { 'n', 'x', 'o' } },
+        { 'T', mode = { 'n', 'x', 'o' } },
         {
             '<leader>jj',
             mode = { 'n', 'x', 'o' },
