@@ -17,7 +17,6 @@ return {
     'NvChad/nvim-colorizer.lua',
     'HiPhish/rainbow-delimiters.nvim',
     'nvim-zh/colorful-winsep.nvim',
-    'rachartier/tiny-code-action.nvim',
     'rachartier/tiny-inline-diagnostic.nvim',
     'petertriho/nvim-scrollbar',
     -- tool

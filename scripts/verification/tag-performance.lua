@@ -42,18 +42,11 @@ end
 
 local cold = measure(1, request)
 local warm = measure(50, request)
-local action = request()[1]
-require('lazy').load({ plugins = { 'tiny-code-action.nvim' } })
-local previewer = require('tiny-code-action.previewers.buffer')
-local preview = measure(10, function()
-    assert(#previewer.preview_with_resolve(action, 0, client, {}) > 0)
-end)
 local result = {
     lines = #lines,
     bytes = vim.fn.getfsize(path),
     first_request = cold,
     subsequent_requests = warm,
-    preview = preview,
 }
 vim.fn.delete(path)
 return result

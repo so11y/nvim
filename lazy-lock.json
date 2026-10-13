@@ -183,10 +183,6 @@
     "branch": "main",
     "commit": "882c996cf28183f4d63640de0b4c02ec886d01f2"
   },
-  "tiny-code-action.nvim": {
-    "branch": "main",
-    "commit": "91a9c32228e9a7761d241023d9ebb9d11d8fb10d"
-  },
   "tiny-inline-diagnostic.nvim": {
     "branch": "main",
     "commit": "6264451f14119d63a52580e5198d6baf8518b0b2"

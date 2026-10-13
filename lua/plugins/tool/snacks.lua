@@ -178,6 +178,11 @@ return {
                     },
                 },
                 sources = {
+                    select = {
+                        kinds = {
+                            codeaction = require('config.code_action').picker,
+                        },
+                    },
                     files = {
                         hidden = true,
                         exclude = { '.git', 'node_modules', '.DS_Store' },

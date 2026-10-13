@@ -16,8 +16,6 @@ local M = {
     },
 }
 
-local tracked_parsers = setmetatable({}, { __mode = 'k' })
-
 function M.install()
     local treesitter = require('nvim-treesitter')
     assert(
@@ -38,21 +36,6 @@ function M.setup()
                 vim.treesitter.language.get_lang(vim.bo[ev.buf].filetype)
             if lang and vim.list_contains(M.parsers, lang) then
                 vim.treesitter.start(ev.buf, lang)
-                local parser = vim.treesitter.highlighter.active[ev.buf].tree
-                if not tracked_parsers[parser] then
-                    parser:register_cbs({
-                        on_bytes = function(buf)
-                            local highlighter =
-                                vim.treesitter.highlighter.active[buf]
-                            if highlighter then
-                                -- Neovim 0.12 retains old trees during async parsing.
-                                -- Their ranges are stale as soon as the text changes.
-                                highlighter._highlight_states = {}
-                            end
-                        end,
-                    })
-                    tracked_parsers[parser] = true
-                end
                 vim.bo[ev.buf].indentexpr =
                     "v:lua.require'nvim-treesitter'.indentexpr()"
             end

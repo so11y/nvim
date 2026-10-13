@@ -18,10 +18,18 @@ local highlighter = assert(vim.treesitter.highlighter.active[buf])
 local parser = highlighter.tree
 local parse = parser.parse
 local async_redraws = 0
+local stable_highlights = {}
 
 local function redraw()
     vim.cmd.redraw()
     assert(vim.v.errmsg == '', vim.v.errmsg)
+    for _, highlight in ipairs(stable_highlights) do
+        local pos = vim.fn.screenpos(0, 2, highlight.col)
+        assert(
+            vim.fn.screenattr(pos.row, pos.col) == highlight.attr,
+            highlight.name .. ' highlight changed during async parsing'
+        )
+    end
     assert(
         vim.wait(1000, function()
             return not highlighter.parsing
@@ -52,6 +60,18 @@ local ok, result = xpcall(function()
     redraw()
     local after = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
     assert(#after == #before + 2, 'Arrow refactor did not add two lines')
+
+    for _, token in ipairs({ 'const', '=' }) do
+        local col = assert(after[2]:find(token, 1, true))
+        local pos = vim.fn.screenpos(0, 2, col)
+        local attr = vim.fn.screenattr(pos.row, pos.col)
+        assert(attr > 0, token .. ' was not highlighted before editing')
+        stable_highlights[#stable_highlights + 1] = {
+            name = token,
+            col = col,
+            attr = attr,
+        }
+    end
 
     -- Keep the next redraw inside the async parsing window deterministically.
     parser.parse = function(self, range, on_parse)
@@ -92,6 +112,7 @@ local ok, result = xpcall(function()
     return {
         undo_redo_cycles = 8,
         async_redraws = async_redraws,
+        stable_highlights = #stable_highlights,
         errmsg = vim.v.errmsg,
     }
 end, debug.traceback)

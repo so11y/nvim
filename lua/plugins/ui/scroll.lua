@@ -3,6 +3,10 @@ return {
     event = 'BufReadPost',
     config = function()
         require('scrollbar').setup({
+            excluded_filetypes = vim.list_extend(
+                require('scrollbar.config').get().excluded_filetypes,
+                { 'code_action_menu' }
+            ),
             show = true,
             show_in_active_only = false,
             set_highlights = true,

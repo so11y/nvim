@@ -124,15 +124,6 @@ end
 local wrap_action = find(unicode, '包裹标签…')
 local before, tick =
     contents(vue_buf), vim.api.nvim_buf_get_changedtick(vue_buf)
-require('lazy').load({ plugins = { 'tiny-code-action.nvim' } })
-local wrap_preview =
-    require('tiny-code-action.previewers.buffer').preview_with_resolve(
-        wrap_action,
-        vue_buf,
-        vue,
-        {}
-    )
-assert(#wrap_preview > 0 and input_count == 0)
 assert(vim.api.nvim_buf_get_changedtick(vue_buf) == tick)
 run_wrap(vue, wrap_action)
 assert(input_count == 0, 'Stale action prompted for input')
@@ -186,40 +177,51 @@ results.html_expand = apply_and_undo(
 )
 assert(contents(html_buf):find('你好😀', 1, true))
 
-require('lazy').load({ plugins = { 'tiny-code-action.nvim' } })
-local previewer = require('tiny-code-action.previewers.buffer')
-local preview_action = find(at(html, 2, '<span>'), '去掉外层标签')
-local preview_tick = vim.api.nvim_buf_get_changedtick(html_buf)
-local preview =
-    previewer.preview_with_resolve(preview_action, html_buf, html, {})
+local pos = position(2, '<span>')
+vim.api.nvim_win_set_cursor(0, { pos.line + 1, pos.character })
+require('config.code_action').open()
+local picker
 assert(
-    #preview > 0 and vim.api.nvim_buf_get_changedtick(html_buf) == preview_tick
+    vim.wait(5000, function()
+        picker = Snacks.picker.get({ source = 'select' })[1]
+        return picker and picker.shown
+    end, 20),
+    'Native Code Action menu did not open'
 )
-results.preview = preview
-
-local picker = require('tiny-code-action.pickers.buffer')
-local config = require('tiny-code-action').config
-local all = {}
-for _, action in ipairs(at(html, 2, '<span>')) do
-    all[#all + 1] = { action = action, client = html, context = {} }
-end
-picker.create(config, all, html_buf)
-local win = vim.api.nvim_get_current_win()
-local cfg = vim.api.nvim_win_get_config(win)
-assert(cfg.width <= config.picker.opts.max_width and cfg.height <= 7)
+local win = picker.list.win.win
+assert(
+    vim.wait(1000, function()
+        return picker.list:count() == picker:count()
+            and #vim.tbl_filter(
+                    function(line)
+                        return vim.trim(line) ~= ''
+                    end,
+                    vim.api.nvim_buf_get_lines(
+                        picker.list.win.buf,
+                        0,
+                        -1,
+                        false
+                    )
+                )
+                == picker:count()
+    end, 10),
+    'The expanded menu did not render all actions'
+)
+local cfg = vim.api.nvim_win_get_config(picker.layout.root.win)
+assert(vim.api.nvim_win_get_height(win) == picker:count())
 assert(cfg.row >= 0 and cfg.col >= 0)
 assert(cfg.row + cfg.height + 3 <= vim.o.lines)
 assert(cfg.col + cfg.width + 2 <= vim.o.columns)
 assert(vim.wo[win].cursorline)
 assert(vim.wo[win].winhighlight:find('BlinkCmpMenu', 1, true))
+assert(not picker.input.win:valid() and not picker.preview.win:valid())
 assert(vim.fn.maparg('<CR>', 'n', false, true).buffer == 1)
 assert(vim.fn.maparg('<Tab>', 'n', false, true).buffer == 1)
 results.picker = {
     config = cfg,
-    lines = vim.api.nvim_buf_get_lines(0, 0, -1, false),
-    preview = require('tiny-code-action.pickers.buffer_utils.preview').get_preview_state().win,
+    lines = vim.api.nvim_buf_get_lines(picker.list.win.buf, 0, -1, false),
+    count = picker:count(),
 }
-vim.api.nvim_win_close(win, true)
-require('tiny-code-action.pickers.buffer_utils.preview').close_preview()
+picker:close()
 
 return results
