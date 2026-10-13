@@ -10,6 +10,9 @@ for _, plugin in ipairs({
     vim.opt.rtp:append(data .. '/lazy/' .. plugin)
 end
 require('nvim-treesitter').setup()
+if vim.env.NVIM_AST_BASELINE then
+    package.loaded['config.ast_move'] = dofile(vim.env.NVIM_AST_BASELINE)
+end
 local specs = dofile(root .. '/lua/plugins/editor/treesitter.lua')
 specs[2].config(nil, specs[2].opts)
 local report = { queries = {}, moves = {}, search = {}, checks = {} }
@@ -270,6 +273,78 @@ local ok, err = xpcall(function()
         'Vue jump failed with many injected trees'
     )
     report.checks.vue_many_injections = true
+
+    -- A missing target must not rescan every injected tree for every chunk.
+    local sparse_lines = {
+        '<script setup lang="ts">',
+        'function first() { return 1; }',
+        '</script>',
+        '<template>',
+    }
+    for _ = 1, 8000 do
+        sparse_lines[#sparse_lines + 1] = '<div>{{ first() }}</div>'
+    end
+    sparse_lines[#sparse_lines + 1] = '</template>'
+    local sparse_buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_set_current_buf(sparse_buf)
+    vim.api.nvim_buf_set_lines(sparse_buf, 0, -1, false, sparse_lines)
+    vim.bo[sparse_buf].filetype = 'vue'
+    local parser = vim.treesitter.get_parser(sparse_buf)
+    local parse, for_each_tree = parser.parse, parser.for_each_tree
+    local calls, visits, revision = 0, 0, 0
+    parser.parse = function(self, ...)
+        calls = calls + 1
+        return parse(self, ...)
+    end
+    parser.for_each_tree = function(self, callback)
+        return for_each_tree(self, function(tree, language)
+            visits = visits + 1
+            callback(tree, language)
+        end)
+    end
+    local move = require('config.ast_move').move
+    local function edited_jump(capture)
+        revision = revision + 1
+        vim.api.nvim_buf_set_lines(sparse_buf, 1, 2, false, {
+            ('function first() { return %d; }'):format(revision),
+        })
+        vim.api.nvim_win_set_cursor(0, { 1, 0 })
+        calls, visits = 0, 0
+        move({ forward = true }, capture)
+    end
+    local started = vim.uv.hrtime()
+    move({ forward = true }, 'function.outer')
+    local cold = (vim.uv.hrtime() - started) / 1e6
+    local near = bench(function()
+        edited_jump('function.outer')
+        assert(vim.api.nvim_win_get_cursor(0)[1] == 2)
+    end)
+    local absent = bench(function()
+        edited_jump('loop.outer')
+        assert(vim.api.nvim_win_get_cursor(0)[1] == 1)
+    end)
+    local total_trees = 0
+    for_each_tree(parser, function()
+        total_trees = total_trees + 1
+    end)
+    report.vue_sparse = {
+        lines = #sparse_lines,
+        trees = total_trees,
+        cold_near_ms = cold,
+        edited_near_ms = near,
+        edited_absent_ms = absent,
+        absent_parse_calls = calls,
+        absent_tree_visits = visits,
+    }
+    if not vim.env.NVIM_AST_BASELINE then
+        assert(calls == 1 and visits == total_trees, 'Repeated full tree scan')
+    end
+    calls, visits = 0, 0
+    move({ forward = true }, 'loop.outer')
+    assert(calls == 0 and visits == 0, 'Empty result was not cached')
+    parser.parse, parser.for_each_tree = parse, for_each_tree
+    report.checks.sparse_motion_cache = true
+    vim.api.nvim_buf_delete(sparse_buf, { force = true })
 end, debug.traceback)
 if not ok then
     report.error = err

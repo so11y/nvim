@@ -78,13 +78,20 @@ return {
 
             keymap = {
                 preset = 'none',
-                ['<A-q>'] = { 'show', 'hide' },
+                ['<C-e>'] = { 'hide', 'fallback' },
                 ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
                 ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
                 ['<CR>'] = { 'accept', 'fallback' },
                 ['<Tab>'] = {
                     'select_and_accept',
                     'snippet_forward',
+                    function(cmp)
+                        local col = vim.api.nvim_win_get_cursor(0)[2]
+                        local line = vim.api.nvim_get_current_line()
+                        if col > 0 and line:sub(col, col):match('%S') then
+                            return cmp.show()
+                        end
+                    end,
                     'fallback',
                 },
                 -- S-Tab: 片段回退

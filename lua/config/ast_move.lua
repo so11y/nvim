@@ -24,35 +24,45 @@ local function positions(bufnr, chunk)
     local tick, ft =
         vim.api.nvim_buf_get_changedtick(bufnr), vim.bo[bufnr].filetype
     local entry = cache[bufnr]
-    if
-        entry
-        and entry.tick == tick
-        and entry.ft == ft
-        and entry.chunks[chunk]
-    then
+    if not entry or entry.tick ~= tick or entry.ft ~= ft then
+        local parser = vim.treesitter.get_parser(bufnr, nil, { error = false })
+        if not parser then
+            return {}
+        end
+        parser:parse(true)
+        entry = { tick = tick, ft = ft, chunks = {}, trees = {} }
+        local last_row = vim.api.nvim_buf_line_count(bufnr) - 1
+        -- Index trees once per edit; captures are still queried on demand.
+        parser:for_each_tree(function(tree, language)
+            local query =
+                vim.treesitter.query.get(language:lang(), 'textobjects')
+            if not query then
+                return
+            end
+            local root = tree:root()
+            local first, _, last = root:range()
+            local item = { root = root, query = query }
+            local first_chunk = math.floor(first / chunk_lines)
+            local last_chunk =
+                math.floor(math.min(last, last_row) / chunk_lines)
+            for index = first_chunk, last_chunk do
+                entry.trees[index] = entry.trees[index] or {}
+                table.insert(entry.trees[index], item)
+            end
+        end)
+        cache[bufnr] = entry
+    end
+    if entry.chunks[chunk] then
         return entry.chunks[chunk]
     end
-    local parser = vim.treesitter.get_parser(bufnr, nil, { error = false })
-    if not parser then
-        return {}
-    end
-    parser:parse(true)
     local first_row = chunk * chunk_lines
     local last_row =
         math.min(first_row + chunk_lines, vim.api.nvim_buf_line_count(bufnr))
     local found = {}
-    parser:for_each_tree(function(tree, language)
-        local root = tree:root()
-        local tree_start, _, tree_end = root:range()
-        if tree_end < first_row or tree_start >= last_row then
-            return
-        end
-        local query = vim.treesitter.query.get(language:lang(), 'textobjects')
-        if not query then
-            return
-        end
+    for _, item in ipairs(entry.trees[chunk] or {}) do
+        local query = item.query
         for id, node, metadata in
-            query:iter_captures(root, bufnr, first_row, last_row)
+            query:iter_captures(item.root, bufnr, first_row, last_row)
         do
             local capture = query.captures[id]
             if wanted[capture] then
@@ -72,7 +82,7 @@ local function positions(bufnr, chunk)
                 end
             end
         end
-    end)
+    end
     for name, ranges in pairs(found) do
         table.sort(ranges, function(a, b)
             return a[3] < b[3]
@@ -84,10 +94,6 @@ local function positions(bufnr, chunk)
             end
         end
         found[name] = unique
-    end
-    if not entry or entry.tick ~= tick or entry.ft ~= ft then
-        entry = { tick = tick, ft = ft, chunks = {} }
-        cache[bufnr] = entry
     end
     entry.chunks[chunk] = found
     return found

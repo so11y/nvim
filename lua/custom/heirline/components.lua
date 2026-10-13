@@ -210,11 +210,8 @@ M.Git = {
         }
     end,
     provider = function(self)
-        if self.has_changes then
-            return '󰘬 ' .. self.status_dict.head .. '*'
-        else
-            return '󰘬 ' .. self.status_dict.head
-        end
+        local head = self.status_dict.head:gsub('%%', '%%%%')
+        return '󰘬 ' .. head .. (self.has_changes and '*' or '')
     end,
 }
 
@@ -284,8 +281,9 @@ M.FileIcon = {
 
 M.FileName = {
     provider = function(self)
-        return self.filename == '' and vim.bo.filetype
+        local name = self.filename == '' and vim.bo.filetype
             or vim.fn.fnamemodify(self.filename, ':t')
+        return (name:gsub('%%', '%%%%'))
     end,
     hl = function(self)
         return { fg = self.is_modified and self.icon_color or 'dim' }

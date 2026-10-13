@@ -12,8 +12,8 @@ export async function verifyEmmetUI(rpc) {
     {ext:'vue',name:'template',lines:['<script setup>','const watch = 1;','</script>','<template>','你好😀 section.card','</template>'],row:5,expected:'<section class="card">'},
     {ext:'vue',name:'style',lines:['<template><div /></template>','<style>','.card {','m10','}','</style>'],row:4,expected:'margin: 10px;'},
     {ext:'vue',name:'scss',lines:['<template><div /></template>','<style scoped lang="scss">','.card {','m10','}','</style>'],row:4,expected:'margin: 10px;'},
-    {ext:'jsx',lines:['const view = (','section.card',');'],row:2,expected:'<section className="card">'},
-    {ext:'tsx',lines:['const view = (','section.card',');'],row:2,expected:'<section className="card">'},
+    {ext:'jsx',lines:['const view = <div>','section.card','</div>;'],row:2,expected:'<section className="card">'},
+    {ext:'tsx',lines:['const view = <div>','section.card','</div>;'],row:2,expected:'<section className="card">'},
     {ext:'css',lines:['.card {','m10','}'],row:2,expected:'margin: 10px;'},
     {ext:'scss',lines:['.card {','m10','}'],row:2,expected:'margin: 10px;'},
   ];
@@ -28,7 +28,9 @@ export async function verifyEmmetUI(rpc) {
       "assert(vim.wait(10000,function() local c=vim.lsp.get_clients({bufnr=b,name='emmet_language_server'})[1];return c and c.initialized end,20),'Emmet did not initialize');"+
       "vim.api.nvim_win_set_cursor(0,{row,0})",file,test.row);
     await input('A');
-    await lua("require('blink.cmp').show({providers={'lsp'}})");
+    await lua("require('blink.cmp').hide()");
+    await delay(100);
+    await input('<Tab>');
     const chosen=await lua(
       "local expected=...;local list=require('blink.cmp.completion.list');local candidate;"+
       "assert(vim.wait(10000,function() for i,item in ipairs(list.items) do "+

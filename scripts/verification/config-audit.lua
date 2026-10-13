@@ -1,4 +1,5 @@
-local report = {}
+local report = { startup_errmsg = vim.v.errmsg }
+vim.v.errmsg = ''
 local ok, err = xpcall(function()
     vim.cmd.enew()
     vim.api.nvim_buf_set_name(0, vim.env.NVIM_TEST_ROOT .. '/status-audit.txt')
@@ -214,6 +215,7 @@ local ok, err = xpcall(function()
     refresh({ '<template><div>no styles</div></template>' })
     variable('accent', nil)
     variable('imported', nil)
+    vim.fn.delete(imported)
     report.vue_sass_scope = {
         multiple_styles = true,
         rgb = true,

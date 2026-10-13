@@ -17,6 +17,7 @@ return {
         opts = { select = { lookahead = true }, move = { set_jumps = true } },
         config = function(_, opts)
             require('nvim-treesitter-textobjects').setup(opts)
+            local textobjects = require('config.textobjects')
             local nxo = { 'n', 'x', 'o' }
             local motion = require('config.ast_move')
             local descriptions = {
@@ -65,12 +66,8 @@ return {
             }) do
                 local capture, description = object[1], object[2]
                 vim.keymap.set({ 'x', 'o' }, key, function()
-                    vim.cmd("normal! m'")
-                    require('nvim-treesitter-textobjects.select').select_textobject(
-                        '@' .. capture,
-                        'textobjects'
-                    )
-                end, { desc = description })
+                    return textobjects.select('@' .. capture)
+                end, { expr = true, desc = description })
             end
         end,
     },
