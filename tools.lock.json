@@ -3,5 +3,5 @@
     "vtsls": "0.3.0",
     "vue-language-server": "3.3.11"
   },
-  "typescript_sdk": "5.9.3"
+  "typescript_sdk": "6.0.3"
 }

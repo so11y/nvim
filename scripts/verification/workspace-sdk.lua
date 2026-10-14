@@ -24,27 +24,31 @@ local ok, err = xpcall(function()
         vim.inspect(reply or request_err)
     )
     local body = assert(reply.result.body, vim.inspect(reply))
-    local sdk =
-        vim.fs.normalize(project .. '/node_modules/typescript/lib/'):lower()
+    local sdk = require('lsp.vtsls').settings.vtsls.typescript.globalTsdk
+    local normalized_sdk =
+        vim.fs.normalize(assert(vim.uv.fs_realpath(sdk))):lower()
     local libs = {}
     for _, name in ipairs(body.fileNames or {}) do
-        if vim.fs.normalize(name):lower():find(sdk, 1, true) then
+        if vim.fs.normalize(name):lower():find(normalized_sdk, 1, true) then
             libs[#libs + 1] = name
         end
     end
     assert(
         #libs > 0,
-        'tsserver used a bundled SDK: ' .. vim.inspect(body.fileNames)
+        'tsserver did not use the pinned SDK: ' .. vim.inspect(body.fileNames)
     )
-    report.workspace_sdk = vim.fs.dirname(libs[1])
+    report.typescript_sdk = vim.fs.dirname(libs[1])
     report.library_count = #libs
     report.config = body.configFileName
     report.version = vim.json.decode(
         table.concat(
-            vim.fn.readfile(project .. '/node_modules/typescript/package.json'),
+            vim.fn.readfile(vim.fs.dirname(sdk) .. '/package.json'),
             '\n'
         )
     ).version
+    assert(
+        report.version == require('config.mason_tools').versions.typescript_sdk
+    )
 end, debug.traceback)
 report.error = not ok and err or nil
 report.errmsg = vim.v.errmsg

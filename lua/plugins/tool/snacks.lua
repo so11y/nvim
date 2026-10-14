@@ -119,11 +119,6 @@ return {
             },
             picker = {
                 ui_select = true,
-                db = {
-                    sqlite3_path = vim.fn.has('win32') == 1
-                            and (vim.fn.stdpath('data') .. '/tools/bin/sqlite3.dll')
-                        or nil,
-                },
                 win = {
                     input = {
                         keys = {

@@ -1,51 +1,56 @@
 return {
     'akinsho/bufferline.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = { 'nvim-tree/nvim-web-devicons', 'folke/snacks.nvim' },
     event = 'VeryLazy',
-    opts = {
-        options = {
-            separator_style = 'thin',
-            diagnostics = 'nvim_lsp',
-            modified_icon = '●',
-            close_icon = '',
-            always_show_bufferline = false,
-            show_tab_indicators = false,
-            show_close_icon = false,
-            show_buffer_close_icons = true,
-            offsets = {
-                {
-                    filetype = 'neo-tree',
-                    text = 'EXPLORER',
-                    highlight = 'Directory',
-                    text_align = 'center',
+    opts = function()
+        local bufdelete = require('snacks.bufdelete').delete
+        return {
+            options = {
+                separator_style = 'thin',
+                diagnostics = 'nvim_lsp',
+                modified_icon = '●',
+                close_icon = '',
+                always_show_bufferline = false,
+                show_tab_indicators = false,
+                show_close_icon = false,
+                show_buffer_close_icons = true,
+                close_command = bufdelete,
+                right_mouse_command = bufdelete,
+                offsets = {
+                    {
+                        filetype = 'neo-tree',
+                        text = 'EXPLORER',
+                        highlight = 'Directory',
+                        text_align = 'center',
+                    },
                 },
             },
-        },
-        highlights = function(defaults)
-            local highlights = defaults.highlights
-            for name, highlight in pairs(highlights) do
-                if name:match('_selected$') then
-                    highlight.bg = {
-                        attribute = 'bg',
-                        highlight = 'CursorLine',
-                    }
+            highlights = function(defaults)
+                local highlights = defaults.highlights
+                for name, highlight in pairs(highlights) do
+                    if name:match('_selected$') then
+                        highlight.bg = {
+                            attribute = 'bg',
+                            highlight = 'CursorLine',
+                        }
+                    end
                 end
-            end
-            highlights.buffer_selected.bold = false -- 禁用加粗
-            highlights.buffer_selected.italic = false -- 禁用斜体
-            highlights.error = {
-                fg = {
-                    attribute = 'fg',
-                    highlight = 'DiagnosticError',
-                },
-                bg = {
-                    attribute = 'bg',
-                    highlight = 'BufferLineBackground',
-                },
-            }
-            return highlights
-        end,
-    },
+                highlights.buffer_selected.bold = false -- 禁用加粗
+                highlights.buffer_selected.italic = false -- 禁用斜体
+                highlights.error = {
+                    fg = {
+                        attribute = 'fg',
+                        highlight = 'DiagnosticError',
+                    },
+                    bg = {
+                        attribute = 'bg',
+                        highlight = 'BufferLineBackground',
+                    },
+                }
+                return highlights
+            end,
+        }
+    end,
 
     keys = { -- 切换标签，使用相同的快捷键
         -- 切换到上/下一个缓冲区 (Barbar 的 BufferPrevious/BufferNext)

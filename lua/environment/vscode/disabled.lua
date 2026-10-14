@@ -20,6 +20,7 @@ return {
     'rachartier/tiny-inline-diagnostic.nvim',
     'petertriho/nvim-scrollbar',
     -- tool
+    'iamyoki/buffer-reopen.nvim',
     'folke/snacks.nvim',
     'folke/persistence.nvim',
     'lewis6991/gitsigns.nvim',

@@ -34,7 +34,11 @@ return {
 
     settings = {
         vtsls = {
-            autoUseWorkspaceTsdk = true,
+            autoUseWorkspaceTsdk = false,
+            typescript = {
+                globalTsdk = vue_language_server_path
+                    .. '/node_modules/typescript/lib',
+            },
             tsserver = {
                 globalPlugins = {
                     {

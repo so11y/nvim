@@ -93,6 +93,10 @@ end, {
     desc = '水平分屏',
 })
 
+map('n', '<leader>wr', function()
+    vscode.action('workbench.action.reopenClosedEditor')
+end, { desc = '重新打开上一个关闭的文件' })
+
 -- 可重复诊断跳转
 vim.api.nvim_create_autocmd('User', {
     pattern = 'LazyDone',

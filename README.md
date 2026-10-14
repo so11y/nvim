@@ -53,7 +53,7 @@ Install／Sync 不保证重建已经安装的插件；补装或重试请执行�
 
 ### 特殊依赖与可选功能
 
-- Vue 使用配套版本的 vtsls、Vue language server 和 TypeScript SDK；Mason 安装时补齐服务器目录中的 SDK，项目自己的 TypeScript 优先。保留的 Mason 编译器适配只补齐这个 SDK，工具版本通过 Mason 原生安装参数指定。
+- Vue 使用配套版本的 vtsls、Vue language server 和 TypeScript SDK；Mason 安装时补齐服务器目录中的 SDK，vtsls 固定使用这份 SDK，以保持路径补全行为一致。保留的 Mason 编译器适配只补齐这个 SDK，工具版本通过 Mason 原生安装参数指定。
 - 格式化使用 Conform 调用 prettierd、StyLua，Rust 使用语言服务器；沿用项目配置、保存格式化、错误通知及失败时保留原文。已移除 EFM 自编译补丁，基础安装不需要 Go。
 - Rust 项目需要自己的 Rust 工具链；使用 Rustup 时运行 `rustup component add rust-analyzer rustfmt`，项目的工具链选择由 Rustup 管理。Windows 的 MSVC 工具链还需要 C++ Build Tools 和 Windows SDK，见 [Rustup 要求](https://rust-lang.github.io/rustup/installation/windows-msvc.html)；链接器环境不完整时从 Visual Studio 开发者终端启动 Neovim。
 - 图标需要终端使用 Nerd Font。Neovide 默认使用 FiraCode Nerd Font；Neovide、LazyGit 和 opencode CLI 按用途通过系统包管理器安装。
@@ -63,7 +63,7 @@ Install／Sync 不保证重建已经安装的插件；补装或重试请执行�
 
 直接运行 PATH 中的 `nvim` 或 `neovide`。配置遵循 Neovim 的标准目录；使用其他配置命名时按照 `NVIM_APPNAME` 选择对应目录。
 
-维护者可在配置目录运行 `nvim --headless -i NONE -c "Lazy! install" -c "Lazy! build mason.nvim nvim-treesitter" -c "lua dofile('scripts/verification/installation.lua')"` 显式安装并验证工具、解析器和 Lua 语法。编辑功能回归位于 `scripts/verification`，Windows/macOS CI 使用同一个验证入口。
+维护者可在配置目录运行 `nvim --headless -i NONE -c "Lazy! install" -c "Lazy! build mason.nvim nvim-treesitter" -c "lua dofile('scripts/verification/installation.lua')"` 显式安装并验证工具、解析器和 Lua 语法。编辑功能回归位于 `scripts/verification`。
 
 ## Leader 组合键
 
@@ -87,6 +87,7 @@ which-key 按功能显示可用的 Leader 快捷键。
 | 跳转 `j` | `<leader>je` | n, x, o | 子词末尾 |
 | 窗口 `w` | `<leader>wv` | n | 垂直分屏 |
 | 窗口 `w` | `<leader>ws` | n | 水平分屏 |
+| 窗口 `w` | `<leader>wr` | n | 重新打开上一个关闭的文件 |
 | 调试 `d` | `<leader>db` | n | 切换断点 |
 | Git `g` | `<leader>gt` | n | LazyGit |
 | Git `g` | `<leader>gn` | n | Neogit |
@@ -142,9 +143,11 @@ which-key 按功能显示可用的 Leader 快捷键。
 | `<A-F>` | n, i | 格式化，即 Alt+Shift+F |
 | `<A-f>` | n | 当前文件内搜索 |
 
-`u`、`<C-r>`、`dd`、`s` 及 PageUp/PageDown 已禁用。使用 `x/c/d` 删除或修改文本时不覆盖剪贴板。
+`u`、`<C-r>`、`dd` 及 PageUp/PageDown 已禁用。`s` 使用原生行为：删除光标处字符并进入插入模式。使用 `x/c/d` 删除或修改文本时不覆盖剪贴板。
 
 保存时自动格式化，也可按 `<A-F>` 手动格式化。优先使用项目格式配置；格式化失败时显示通知并保留原内容。
+
+标签在输入 `>` 时自动闭合；输入 `</` 时保留正常输入事件供 Blink 补全，不自动补齐标签名。
 
 ## 窗口、Buffer 与终端
 
@@ -163,6 +166,8 @@ which-key 按功能显示可用的 Leader 快捷键。
 | `<A-g>` | opencode 浮动终端，普通及终端模式可用 |
 
 按 `<A-w>` 关闭帮助、quickfix、文件树或浮窗。
+
+`<leader>wr` 通过 buffer-reopen.nvim 在当前窗口重新打开本次运行中最近关闭的文件，连续按可依次恢复多个文件。历史只记录已从 Buffer 列表移除的普通文件；单独关闭分屏时文件仍在列表，不计入历史。标签栏关闭按钮和右键关闭使用 Snacks，未保存修改会提示保存、放弃或取消。VS Code 中调用“重新打开已关闭的编辑器”。
 
 ## 多光标
 

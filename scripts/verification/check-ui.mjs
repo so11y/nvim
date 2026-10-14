@@ -550,6 +550,9 @@ return {rows=rows,errmsg=vim.v.errmsg}`,[]]);
   const screen=rendered.rows.join('\n');
   if(foldState.buftype!=='nofile'||foldState.filetype!=='markdown'||foldState.errmsg||foldState.messages.includes('UnhandledPromiseRejection')||phases[0].wins.length!==1||!phases[0].hover?.first.startsWith('```')||phases[1].wins.length||phases[2].wins.length!==1||phases[3].current!==phases[3].wins[0]||phases[3].hover?.conceallevel!==2||!phases[3].hover?.concealcursor.includes('n')||screen.includes('```')||!screen.includes('function demo')||rendered.errmsg||phases[4].wins.length||phases.some(p=>p.errmsg))throw new Error('Hover folding, Markdown conceal or Esc behavior failed: '+JSON.stringify({foldState,phases,rendered}));
   result={foldState,phases,rendered};
+ }else if(suite==='import-paths'){
+  const {verifyImportPathsUI}=await import('./import-paths-ui.mjs');
+  result=await verifyImportPathsUI(rpc);
  }else if(suite==='emmet'){
   const {verifyEmmetUI}=await import('./emmet-ui.mjs');
   result=await verifyEmmetUI(rpc);
