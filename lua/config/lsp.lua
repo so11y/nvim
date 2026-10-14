@@ -1,7 +1,6 @@
 local M = {
     servers = {
         'cssls',
-        'efm',
         'emmet_language_server',
         'eslint',
         'html',
@@ -31,23 +30,6 @@ function M.setup()
         settings = { format = false },
     })
     local format = require('config.format')
-    vim.lsp.config('efm', {
-        filetypes = vim.tbl_keys(format.languages),
-        init_options = {
-            documentFormatting = true,
-            documentRangeFormatting = false,
-        },
-        settings = { languages = format.languages },
-        root_dir = function(bufnr, on_dir)
-            local name = vim.api.nvim_buf_get_name(bufnr)
-            if name ~= '' then
-                on_dir(
-                    vim.fs.root(bufnr, { 'package.json', '.git' })
-                        or vim.fs.dirname(name)
-                )
-            end
-        end,
-    })
     vim.lsp.enable(M.servers)
 
     vim.diagnostic.config({

@@ -5,8 +5,8 @@ return {
     -- completion
     'neovim/nvim-lspconfig',
     'mason-org/mason.nvim',
-    'mason-org/mason-lspconfig.nvim',
     'saghen/blink.cmp',
+    'stevearc/conform.nvim',
     'mrcjkb/rustaceanvim',
     -- ui
     'akinsho/bufferline.nvim',

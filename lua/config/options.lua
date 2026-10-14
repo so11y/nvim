@@ -1,5 +1,3 @@
-require('config.runtime').setup()
-
 -- 1. 基础设置 (对应 vim.json 中的 settings)
 vim.g.maplocalleader = ' '
 vim.g.mapleader = ' ' -- "vim.leader": "<space>"

@@ -14,11 +14,11 @@ local ok, err = xpcall(function()
     vim.cmd.edit((vim.env.NVIM_TEST_ROOT .. '/rust/src/main.rs'))
     assert(
         vim.wait(25000, function()
-            return require('config.format').client() ~= nil
+            return require('config.format').info().available
         end, 50),
         'Rust analyzer missing'
     )
-    local c = require('config.format').client()
+    local c = vim.lsp.get_clients({ bufnr = 0, name = 'rust-analyzer' })[1]
     report.client = { name = c.name, root = c.config.root_dir }
     assert(
         vim.wait(25000, function()
@@ -61,6 +61,14 @@ local ok, err = xpcall(function()
         end
     until target_ready or vim.uv.hrtime() >= deadline
     assert(target_ready, 'Rust workspace did not produce runnable binary')
+    vim.api.nvim_buf_set_lines(0, 0, 1, false, { 'fn main(){' })
+    require('config.format').format()
+    assert(
+        vim.api.nvim_buf_get_lines(0, 0, 1, false)[1] == 'fn main() {',
+        'Rust formatting failed'
+    )
+    vim.cmd.write()
+    report.formatter = require('config.format').info().name
     local dap = require('dap')
     dap.set_log_level('DEBUG')
     local stopped

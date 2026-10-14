@@ -1,0 +1,72 @@
+name: Installation and editing
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: config/nvim
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: config/nvim
+      - name: Windows system dependencies
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          Invoke-RestMethod https://get.scoop.sh -OutFile "$env:RUNNER_TEMP\install-scoop.ps1"
+          & "$env:RUNNER_TEMP\install-scoop.ps1" -RunAsAdmin
+          & "$env:USERPROFILE\scoop\shims\scoop.ps1" install neovim git nodejs-lts ripgrep gcc 7zip
+          if ($LASTEXITCODE -ne 0) { throw 'System dependency installation failed' }
+          "$env:USERPROFILE\scoop\shims" | Out-File $env:GITHUB_PATH -Append -Encoding utf8
+      - name: macOS system dependencies
+        if: runner.os == 'macOS'
+        run: brew install neovim git node ripgrep
+      - name: Isolated Neovim directories
+        shell: pwsh
+        run: |
+          "NVIM_APPNAME=nvim" >> $env:GITHUB_ENV
+          "XDG_CONFIG_HOME=$env:GITHUB_WORKSPACE/config" >> $env:GITHUB_ENV
+          "XDG_DATA_HOME=$env:RUNNER_TEMP/nvim-data" >> $env:GITHUB_ENV
+          "XDG_CACHE_HOME=$env:RUNNER_TEMP/nvim-cache" >> $env:GITHUB_ENV
+          "XDG_STATE_HOME=$env:RUNNER_TEMP/nvim-state" >> $env:GITHUB_ENV
+          "NVIM_TEST_ROOT=$env:RUNNER_TEMP/nvim-fixtures" >> $env:GITHUB_ENV
+      - name: Install through Lazy and verify
+        shell: pwsh
+        run: |
+          nvim --headless -i NONE -c "Lazy! install" -c "Lazy! build mason.nvim nvim-treesitter" -c "lua dofile('scripts/verification/installation.lua')"
+          if ($LASTEXITCODE -ne 0) { throw 'Lazy installation verification failed' }
+      - name: Prepare editing fixtures
+        shell: pwsh
+        run: |
+          npm ci --prefix scripts/verification --no-audit --no-fund
+          if ($LASTEXITCODE -ne 0) { throw 'Verification dependency installation failed' }
+          node scripts/verification/create-fixtures.mjs $env:NVIM_TEST_ROOT
+          if ($LASTEXITCODE -ne 0) { throw 'Fixture preparation failed' }
+      - name: Editing regressions
+        shell: pwsh
+        run: |
+          foreach ($suite in @('workflows', 'format-keys', 'secondary-languages.lua', 'format-failure.lua', 'vue-workspaces.lua', 'mason-tools.lua', 'mason-commands.lua', 'node-debug.lua')) {
+            node scripts/verification/check-ui.mjs $suite "$env:RUNNER_TEMP/$suite-result.json"
+            if ($LASTEXITCODE -ne 0) { throw "Failed: $suite" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installation-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/*-result.json
+            ${{ runner.temp }}/nvim-state/**/mason.log
+            ${{ runner.temp }}/nvim-data/**/installation-result.json

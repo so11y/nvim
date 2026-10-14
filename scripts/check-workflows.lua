@@ -58,7 +58,10 @@ vim.fn.writefile({
 check('javascript_and_eslint', function()
     a = open('alpha/test.js')
     local vts, eslint = client(a, 'vtsls'), client(a, 'eslint')
-    client(a, 'efm')
+    assert(
+        require('config.format').info(a).available,
+        'JavaScript formatter unavailable'
+    )
     assert(
         vim.wait(20000, function()
             for _, d in ipairs(vim.diagnostic.get(a)) do
@@ -117,10 +120,10 @@ check('multiple_roots_and_highlights', function()
         buffer = a,
     })
     b = open('beta/test.js')
-    local bv, be, bf = client(b, 'vtsls'), client(b, 'eslint'), client(b, 'efm')
-    local av, ae, af = client(a, 'vtsls'), client(a, 'eslint'), client(a, 'efm')
+    local bv, be = client(b, 'vtsls'), client(b, 'eslint')
+    local av, ae = client(a, 'vtsls'), client(a, 'eslint')
     assert(
-        bv.id ~= av.id and be.id ~= ae.id and bf.id ~= af.id,
+        bv.id ~= av.id and be.id ~= ae.id,
         'Project clients were reused across roots'
     )
     assert(hooks > 0 and #vim.api.nvim_get_autocmds({
@@ -134,8 +137,8 @@ check('multiple_roots_and_highlights', function()
         'Project format settings were ignored: ' .. text
     )
     return {
-        alpha = af.config.root_dir,
-        beta = bf.config.root_dir,
+        alpha = av.config.root_dir,
+        beta = bv.config.root_dir,
         hooks = hooks,
         text = text,
     }
@@ -143,7 +146,10 @@ end)
 check('typescript_navigation_and_rename', function()
     ts = open('alpha/test.ts')
     local c = client(ts, 'vtsls')
-    client(ts, 'efm')
+    assert(
+        require('config.format').info(ts).available,
+        'TypeScript formatter unavailable'
+    )
     local p = position(ts, 2, 'add', c)
     local definitions = request(c, 'textDocument/definition', p, ts)
     assert(
@@ -177,7 +183,10 @@ end)
 check('vue_hybrid_and_unicode', function()
     vue = open('alpha/App.vue')
     local vts, vls = client(vue, 'vtsls'), client(vue, 'vue_ls')
-    client(vue, 'efm')
+    assert(
+        require('config.format').info(vue).available,
+        'Vue formatter unavailable'
+    )
     assert(
         vim.wait(20000, function()
             return #vim.diagnostic.get(vue) > 0
@@ -209,7 +218,10 @@ check('vue_hybrid_and_unicode', function()
 end)
 check('windows_space_and_unicode_filename', function()
     local buf = open("alpha/文 件's.js")
-    client(buf, 'efm')
+    assert(
+        require('config.format').info(buf).available,
+        'Formatter unavailable'
+    )
     require('config.format').format(buf)
     local text =
         table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), '\n')

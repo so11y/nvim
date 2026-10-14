@@ -10,9 +10,6 @@ for _, plugin in ipairs({
     vim.opt.rtp:append(data .. '/lazy/' .. plugin)
 end
 require('nvim-treesitter').setup()
-if vim.env.NVIM_AST_BASELINE then
-    package.loaded['config.ast_move'] = dofile(vim.env.NVIM_AST_BASELINE)
-end
 local specs = dofile(root .. '/lua/plugins/editor/treesitter.lua')
 specs[2].config(nil, specs[2].opts)
 local report = { queries = {}, moves = {}, search = {}, checks = {} }
@@ -336,9 +333,7 @@ local ok, err = xpcall(function()
         absent_parse_calls = calls,
         absent_tree_visits = visits,
     }
-    if not vim.env.NVIM_AST_BASELINE then
-        assert(calls == 1 and visits == total_trees, 'Repeated full tree scan')
-    end
+    assert(calls == 1 and visits == total_trees, 'Repeated full tree scan')
     calls, visits = 0, 0
     move({ forward = true }, 'loop.outer')
     assert(calls == 0 and visits == 0, 'Empty result was not cached')

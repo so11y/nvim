@@ -27,20 +27,6 @@ return {
                 return {
                     dap = { autoload_configurations = false },
                     server = {
-                        cmd = {
-                            vim.fn.systemlist({
-                                'rustup',
-                                'which',
-                                '--toolchain',
-                                require('config.runtime').versions.rust,
-                                'rust-analyzer',
-                            })[1],
-                        },
-                        cmd_env = {
-                            PATH = vim.fs.dirname(vim.fn.exepath('rustup'))
-                                .. (vim.fn.has('win32') == 1 and ';' or ':')
-                                .. vim.env.PATH,
-                        },
                         capabilities = require('config.lsp').capabilities,
                         on_attach = function(_, bufnr)
                             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })

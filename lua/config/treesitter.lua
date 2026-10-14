@@ -17,12 +17,23 @@ local M = {
 }
 
 function M.install()
+    require('config.mason_tools').ensure_cli()
+    if
+        vim.fn.has('win32') == 1
+        and not vim.env.CC
+        and vim.fn.executable('gcc') == 1
+    then
+        vim.env.CC = 'gcc'
+    end
     local treesitter = require('nvim-treesitter')
     assert(
         treesitter.install(M.parsers):wait(300000),
-        'Parser installation timed out'
+        'Parser installation failed; see :messages'
     )
-    return treesitter.update(M.parsers):wait(300000)
+    assert(
+        treesitter.update(M.parsers):wait(300000),
+        'Parser update failed; see :messages'
+    )
 end
 
 function M.setup()

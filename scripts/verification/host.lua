@@ -3,7 +3,6 @@ local blocked = {}
 for _, name in ipairs({
     'nvim-lspconfig',
     'mason.nvim',
-    'mason-lspconfig.nvim',
     'rustaceanvim',
     'blink.cmp',
     'nvim-dap',

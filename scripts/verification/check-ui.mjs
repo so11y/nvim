@@ -4,7 +4,6 @@ import {dirname,resolve,basename} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {encode,decodeMultiStream} from '@msgpack/msgpack';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
-const lock=JSON.parse(readFileSync(resolve(root,'tools.lock.json'),'utf8'));
 const suite=process.argv[2] || 'workflows';
 const output=resolve(process.argv[3] || (suite.replace(/[^a-zA-Z0-9_-]/g,'_')+'-result.json'));
 const host=suite==='host';
@@ -14,7 +13,7 @@ if(host){
  if(!runtime)throw new Error('Set NVIM_VSCODE_RUNTIME to the extension runtime directory');
  args.push('--cmd','let g:vscode_channel=1','--cmd',"execute 'source' fnameescape('"+runtime.replaceAll("'","''")+"/vscode-neovim.vim')");
 }
-const editor=spawn('C:/tools/neovim/nvim-v'+lock.neovim+'/nvim-win64/bin/nvim.exe',args,{env:{...process.env,NVIM_APPNAME:basename(root)},windowsHide:true});
+const editor=spawn(process.env.NEOVIM_BIN || 'nvim',args,{env:{...process.env,NVIM_APPNAME:basename(root)},windowsHide:true});
 const errors=[],hostActions=[],calls=new Map();let sequence=0;
 editor.stderr.on('data',b=>errors.push(b.toString()));
 editor.on('error',e=>errors.push(e.message));
@@ -32,8 +31,29 @@ try{
  await rpc('nvim_set_client_info',['Upgrade verification',{major:1,minor:0},'ui',{},{}]);
  await rpc('nvim_ui_attach',[130,40,{rgb:true,ext_linegrid:true}]);
  await delay(1500);
+ if(!host)await rpc('nvim_exec_lua',["require('lazy').load({plugins={'blink.cmp'}}); assert(vim.wait(45000,function() return package.loaded['blink.cmp.completion']~=nil end,50),'Blink first-run setup timed out')",[]]);
+ // Start each workflow with a fresh Vim error marker after plugin initialization.
+ await rpc('nvim_exec_lua',["vim.v.errmsg=''",[]]);
  let result;
- if(suite==='selection'){
+ if(suite==='format-keys'){
+  const filename=process.env.NVIM_TEST_ROOT+"/beta/manual 格式's.js";
+  const setText=text=>rpc('nvim_exec_lua',['vim.api.nvim_buf_set_lines(0,0,-1,false,{...})',[text]]);
+  const text=()=>rpc('nvim_exec_lua',["return table.concat(vim.api.nvim_buf_get_lines(0,0,-1,false),'\\n')",[]]);
+  await rpc('nvim_exec_lua',["local file=...; vim.fn.writefile({'const entry={message:\"你好😀\"};'},file); vim.cmd.edit(file)",[filename]]);
+  await rpc('nvim_input',['<A-F>']);await delay(300);
+  const normal=await text();
+  if(normal!=="const entry = { message: '你好😀' }")throw new Error('Normal format key or project config failed: '+normal);
+  await setText('const entry={message:"第二次😀"};');
+  await rpc('nvim_input',['i<A-F><Esc>']);await delay(300);
+  const insert=await text();
+  if(insert!=="const entry = { message: '第二次😀' }")throw new Error('Insert format key failed: '+insert);
+  await setText('const saved={value:2};');
+  await rpc('nvim_input',['<A-s>']);await delay(300);
+  const saved=readFileSync(filename,'utf8').trim();
+  if(saved!=='const saved = { value: 2 }')throw new Error('Save format key failed: '+saved);
+  result={normal,insert,saved,errmsg:await rpc('nvim_eval',['v:errmsg'])};
+  if(result.errmsg)throw new Error(result.errmsg);
+ }else if(suite==='selection'){
   const cases=[
    {name:'typescript',file:'refactor.ts',row:2,needle:'a + b'},
    {name:'vue-script',file:'App.vue',row:3,needle:'ref'},

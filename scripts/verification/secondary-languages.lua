@@ -38,7 +38,7 @@ for _, fixture in ipairs({
                 vim.lsp.get_clients({ bufnr = 0, name = fixture.server })[1]
             return client
                 and client.initialized
-                and require('config.format').client() ~= nil
+                and require('config.format').info().available
         end, 50),
         fixture.server .. ' did not initialize'
     )
@@ -68,7 +68,7 @@ for _, fixture in ipairs({
     report.languages[fixture.name] = {
         server = client.name,
         symbols = #symbols.result,
-        formatter = require('config.format').client().name,
+        formatter = require('config.format').info().name,
         text = text,
     }
 end
