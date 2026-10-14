@@ -32,6 +32,7 @@ map({ 'n', 'i', 'v' }, '<PageDown>', '<Nop>', {
 
 -- 替换默认删除行为：不污染剪贴板 (Blackhole Register)
 map({ 'n', 'v' }, 'x', '"_x')
+map({ 'n', 'v' }, 's', '"_s')
 map({ 'n', 'v' }, 'c', '"_c')
 map({ 'n', 'v' }, 'C', '"_C')
 map({ 'n', 'v' }, 'd', '"_d')
