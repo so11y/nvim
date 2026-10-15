@@ -90,10 +90,10 @@ assert(vim.wait(10000, function()
 end, 20), 'Slash did not automatically show all 15 package paths')
 list.select(selected, {auto_insert=false})
 return {labels=labels, visible=cmp.is_visible()}`);
-    await input('<CR>');
+    await input('<Tab>');
     const accepted = await lua("return {line=vim.api.nvim_buf_get_lines(0,1,2,false)[1], errmsg=vim.v.errmsg}");
     if (accepted.line !== prefix + "/module07'" || accepted.errmsg)
-      throw new Error('Enter did not accept the path in ' + test.name + ': ' + JSON.stringify(accepted));
+      throw new Error('Tab did not accept the path in ' + test.name + ': ' + JSON.stringify(accepted));
     results.push({name: test.name, ...menu, ...accepted});
     await input('<Esc>');
     await lua('vim.bo.modified=false');

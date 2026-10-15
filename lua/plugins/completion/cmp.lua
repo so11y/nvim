@@ -81,7 +81,6 @@ return {
                 ['<C-e>'] = { 'hide', 'fallback' },
                 ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
                 ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
-                ['<CR>'] = { 'accept', 'fallback' },
                 ['<Tab>'] = {
                     'select_and_accept',
                     'snippet_forward',
