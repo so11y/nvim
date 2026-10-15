@@ -21,8 +21,16 @@ local function cursor_range_index(bufnr, ranges)
     end
 end
 
+local function cancel_request(state)
+    local pending = state.pending
+    state.pending = nil
+    if pending and pending.id then
+        state.client:cancel_request(pending.id)
+    end
+end
+
 local function clear(state)
-    state.request = state.request + 1
+    cancel_request(state)
     vim.api.nvim_buf_clear_namespace(state.bufnr, state.ns, 0, -1)
     state.source = nil
     state.value = nil
@@ -45,17 +53,30 @@ local function refresh(state)
     end
     local node = vim.treesitter.get_node({ bufnr = bufnr })
     if not node or node:type() ~= 'tag_name' then
+        cancel_request(state)
         return
     end
-    state.request = state.request + 1
-    local request = state.request
     local tick = vim.api.nvim_buf_get_changedtick(bufnr)
+    local range = { node:range() }
+    if
+        state.pending
+        and state.pending.tick == tick
+        and vim.deep_equal(state.pending.range, range)
+    then
+        return
+    end
+    cancel_request(state)
+    local pending = { tick = tick, range = range }
+    state.pending = pending
     local params =
         vim.lsp.util.make_position_params(0, state.client.offset_encoding)
-    state.client:request(method, params, function(err, result)
+    local sent, id = state.client:request(method, params, function(err, result)
+        if state.pending ~= pending then
+            return
+        end
+        state.pending = nil
         if
             err
-            or request ~= state.request
             or not vim.api.nvim_buf_is_valid(bufnr)
             or vim.api.nvim_buf_get_changedtick(bufnr) ~= tick
         then
@@ -112,6 +133,13 @@ local function refresh(state)
             clear(state)
         end
     end, bufnr)
+    if state.pending == pending then
+        if sent then
+            pending.id = id
+        else
+            state.pending = nil
+        end
+    end
 end
 
 local function changed(state)
@@ -197,7 +225,6 @@ function M.attach(client, bufnr)
         bufnr = bufnr,
         client = client,
         ns = vim.api.nvim_create_namespace('config.linked_tags:' .. bufnr),
-        request = 0,
     }
     states[bufnr] = state
     vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
@@ -238,6 +265,7 @@ function M.attach(client, bufnr)
         group = group,
         buffer = bufnr,
         callback = function()
+            cancel_request(state)
             states[bufnr] = nil
             vim.api.nvim_del_augroup_by_id(group)
         end,

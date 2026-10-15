@@ -28,36 +28,66 @@ end
 
 local function setup_vue_sass()
     local parser = require('colorizer.parser.sass')
-    local update = parser.update_variables
-    parser.update_variables = function(bufnr, first, last, lines, ...)
+    local update, cleanup = parser.update_variables, parser.cleanup
+    local buffers = {}
+    parser.cleanup = function(bufnr)
+        buffers[bufnr] = nil
+        cleanup(bufnr)
+    end
+    parser.update_variables = function(
+        bufnr,
+        first,
+        last,
+        lines,
+        color_parser,
+        opts,
+        local_opts
+    )
         if vim.bo[bufnr].filetype ~= 'vue' then
-            return update(bufnr, first, last, lines, ...)
+            return update(
+                bufnr,
+                first,
+                last,
+                lines,
+                color_parser,
+                opts,
+                local_opts
+            )
         end
-        local contents = {}
+        local styles = {}
         local tree = vim.treesitter.get_parser(bufnr, 'vue'):parse()[1]
         for child in tree:root():iter_children() do
             if child:type() == 'style_element' then
                 for body in child:iter_children() do
                     if body:type() == 'raw_text' then
-                        vim.list_extend(
-                            contents,
-                            vim.split(
-                                vim.treesitter.get_node_text(body, bufnr),
-                                '\n',
-                                { plain = true }
-                            )
-                        )
+                        styles[#styles + 1] =
+                            vim.treesitter.get_node_text(body, bufnr)
                     end
                 end
             end
         end
+        local name = vim.api.nvim_buf_get_name(bufnr)
+        local previous = buffers[bufnr]
+        -- Imported Sass changes request a refresh with an empty event name.
+        if
+            previous
+            and previous.name == name
+            and local_opts.__event ~= ''
+            and vim.deep_equal(previous.styles, styles)
+        then
+            return
+        end
+        local contents = {}
+        for _, text in ipairs(styles) do
+            vim.list_extend(contents, vim.split(text, '\n', { plain = true }))
+        end
+        local count = #contents
         -- The Sass parser owns linewise definitions; clear removed style lines.
-        local previous = vim.b[bufnr].colorizer_vue_sass_lines or 0
-        vim.b[bufnr].colorizer_vue_sass_lines = #contents
-        for index = #contents + 1, previous do
+        for index = count + 1, previous and previous.lines or 0 do
             contents[index] = ''
         end
-        return update(bufnr, 0, #contents, contents, ...)
+        update(bufnr, 0, #contents, contents, color_parser, opts, local_opts)
+        buffers[bufnr] = { name = name, styles = styles, lines = count }
     end
 end
 
