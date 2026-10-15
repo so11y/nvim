@@ -190,8 +190,26 @@ return {
             },
             terminal = {
                 enabled = true,
+                shell = vim.fn.has('win32') == 1 and {
+                    'powershell.exe',
+                    '-NoLogo',
+                    '-NoProfile',
+                    '-Command',
+                    'inshellisense -s powershell',
+                } or nil,
                 win = {
                     position = 'float', -- 终端也走浮窗，样式同 styles.terminal（90% + 圆角）
+                    keys = {
+                        term_normal = {
+                            '<Esc>',
+                            function()
+                                vim.cmd.stopinsert()
+                            end,
+                            mode = 't',
+                            expr = false,
+                            desc = '回到普通模式',
+                        },
+                    },
                 },
             },
             styles = {
@@ -323,7 +341,7 @@ return {
             {
                 '<A-t>',
                 function()
-                    require('snacks').terminal()
+                    require('snacks').terminal(nil, { env = { ISTERM = '' } })
                 end,
                 desc = '切换终端',
                 mode = { 'n', 't' },
