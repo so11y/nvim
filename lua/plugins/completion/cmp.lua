@@ -85,11 +85,16 @@ return {
                 ['<Tab>'] = {
                     'select_and_accept',
                     'snippet_forward',
-                    function(cmp)
+                    function()
                         local col = vim.api.nvim_win_get_cursor(0)[2]
                         local line = vim.api.nvim_get_current_line()
-                        if col > 0 and line:sub(col, col):match('%S') then
-                            return cmp.show()
+                        if line:sub(col + 1, col + 1) == ')' then
+                            return vim.api.nvim_replace_termcodes(
+                                '<Right>',
+                                true,
+                                false,
+                                true
+                            )
                         end
                     end,
                     'fallback',
