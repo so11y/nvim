@@ -250,7 +250,7 @@ assert(vim.wait(15000,function()
 end,20))
 local target
 for index,item in ipairs(picker.list.items) do
- if item.action.title:find('包裹标签',1,true) then target=index; break end
+ if item.action.title:find('添加外层标签',1,true) then target=index; break end
 end
 assert(target,'Wrap action is missing from native menu')
 picker.list:move(target, true)

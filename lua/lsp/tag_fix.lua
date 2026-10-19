@@ -292,7 +292,7 @@ local function code_actions(params)
                 or can_unwrap_jsx(bufnr, element, start_tag, end_tag)
             then
                 actions[#actions + 1] = action(
-                    '去掉外层标签',
+                    '删除外层标签',
                     edit(uri, {
                         { range = range(start_tag), newText = '' },
                         { range = range(end_tag), newText = '' },
@@ -342,10 +342,10 @@ local function code_actions(params)
 
     if can_wrap then
         actions[#actions + 1] = {
-            title = '包裹标签…',
+            title = '添加外层标签',
             kind = kind,
             command = {
-                title = '包裹标签…',
+                title = '添加外层标签',
                 command = wrap_command,
                 arguments = {
                     {
@@ -374,7 +374,7 @@ local function wrap(params, callback, dispatchers)
             return false
         end
         vim.notify(
-            '包裹标签已取消：目标缓冲区已变化',
+            '添加外层标签已取消：目标内容已变化',
             vim.log.levels.WARN
         )
         callback(nil, nil)
@@ -384,7 +384,7 @@ local function wrap(params, callback, dispatchers)
         return
     end
 
-    vim.ui.input({ prompt = '包裹标签 (Emmet): ' }, function(abbr)
+    vim.ui.input({ prompt = '外层标签（Emmet）：' }, function(abbr)
         if not abbr or vim.trim(abbr) == '' then
             callback(nil, nil)
             return
@@ -458,10 +458,7 @@ local function wrap(params, callback, dispatchers)
                     }),
                 })
             if apply_err or not result or not result.applied then
-                vim.notify(
-                    '包裹标签未能应用编辑',
-                    vim.log.levels.ERROR
-                )
+                vim.notify('添加外层标签失败', vim.log.levels.ERROR)
             end
             callback(nil, nil)
         end, bufnr)

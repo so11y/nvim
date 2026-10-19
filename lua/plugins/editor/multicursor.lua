@@ -45,6 +45,30 @@ return {
         }
         vim.g.VM_custom_remaps = { ['<CR>'] = 'a' }
     end,
+    config = function()
+        local insert_mappings = {}
+        local group = vim.api.nvim_create_augroup('config.multicursor', {
+            clear = true,
+        })
+        -- VM removes its buffer mappings without restoring the ones it replaced.
+        vim.api.nvim_create_autocmd('User', {
+            group = group,
+            pattern = 'visual_multi_start',
+            callback = function()
+                insert_mappings = vim.api.nvim_buf_get_keymap(0, 'i')
+            end,
+        })
+        vim.api.nvim_create_autocmd('User', {
+            group = group,
+            pattern = 'visual_multi_exit',
+            callback = function()
+                for _, mapping in ipairs(insert_mappings) do
+                    vim.fn.mapset('i', false, mapping)
+                end
+                insert_mappings = {}
+            end,
+        })
+    end,
     keys = {
         {
             'gb',

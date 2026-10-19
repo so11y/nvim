@@ -1,8 +1,4 @@
-local function preserve_tag_colors(virt_text, lnum, ctx)
-    if not ctx.text:match('^%s*</?[%w]') then
-        return virt_text
-    end
-
+local function preserve_rainbow_colors(virt_text, lnum, ctx)
     local spans = {}
     for _, mark in
         ipairs(
@@ -105,7 +101,7 @@ return {
                     truncate,
                     ctx
                 )
-                    virtText = preserve_tag_colors(virtText, lnum, ctx)
+                    virtText = preserve_rainbow_colors(virtText, lnum, ctx)
                     local newVirtText = {}
                     local suffix = (' 󰁂 %d '):format(endLnum - lnum)
                     local sufWidth = vim.fn.strdisplaywidth(suffix)

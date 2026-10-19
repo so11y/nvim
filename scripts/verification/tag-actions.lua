@@ -88,7 +88,7 @@ assert(#at(vue, 15, 'color') == 0, 'Vue style received tag actions')
 local unicode = at(vue, 6, '😀')
 assert(#unicode == 3)
 results.unwrap =
-    apply_and_undo(vue, find(unicode, '去掉外层标签'), '你好😀')
+    apply_and_undo(vue, find(unicode, '删除外层标签'), '你好😀')
 assert(not results.unwrap:find('<span>你好😀</span>', 1, true))
 
 local nested = at(vue, 6, 'v-if')
@@ -131,13 +131,13 @@ local function run_wrap(client, action)
     assert(not response.err, vim.inspect(response.err))
 end
 
-local wrap_action = find(unicode, '包裹标签…')
+local wrap_action = find(unicode, '添加外层标签')
 local before, tick =
     contents(vue_buf), vim.api.nvim_buf_get_changedtick(vue_buf)
 assert(vim.api.nvim_buf_get_changedtick(vue_buf) == tick)
 run_wrap(vue, wrap_action)
 assert(input_count == 0, 'Stale action prompted for input')
-wrap_action = find(at(vue, 6, '😀'), '包裹标签…')
+wrap_action = find(at(vue, 6, '😀'), '添加外层标签')
 next_answer = nil
 run_wrap(vue, wrap_action)
 assert(input_count == 1 and contents(vue_buf) == before)
@@ -147,7 +147,7 @@ local first = position(10, '<span>A</span>')
 local last = position(11, '</span>')
 last.character = last.character + #'</span>'
 local selected = { start = first, ['end'] = last }
-local multiline = find(actions(vue, selected), '包裹标签…')
+local multiline = find(actions(vue, selected), '添加外层标签')
 assert(multiline.command.arguments[1].range['end'].character == last.character)
 next_answer = 'section.wrapper'
 run_wrap(vue, multiline)
@@ -157,7 +157,7 @@ assert(results.wrap:find('<span>B</span></section>', 1, true))
 vim.cmd.undo()
 assert(contents(vue_buf) == before, 'Wrap needs more than one undo')
 
-local stale = find(at(vue, 7, 'MyButton'), '包裹标签…')
+local stale = find(at(vue, 7, 'MyButton'), '添加外层标签')
 local prompted = input_count
 vim.api.nvim_buf_set_text(vue_buf, 6, 0, 6, 0, { ' ' })
 local changed = contents(vue_buf)

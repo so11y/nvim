@@ -34,7 +34,7 @@ local function action()
         context = { diagnostics = {} },
     }, 3000, bufnr))
     for _, item in ipairs(response.result) do
-        if item.title == '包裹标签…' then
+        if item.title == '添加外层标签' then
             return item
         end
     end

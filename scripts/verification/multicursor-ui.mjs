@@ -109,5 +109,38 @@ export async function verifyMulticursorUI(rpc) {
   await open(['']); await input('i'); await input('(');
   const restoredPairs=await expect('Automatic pairs after exiting',['()']);
   await input('<Esc>');
-  return {root,realtime,manual,append,matches,insertMatches,enter,insertAdd,insertAtColumn,insertAtEnd,visualAdd,paste,restoredPairs,integrations,messages:(await state()).messages};
+
+  const completionAfterExit=[];
+  const acceptWord = async label => {
+    await lua(`vim.api.nvim_buf_set_lines(0,0,-1,false,{'completionword','com'})
+      vim.api.nvim_win_set_cursor(0,{2,0})`);
+    await input('A');
+    await lua(`local cmp=require('blink.cmp')
+      cmp.show({providers={'buffer'}})
+      assert(vim.wait(5000,function()
+        local item=cmp.get_selected_item()
+        return cmp.is_visible() and item and item.label=='completionword'
+      end,20),'Selected buffer completion missing')`);
+    await input('<CR>');
+    const accepted=await expect(label,['completionword','completionword']);
+    await input('<Esc>');
+    return accepted;
+  };
+  for (const warm of [false,true]) {
+    await open(['completionword','com']);
+    const buffer=await lua('return vim.api.nvim_get_current_buf()');
+    if (warm) await acceptWord('Completion before gb');
+    for (let round=1;round<=2;round++) {
+      await lua('vim.api.nvim_win_set_cursor(0,{1,0})');
+      await input('gb'); await input('i');
+      await lua(`assert(vim.b.visual_multi==1)
+        assert(not require('blink.cmp.config').enabled())`);
+      await input('<Esc>'); await input('<Esc>');
+      await lua('assert(vim.b.visual_multi~=1)');
+      completionAfterExit.push(await acceptWord(`Enter after gb/i, warm=${warm}, round=${round}`));
+      if (await lua('return vim.api.nvim_get_current_buf()') !== buffer)
+        throw new Error('Completion recovery changed buffers');
+    }
+  }
+  return {root,realtime,manual,append,matches,insertMatches,enter,insertAdd,insertAtColumn,insertAtEnd,visualAdd,paste,restoredPairs,integrations,completionAfterExit,messages:(await state()).messages};
 }

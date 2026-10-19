@@ -93,9 +93,9 @@ for _, extension in ipairs({ 'jsx', 'tsx' }) do
 
         local nested = at(client, 1, '<span>')
         assert(find(nested, '删除整个元素'))
-        assert(find(nested, '去掉外层标签'))
-        assert(find(nested, '包裹标签…'))
-        assert(not find(at(client, 1, '<Foo.Bar'), '去掉外层标签'))
+        assert(find(nested, '删除外层标签'))
+        assert(find(nested, '添加外层标签'))
+        assert(not find(at(client, 1, '<Foo.Bar'), '删除外层标签'))
         apply_and_undo(
             client,
             find(at(client, 2, '<Widget'), '展开为空标签对'),
@@ -109,8 +109,8 @@ for _, extension in ipairs({ 'jsx', 'tsx' }) do
         assert(not find(at(client, 4, '<div>'), '合并为空标签'))
         assert(not find(at(client, 5, '<img'), '展开为空标签对'))
         assert(find(at(client, 6, '<Img'), '展开为空标签对'))
-        assert(not find(at(client, 7, '<div>'), '去掉外层标签'))
-        assert(find(at(client, 8, '<div>'), '去掉外层标签'))
+        assert(not find(at(client, 7, '<div>'), '删除外层标签'))
+        assert(find(at(client, 8, '<div>'), '删除外层标签'))
         assert(not find(at(client, 9, '<>'), '合并为空标签'))
         assert(#at(client, 1, 'const') == 0)
         apply_and_undo(
@@ -121,35 +121,35 @@ for _, extension in ipairs({ 'jsx', 'tsx' }) do
 
         local whole_child = selected(1, '<span>', '</span>')
         local wrap =
-            assert(find(actions(client, whole_child), '包裹标签…'))
+            assert(find(actions(client, whole_child), '添加外层标签'))
         assert(
             find(
                 actions(client, selected(1, '{count}', '{count}')),
-                '包裹标签…'
+                '添加外层标签'
             )
         )
         assert(
             find(
                 actions(client, selected(1, '你好😀', '你好😀')),
-                '包裹标签…'
+                '添加外层标签'
             )
         )
         assert(
             not find(
                 actions(client, selected(1, 'count', 'count')),
-                '包裹标签…'
+                '添加外层标签'
             )
         )
         assert(
             not find(
                 actions(client, selected(1, '<span>', '<span>')),
-                '包裹标签…'
+                '添加外层标签'
             )
         )
         assert(
             not find(
                 actions(client, selected(10, 'someValue', 'someValue')),
-                '包裹标签…'
+                '添加外层标签'
             )
         )
 
