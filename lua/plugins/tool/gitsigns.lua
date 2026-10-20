@@ -3,10 +3,7 @@ return {
     event = { 'BufReadPre', 'BufNewFile' },
     opts = {
         signcolumn = true,
-        current_line_blame = true,
-        current_line_blame_opts = {
-            delay = 300,
-        },
+        current_line_blame = false,
         signs = {
             add = {
                 text = '│',

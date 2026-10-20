@@ -3,16 +3,13 @@ local data, root = vim.fn.stdpath('data'), vim.fn.stdpath('config')
 for _, plugin in ipairs({
     'nvim-treesitter',
     'nvim-treesitter-textobjects',
-    'catppuccin',
-    'heirline.nvim',
-    'nvim-web-devicons',
 }) do
     vim.opt.rtp:append(data .. '/lazy/' .. plugin)
 end
 require('nvim-treesitter').setup()
 local specs = dofile(root .. '/lua/plugins/editor/treesitter.lua')
 specs[2].config(nil, specs[2].opts)
-local report = { queries = {}, moves = {}, search = {}, checks = {} }
+local report = { queries = {}, moves = {}, checks = {} }
 local function bench(fn)
     local samples = {}
     for i = 1, 7 do
@@ -33,7 +30,6 @@ local ok, err = xpcall(function()
         report.queries[lang] = #query.captures
     end
     local jump = vim.fn.maparg(']f', 'n', false, true).callback
-    local components = require('custom.heirline.components')
     for _, n in ipairs({ 1000, 5000, 20000 }) do
         local lines = {}
         for i = 1, n / 4 do
@@ -75,69 +71,6 @@ local ok, err = xpcall(function()
                 'Backward motion missed previous chunk'
             )
             report.checks.chunk_boundary = true
-        end
-        vim.fn.setreg('/', 'bar')
-        local self = {}
-        components.SearchOccurrence.provider(self)
-        local search = bench(function()
-            components.SearchOccurrence.provider(self)
-        end)
-        local original = bench(function()
-            vim.fn.searchcount({ maxcount = 0, recompute = 1 })
-        end)
-        report.search[#report.search + 1] =
-            { lines = n, original_ms = original, cached_ms = search }
-        vim.fn.setreg('/', 'function')
-        local changed = components.SearchOccurrence.provider(self)
-        local current = vim.fn.searchcount({ recompute = 1, maxcount = 0 })
-        assert(
-            changed:find('/' .. current.total .. ']', 1, true),
-            'Search pattern invalidation failed'
-        )
-        if n == 20000 then
-            vim.api.nvim_win_set_cursor(0, { 101, 0 })
-            components.SearchOccurrence.provider(self)
-            assert(self.search_timer, 'Cursor change did not defer recount')
-            assert(
-                vim.wait(1000, function()
-                    return self.search_timer == nil
-                end, 10),
-                'Deferred cursor recount did not finish'
-            )
-            local after_move = components.SearchOccurrence.provider(self)
-            local expected = vim.fn.searchcount({ recompute = 1, maxcount = 0 })
-            assert(
-                after_move:find(
-                    ('[%s/%s]'):format(expected.current, expected.total),
-                    1,
-                    true
-                ),
-                'Cursor recount did not update displayed occurrence'
-            )
-            vim.api.nvim_buf_set_lines(buf, 0, 0, false, {
-                'function extra() {}',
-            })
-            components.SearchOccurrence.provider(self)
-            assert(self.search_timer, 'Edit did not defer recount')
-            assert(
-                vim.wait(1000, function()
-                    return self.search_timer == nil
-                end, 10),
-                'Deferred edit recount did not finish'
-            )
-            local after_edit = components.SearchOccurrence.provider(self)
-            expected = vim.fn.searchcount({ recompute = 1, maxcount = 0 })
-            assert(
-                after_edit:find('/' .. expected.total .. ']', 1, true),
-                'Edit recount did not update total'
-            )
-            vim.fn.setreg('/', '')
-            assert(not components.SearchOccurrence.condition(self))
-            assert(
-                self.search_count == nil,
-                'Search cache survived highlight clear'
-            )
-            report.checks.deferred_search_recount = true
         end
         vim.api.nvim_buf_set_lines(
             buf,

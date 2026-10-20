@@ -119,6 +119,7 @@ return {
             },
             picker = {
                 ui_select = true,
+                focus = 'list',
                 win = {
                     input = {
                         keys = {
@@ -328,66 +329,37 @@ return {
                 desc = '全局搜索',
             },
             {
-                'gd',
-                function()
-                    Snacks.picker.lsp_definitions({
-                        focus = 'list',
-                    })
-                end,
-                desc = '转到定义',
-            },
-            {
-                'grr',
-                function()
-                    Snacks.picker.lsp_references({
-                        focus = 'list',
-                    })
-                end,
-                desc = '转到引用',
-            },
-            {
-                'gri',
-                vim.lsp.buf.implementation,
-                desc = '转到实现',
-            },
-            {
                 'grt',
-                vim.lsp.buf.type_definition,
+                function()
+                    Snacks.picker.lsp_type_definitions()
+                end,
                 desc = '转到类型定义',
             },
             {
                 '<leader>xf',
                 function()
-                    Snacks.picker.diagnostics_buffer({
-                        focus = 'list',
-                    })
+                    Snacks.picker.diagnostics_buffer()
                 end,
                 desc = '诊断（当前缓冲区）',
             },
             {
                 '<leader>xx',
                 function()
-                    Snacks.picker.diagnostics({
-                        focus = 'list',
-                    })
+                    Snacks.picker.diagnostics()
                 end,
                 desc = '诊断（工作区）',
             },
             {
                 '<leader>su',
                 function()
-                    require('snacks').picker.undo({
-                        focus = 'list',
-                    })
+                    require('snacks').picker.undo()
                 end,
                 desc = '撤消历史记录',
             },
             {
                 '<leader>fp',
                 function()
-                    Snacks.picker.projects({
-                        focus = 'list',
-                    })
+                    Snacks.picker.projects()
                 end,
                 desc = '选择项目',
             },

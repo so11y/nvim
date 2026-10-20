@@ -16,10 +16,16 @@ local ok, err = xpcall(function()
         vim.cmd.normal(vim.g.mapleader .. 'co')
         local outline = require('lspsaga.symbol.outline')
         assert(outline.winid and vim.api.nvim_win_is_valid(outline.winid))
+        assert(vim.api.nvim_win_get_config(outline.winid).relative ~= '')
         local position = vim.api.nvim_win_get_cursor(outline.winid)
         local node =
             require('lspsaga.slist').find_node(outline.list, position[1])
         assert(node.value.name == expected, 'Outline chose ' .. node.value.name)
+        assert(
+            vim.api.nvim_get_current_win() == outline.winid
+                and vim.fn.mode() == 'n',
+            'Outline did not focus the symbol list'
+        )
         return outline
     end
     vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/outline.ts')
@@ -32,7 +38,7 @@ local ok, err = xpcall(function()
     vim.fn.maparg('<CR>', 'n', false, true).callback()
     assert(vim.api.nvim_get_current_buf() == source_buf)
     assert(vim.api.nvim_win_get_cursor(0)[1] == 6, 'Outline jump missed other')
-    vim.cmd('Lspsaga outline')
+    assert(not outline.winid, 'Floating outline stayed open after jump')
     report.outline = { first = 'narrow', reopened = 'other', jump_line = 6 }
 
     vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/App.vue')
@@ -48,7 +54,7 @@ local ok, err = xpcall(function()
         'Vue outline jump missed greet'
     )
     assert(vim.wo.winbar == '', 'Outline enabled breadcrumbs')
-    vim.cmd('Lspsaga outline')
+    assert(not outline.winid, 'Floating Vue outline stayed open after jump')
     local original = vim.api.nvim_buf_get_lines(vue_buf, 4, 5, false)[1]
     vim.api.nvim_buf_set_lines(
         vue_buf,

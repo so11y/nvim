@@ -3,6 +3,9 @@ return {
     cmd = 'Lspsaga',
     event = 'LspAttach',
     keys = {
+        { 'gd', '<cmd>Lspsaga finder def<CR>', desc = '转到定义' },
+        { 'grr', '<cmd>Lspsaga finder ref<CR>', desc = '转到引用' },
+        { 'gri', '<cmd>Lspsaga finder imp<CR>', desc = '转到实现' },
         { '<leader>co', '<cmd>Lspsaga outline<CR>', desc = '代码大纲' },
         { 'grn', '<cmd>Lspsaga rename<CR>', desc = '重命名' },
         {
@@ -13,11 +16,20 @@ return {
         },
     },
     opts = {
-        ui = { button = { '', '' } },
+        ui = {
+            button = { '', '' },
+            lines = { '└', '├', '│', '─', '┌' },
+        },
         lightbulb = { enable = false },
         symbol_in_winbar = { enable = false },
+        finder = {
+            keys = { toggle_or_open = '<CR>', quit = { 'q', '<Esc>' } },
+        },
         rename = { keys = { quit = { '<Esc>', '<C-c>' } } },
-        outline = { keys = { jump = '<CR>', quit = { 'q', '<Esc>' } } },
+        outline = {
+            layout = 'float',
+            keys = { jump = '<CR>', quit = { 'q', '<Esc>' } },
+        },
         code_action = {
             keys = {
                 quit = { 'q', '<Esc>' },
@@ -27,13 +39,22 @@ return {
     },
     config = function(_, opts)
         require('lspsaga').setup(opts)
-        local function highlight_title()
-            vim.api.nvim_set_hl(0, 'SagaActionTitle', { link = 'NormalFloat' })
+        local function highlight_float()
+            for _, group in ipairs({
+                'SagaActionTitle',
+                'SagaTitle',
+                'RenameNormal',
+                'SagaFinderFname',
+                'SagaText',
+                'FloatTitle',
+            }) do
+                vim.api.nvim_set_hl(0, group, { link = 'NormalFloat' })
+            end
         end
-        highlight_title()
+        highlight_float()
         vim.api.nvim_create_autocmd('ColorScheme', {
             group = require('lspsaga').saga_augroup,
-            callback = highlight_title,
+            callback = highlight_float,
         })
         -- This version has no option to disable code action previews.
         require('lspsaga.codeaction.preview').action_preview = function() end

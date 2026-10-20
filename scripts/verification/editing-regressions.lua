@@ -28,6 +28,60 @@ assert(
 assert(vim.fn.mode() == 'n', 'Undo/redo left Visual mode active')
 report.visual_undo_redo = true
 
+local vue = {
+    '<script setup lang="ts">',
+    'const value = 1;',
+    '</script>',
+    '<template>',
+    '<div>hello</div>',
+    '</template>',
+    '<style>',
+    '.button { color: red; }',
+    '</style>',
+}
+local comments = {
+    { 'typescript', { 'const value = 1;' }, 1, '// const value = 1;' },
+    { 'lua', { 'local value = 1' }, 1, '-- local value = 1' },
+    { 'html', { '<div>hello</div>' }, 1, '<!-- <div>hello</div> -->' },
+    { 'vue', vue, 2, '// const value = 1;' },
+    { 'vue', vue, 5, '<!-- <div>hello</div> -->' },
+    { 'vue', vue, 8, '/* .button { color: red; } */' },
+}
+for _, case in ipairs(comments) do
+    scratch(case[2], case[1])
+    vim.treesitter.get_parser(0):parse(true)
+    vim.api.nvim_win_set_cursor(0, { case[3], 0 })
+    vim.api.nvim_feedkeys(vim.keycode('<A-/>'), 'xt', false)
+    assert(
+        vim.api.nvim_get_current_line() == case[4],
+        'Native comment failed for ' .. case[1] .. ' row ' .. case[3]
+    )
+    vim.api.nvim_feedkeys(vim.keycode('<A-/>'), 'xt', false)
+    assert(
+        vim.deep_equal(vim.api.nvim_buf_get_lines(0, 0, -1, false), case[2]),
+        'Native uncomment did not restore ' .. case[1]
+    )
+end
+scratch({ 'const first = 1;', 'const second = 2;' }, 'typescript')
+vim.api.nvim_win_set_cursor(0, { 1, 0 })
+vim.api.nvim_feedkeys(vim.keycode('Vj<A-/>'), 'xt', false)
+assert(
+    vim.deep_equal(vim.api.nvim_buf_get_lines(0, 0, -1, false), {
+        '// const first = 1;',
+        '// const second = 2;',
+    }),
+    'Native Visual comment did not cover the selected lines'
+)
+vim.api.nvim_feedkeys(vim.keycode('gv<A-/>'), 'xt', false)
+assert(
+    vim.deep_equal(vim.api.nvim_buf_get_lines(0, 0, -1, false), {
+        'const first = 1;',
+        'const second = 2;',
+    }),
+    'Native Visual uncomment did not restore the selected lines'
+)
+report.native_comments = { contexts = #comments, visual_round_trip = true }
+
 local rust = scratch({
     'fn f(a: i32, b: i32) -> i32 { a + b }',
     'fn main() { f(1, 2); }',

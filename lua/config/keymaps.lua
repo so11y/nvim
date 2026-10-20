@@ -162,6 +162,9 @@ map('c', '<A-v>', '<C-r>+', { desc = '命令行粘贴' })
 -- 可视模式：替换选中的文本 (不把被替换的文本存入剪贴板)
 map('x', '<A-v>', 'P', { desc = '覆盖粘贴' })
 
+map('n', '<A-/>', 'gcc', { remap = true, desc = '切换行注释' })
+map('x', '<A-/>', 'gc', { remap = true, desc = '切换行注释' })
+
 -- =======================================================
 -- 5. 代码行移动 (Alt+j/k)
 -- =======================================================
@@ -210,7 +213,15 @@ map('n', '<leader>ws', ':split<CR>', {
 })
 
 -- 窗口跳转 (Ctrl + hjkl)
-map('n', '<C-h>', '<C-w>h', {
+map('n', '<C-h>', function()
+    local finder = package.loaded['lspsaga.finder']
+    return finder
+            and finder.rwinid == vim.api.nvim_get_current_win()
+            and require('lspsaga').config.finder.keys.shuttle
+        or '<C-w>h'
+end, {
+    expr = true,
+    remap = true,
     desc = '跳转左窗口',
 })
 map('n', '<C-j>', '<C-w>j', {
@@ -219,7 +230,15 @@ map('n', '<C-j>', '<C-w>j', {
 map('n', '<C-k>', '<C-w>k', {
     desc = '跳转上窗口',
 })
-map('n', '<C-l>', '<C-w>l', {
+map('n', '<C-l>', function()
+    local finder = package.loaded['lspsaga.finder']
+    return finder
+            and finder.lwinid == vim.api.nvim_get_current_win()
+            and require('lspsaga').config.finder.keys.shuttle
+        or '<C-w>l'
+end, {
+    expr = true,
+    remap = true,
     desc = '跳转右窗口',
 })
 

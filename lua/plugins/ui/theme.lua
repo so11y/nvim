@@ -57,6 +57,7 @@ return {
             },
             custom_highlights = function(colors)
                 return {
+                    NoiceSearchCount = { fg = colors.yellow },
                     ['@lsp.type.class.vue'] = { link = '@property' },
                     ['@lsp.type.method.vue'] = { link = '@property' },
                     LspInlayHint = {
@@ -168,6 +169,7 @@ return {
             },
             groups = {
                 all = {
+                    NoiceSearchCount = { link = 'WarningMsg' },
                     ['@lsp.type.class.vue'] = { link = '@property' },
                     ['@lsp.type.method.vue'] = { link = '@property' },
                     LspInlayHint = { bg = 'NONE' },
@@ -177,6 +179,7 @@ return {
                     BlinkCmpMenuSelection = { link = 'Visual' },
                 },
                 github_dark_default = {
+                    NoiceSearchCount = { fg = '#e3b341' },
                     NormalFloat = { bg = '#1c2128' },
                     FloatBorder = { fg = '#6e7681', bg = '#1c2128' },
                     ['@variable.parameter'] = { fg = '#ffa657' },

@@ -6,6 +6,16 @@ return {
             'MunifTanjim/nui.nvim', -- "rcarriga/nvim-notify", -- 如果你想要精美的右上角通知，可以取消注释
         },
         opts = {
+            messages = {
+                view_search = 'search_count',
+            },
+            views = {
+                search_count = {
+                    backend = 'virtualtext',
+                    format = { '{search_count}' },
+                    hl_group = 'NoiceSearchCount',
+                },
+            },
             lsp = {
                 progress = {
                     enabled = true,
@@ -30,15 +40,6 @@ return {
                 {
                     filter = {
                         event = 'msg_show',
-                        kind = 'search_count',
-                    },
-                    opts = {
-                        skip = true,
-                    },
-                },
-                {
-                    filter = {
-                        event = 'msg_show',
                         find = 'written',
                     },
                     opts = {
@@ -47,5 +48,18 @@ return {
                 },
             },
         },
+        config = function(_, opts)
+            require('noice.text.format.formatters').search_count = function(
+                message,
+                _,
+                input
+            )
+                local count = input:content():match('(%[[^%]]+%])%s*$')
+                if count then
+                    message:append(' ' .. count)
+                end
+            end
+            require('noice').setup(opts)
+        end,
     },
 }

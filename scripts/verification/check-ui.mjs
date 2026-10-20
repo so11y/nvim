@@ -93,7 +93,9 @@ return {configured=require('lazy.core.config').plugins['dropbar.nvim']~=nil,
  picker=vim.fn.maparg('<Space>;','n'),toggle=vim.fn.maparg('<Space>wd','n'),errmsg=vim.v.errmsg}`,[]]);
   if(result.configured||result.loaded||result.winbar!==''||result.autocmds||result.picker||result.toggle||result.errmsg)throw new Error('Breadcrumb plugin was not disabled: '+JSON.stringify(result));
  }else if(suite==='navigation-performance'){
-  const setup=await rpc('nvim_exec_lua',[`vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts')
+   // Measure input handling without scroll animation rewinding the view.
+   const setup=await rpc('nvim_exec_lua',[`Snacks.scroll.disable()
+vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts')
 assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=0,name='vtsls'})>0 end,50))
 local lines={}
 for i=1,600 do vim.list_extend(lines,{('export function nav%d() {'):format(i),'  const value = 1;','  return value;','}'}) end
@@ -166,8 +168,8 @@ vim.g.navigation_done=0`,[]]);
   const search=[];
   for(let i=0;i<5;i++)for(const active of i%2===0?[true,false]:[false,true]){
    await rpc('nvim_exec_lua',[`vim.fn.setreg('/','${active?'value':''}'); vim.o.hlsearch=true`,[]]);
-   const state=await rpc('nvim_exec_lua',["return {hlsearch=vim.v.hlsearch,condition=require('custom.heirline.components').SearchOccurrence.condition(),statusline=vim.o.statusline}",[]]);
-   if(state.condition!==active)throw new Error('Search condition mismatch: '+JSON.stringify(state));
+   const state=await rpc('nvim_exec_lua',["return {hlsearch=vim.v.hlsearch,pattern=vim.fn.getreg('/'),statusline=vim.o.statusline}",[]]);
+   if(state.pattern!==(active?'value':''))throw new Error('Search pattern mismatch: '+JSON.stringify(state));
    await measure('j',true,[100,0],[400,0]);
    search.push({active,...state,...samples.at(-1)});
   }
@@ -181,22 +183,7 @@ vim.g.navigation_done=0`,[]]);
    editSamples.push({active,elapsed_ms:phase.elapsed_ms,length});
    await delay(200);
   }
-  await rpc('nvim_exec_lua',["vim.fn.setreg('/','value'); vim.api.nvim_win_set_cursor(0,{100,0})",[]]);
-  const statusline=()=>rpc('nvim_exec_lua',["return vim.api.nvim_eval_statusline(vim.o.statusline,{winid=0}).str",[]]);
-  const initialStatusline=await statusline();
-  await inputAndWait('j'.repeat(10));
-  const movingStatusline=await statusline();
-  await delay(250);
-  const settledStatusline=await statusline();
-  const expectedStatusline=await rpc('nvim_exec_lua',["local c=vim.fn.searchcount({recompute=1,maxcount=0}); return ('[%s/%s]'):format(c.current,c.total)",[]]);
-  if(!settledStatusline.includes(expectedStatusline))throw new Error('Search statusline did not catch up after movement: '+JSON.stringify({initialStatusline,movingStatusline,settledStatusline,expectedStatusline}));
-  await rpc('nvim_exec_lua',["vim.o.statusline=''; vim.fn.setreg('/','value'); vim.o.hlsearch=true; vim.api.nvim_win_set_cursor(0,{100,0}); vim.fn.searchcount({recompute=1,maxcount=0})",[]]);
-  const searchCache=[];
-  for(const steps of [1,10,100]){
-   await inputAndWait('j'.repeat(steps));
-   searchCache.push(await rpc('nvim_exec_lua',["local cached=vim.fn.searchcount({recompute=0,maxcount=0}); local fresh=vim.fn.searchcount({recompute=1,maxcount=0}); return {row=vim.api.nvim_win_get_cursor(0)[1],cached=cached,fresh=fresh}",[]]));
-  }
-  result={setup,samples,ast,editing,after,search,editSamples,searchStatusline:{initialStatusline,movingStatusline,settledStatusline,expectedStatusline},searchCache};
+   result={setup,samples,ast,editing,after,search,editSamples};
  }else if(suite==='tag-ui'){
   const setup=await rpc('nvim_exec_lua',[`vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.vue')
 assert(vim.wait(15000,function()
@@ -499,7 +486,21 @@ return {text=vim.api.nvim_buf_get_lines(b,0,-1,false),errmsg=vim.v.errmsg}`,[set
    await rpc('nvim_input',['<Esc>']);await delay(50);
    if(htmlCawEmpty.mode!=='i'||!htmlCawEmpty.line.includes('<>')||!htmlCawEmpty.line.includes('</>')||htmlCawFull.mode!=='i'||!htmlCawFull.line.includes('<strong>')||!htmlCawFull.line.includes('</strong>')||htmlCawFull.errmsg)throw new Error('HTML caw linked editing failed: '+JSON.stringify({htmlCawEmpty,htmlCawFull}));
    result={vue,empty,partial,full,undone,cawEmpty,cawFull,closingEdit,tagDialog,cancelled,tagRename,autoClose,codeDialog,codeRename,html,htmlPartial,htmlCawEmpty,htmlCawFull};
- }else if(suite==='hover'){
+  }else if(suite==='search-count'){
+   await rpc('nvim_exec_lua',["vim.cmd.enew(); vim.api.nvim_buf_set_lines(0,0,-1,false,{'needle%value first','x','needle%value second','needle%value third'}); vim.api.nvim_win_set_cursor(0,{1,0})",[]]);
+   const state=()=>rpc('nvim_exec_lua',["local row=vim.fn.screenpos(0,vim.api.nvim_win_get_cursor(0)[1],1).row; local text={}; for col=1,vim.o.columns do text[#text+1]=vim.fn.screenstring(row,col) end; return {source=vim.api.nvim_get_current_line(),text=table.concat(text),hlsearch=vim.v.hlsearch,errmsg=vim.v.errmsg}",[]]);
+   const phases=[];
+   for(const [keys,count] of [['/needle%value<CR>','[2/3]'],['n','[3/3]'],['N','[2/3]']]){
+    await rpc('nvim_input',[keys]);await delay(150);
+    const current=await state();
+    if(!current.text.trimEnd().endsWith(current.source+'  '+count)||current.errmsg)throw new Error('Noice search count was not compact: '+JSON.stringify({keys,count,current}));
+    phases.push({keys,...current});
+   }
+   await rpc('nvim_input',['<Esc>']);await delay(150);
+   const cleared=await state();
+   if(cleared.hlsearch!==0||cleared.text.includes('[2/3]')||cleared.errmsg)throw new Error('Noice search count did not clear: '+JSON.stringify(cleared));
+   result={phases,cleared};
+  }else if(suite==='hover'){
   await rpc('nvim_exec_lua',["vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts'); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=0,name='vtsls',method='textDocument/hover'})>0 end,50)); vim.api.nvim_win_set_cursor(0,{1,16})",[]]);
    const hoverState=()=>rpc('nvim_exec_lua',["local wins,details,hover={},{},nil; for _,win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do local ok,source=pcall(vim.api.nvim_win_get_var,win,'textDocument/hover'); local buf=vim.api.nvim_win_get_buf(win); details[#details+1]={win=win,relative=vim.api.nvim_win_get_config(win).relative,source=ok and source or nil,ft=vim.bo[buf].filetype}; if ok then wins[#wins+1]=win; hover={first=vim.api.nvim_buf_get_lines(buf,0,1,false)[1],conceallevel=vim.wo[win].conceallevel,concealcursor=vim.wo[win].concealcursor} end end; return {wins=wins,details=details,hover=hover,current=vim.api.nvim_get_current_win(),errmsg=vim.v.errmsg}",[]]);
   const waitForHover=async()=>{for(let i=0;i<40;i++){await delay(100);const state=await hoverState();if(state.wins.length)return state;}return hoverState();};

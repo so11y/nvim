@@ -23,10 +23,6 @@
     "branch": "main",
     "commit": "6134b5cd4a38990c7b720adc90973ed32f726179"
   },
-  "Comment.nvim": {
-    "branch": "master",
-    "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb"
-  },
   "conform.nvim": {
     "branch": "master",
     "commit": "3543d000dafbc41cc7761d860cfdb24e82154f75"

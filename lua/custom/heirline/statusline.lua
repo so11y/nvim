@@ -5,7 +5,6 @@ return {
     components.RightPadding(components.FileNameBlock, 2),
     components.RightPadding(components.Git, 2),
     components.Diagnostics,
-    components.SearchOccurrence,
     components.Fill,
     components.MacroRecording,
     components.Fill,
