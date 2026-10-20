@@ -1,44 +1,77 @@
 local report = {}
 local ok, err = xpcall(function()
-    vim.cmd.edit((vim.env.NVIM_TEST_ROOT .. '/alpha/outline.ts'))
+    local symbols
+    local function wait_symbols(bufnr)
+        assert(
+            vim.wait(20000, function()
+                symbols = package.loaded['lspsaga.symbol.head']
+                local data = symbols and symbols:get_buf_symbols(bufnr)
+                return data and data.symbols and #data.symbols > 0
+            end, 25),
+            'Outline symbols missing'
+        )
+    end
+    local function open_outline(row, expected)
+        vim.api.nvim_win_set_cursor(0, { row, 2 })
+        vim.cmd.normal(vim.g.mapleader .. 'co')
+        local outline = require('lspsaga.symbol.outline')
+        assert(outline.winid and vim.api.nvim_win_is_valid(outline.winid))
+        local position = vim.api.nvim_win_get_cursor(outline.winid)
+        local node =
+            require('lspsaga.slist').find_node(outline.list, position[1])
+        assert(node.value.name == expected, 'Outline chose ' .. node.value.name)
+        return outline
+    end
+    vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/outline.ts')
+    local source_buf = vim.api.nvim_get_current_buf()
+    wait_symbols(source_buf)
+    local outline = open_outline(3, 'narrow')
+    vim.fn.maparg('<Esc>', 'n', false, true).callback()
+    assert(vim.api.nvim_get_current_buf() == source_buf)
+    outline = open_outline(7, 'other')
+    vim.fn.maparg('<CR>', 'n', false, true).callback()
+    assert(vim.api.nvim_get_current_buf() == source_buf)
+    assert(vim.api.nvim_win_get_cursor(0)[1] == 6, 'Outline jump missed other')
+    vim.cmd('Lspsaga outline')
+    report.outline = { first = 'narrow', reopened = 'other', jump_line = 6 }
+
+    vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/App.vue')
+    local vue_buf = vim.api.nvim_get_current_buf()
+    wait_symbols(vue_buf)
+    local client = vim.lsp.get_client_by_id(symbols[vue_buf].client_id)
+    assert(client.name == 'vue_ls', 'Vue outline selected ' .. client.name)
+    outline = open_outline(5, 'greet')
+    vim.fn.maparg('<CR>', 'n', false, true).callback()
+    assert(vim.api.nvim_get_current_buf() == vue_buf)
     assert(
-        vim.wait(20000, function()
-            return #vim.lsp.get_clients({
-                bufnr = 0,
-                name = 'vtsls',
-                method = 'textDocument/documentSymbol',
-            }) > 0
-        end, 50),
-        'vtsls missing'
+        vim.api.nvim_win_get_cursor(0)[1] == 5,
+        'Vue outline jump missed greet'
     )
-    local line = vim.api.nvim_get_current_line()
-    vim.api.nvim_win_set_cursor(
-        0,
-        { 1, assert(line:find('return 1', 1, true)) - 1 }
+    assert(vim.wo.winbar == '', 'Outline enabled breadcrumbs')
+    vim.cmd('Lspsaga outline')
+    local original = vim.api.nvim_buf_get_lines(vue_buf, 4, 5, false)[1]
+    vim.api.nvim_buf_set_lines(
+        vue_buf,
+        4,
+        5,
+        false,
+        { (original:gsub('greet', 'renamedGreet')) }
     )
-    vim.fn.maparg('<leader>co', 'n', false, true).callback()
-    local p
     assert(
         vim.wait(10000, function()
-            p = Snacks.picker.get({ source = 'lsp_symbols' })[1]
-            return p and p:count() > 0 and not p:is_active()
+            local data = symbols:get_buf_symbols(vue_buf)
+            return data
+                and data.symbols
+                and vim.inspect(data.symbols):find('renamedGreet', 1, true)
         end, 25),
-        'Outline failed'
+        'Vue outline cache did not update after editing'
     )
-    local current = p:current()
-    assert(
-        current and current.name == 'narrow',
-        'Unicode outline chose ' .. vim.inspect(current)
-    )
-    report.outline = {
-        name = current.name,
-        encoding = current.loc.encoding,
-        count = p:count(),
-    }
-    p:close()
-    vim.wait(100, function()
-        return false
-    end)
+    outline = open_outline(5, 'renamedGreet')
+    vim.fn.maparg('<Esc>', 'n', false, true).callback()
+    vim.api.nvim_buf_set_lines(vue_buf, 4, 5, false, { original })
+    vim.bo[vue_buf].modified = false
+    report.vue_outline =
+        { client = client.name, selected = 'greet', updated = 'renamedGreet' }
     local registry =
         require('blink.cmp.sources.snippets.default.registry').new({
             friendly_snippets = false,

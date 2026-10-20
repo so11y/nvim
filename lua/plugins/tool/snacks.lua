@@ -229,60 +229,6 @@ return {
                 desc = '打开 LazyGit',
             },
             {
-                '<leader>co',
-                function()
-                    local cursor = vim.api.nvim_win_get_cursor(0)
-                    local line = vim.api.nvim_get_current_line()
-                    local picker
-                    local positioned = false
-                    picker = Snacks.picker.lsp_symbols({
-                        tree = true,
-                        focus = 'list',
-                        matcher = {
-                            on_done = function()
-                                if positioned or picker.closed then
-                                    return
-                                end
-                                positioned = true
-                                local target
-                                for symbol, index in picker:iter() do
-                                    local range = symbol.range
-                                    if range then
-                                        local col = vim.str_utfindex(
-                                            line,
-                                            symbol.loc.encoding,
-                                            cursor[2],
-                                            false
-                                        )
-                                        local row = cursor[1] - 1
-                                        local first, last =
-                                            range.start, range['end']
-                                        if
-                                            (
-                                                row > first.line
-                                                or row == first.line
-                                                    and col >= first.character
-                                            )
-                                            and (
-                                                row < last.line
-                                                or row == last.line
-                                                    and col < last.character
-                                            )
-                                        then
-                                            target = index
-                                        end
-                                    end
-                                end
-                                if target then
-                                    picker.list:move(target, true)
-                                end
-                            end,
-                        },
-                    })
-                end,
-                desc = '代码大纲',
-            },
-            {
                 '<A-w>',
                 function()
                     local winid = vim.api.nvim_get_current_win()
@@ -408,20 +354,6 @@ return {
                 'grt',
                 vim.lsp.buf.type_definition,
                 desc = '转到类型定义',
-            },
-            {
-                'grn',
-                function()
-                    if vim.bo.filetype == 'vue' then
-                        local node = vim.treesitter.get_node()
-                        if node and node:type() == 'tag_name' then
-                            vim.lsp.buf.rename(nil, { name = 'vue_ls' })
-                            return
-                        end
-                    end
-                    vim.lsp.buf.rename()
-                end,
-                desc = '重命名',
             },
             {
                 '<leader>xf',

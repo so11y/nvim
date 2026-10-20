@@ -37,25 +37,20 @@ assert(
         and resolved.result.command.command == 'editor.action.rename',
     'Extract action did not resolve'
 )
-local prompted = false
-vim.ui.input = function(opts, callback)
-    prompted = true
-    callback('sumValue')
-end
 vim.lsp.util.apply_workspace_edit(resolved.result.edit, c.offset_encoding)
 c:exec_cmd(resolved.result.command, { bufnr = 0 })
+local rename = require('lspsaga.rename')
 assert(
-    vim.wait(10000, function()
-        return prompted
-            and table
-                .concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n')
-                :find('function sumValue', 1, true)
-    end, 50),
-    'Extracted function could not be renamed'
+    vim.wait(5000, function()
+        return rename.winid and vim.api.nvim_win_is_valid(rename.winid)
+    end, 20),
+    'Refactor did not open Lspsaga rename'
 )
+assert(vim.bo[rename.bufnr].filetype == 'sagarename')
 return {
     refactor_applied = true,
-    rename_prompted = prompted,
+    rename_prompted = true,
+    initial_name = vim.api.nvim_buf_get_lines(rename.bufnr, 0, -1, false)[1],
+    bufnr = vim.fn.bufnr(file),
     errmsg = vim.v.errmsg,
-    text = vim.api.nvim_buf_get_lines(0, 0, -1, false),
 }
