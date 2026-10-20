@@ -33,6 +33,9 @@ return {
     },
 
     settings = {
+        typescript = {
+            locale = 'zh-CN',
+        },
         vtsls = {
             autoUseWorkspaceTsdk = false,
             typescript = {

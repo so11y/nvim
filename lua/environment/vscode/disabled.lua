@@ -9,6 +9,7 @@ return {
     'stevearc/conform.nvim',
     'mrcjkb/rustaceanvim',
     -- ui
+    'nvimdev/lspsaga.nvim',
     'akinsho/bufferline.nvim',
     'nvim-neo-tree/neo-tree.nvim',
     'folke/noice.nvim',

@@ -173,11 +173,6 @@ return {
                     },
                 },
                 sources = {
-                    select = {
-                        kinds = {
-                            codeaction = require('config.code_action').picker,
-                        },
-                    },
                     files = {
                         hidden = true,
                         exclude = { '.git', 'node_modules', '.DS_Store' },
@@ -445,12 +440,6 @@ return {
                     })
                 end,
                 desc = '诊断（工作区）',
-            },
-            {
-                'gra',
-                require('config.code_action').open,
-                mode = { 'n', 'x' },
-                desc = '代码操作',
             },
             {
                 '<leader>su',

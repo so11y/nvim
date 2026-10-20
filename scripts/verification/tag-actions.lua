@@ -190,48 +190,23 @@ assert(contents(html_buf):find('你好😀', 1, true))
 local pos = position(2, '<span>')
 vim.api.nvim_win_set_cursor(0, { pos.line + 1, pos.character })
 require('config.code_action').open()
-local picker
+local saga = require('lspsaga.codeaction')
 assert(
     vim.wait(5000, function()
-        picker = Snacks.picker.get({ source = 'select' })[1]
-        return picker and picker.shown
+        return saga.action_winid
+            and vim.api.nvim_win_is_valid(saga.action_winid)
     end, 20),
-    'Native Code Action menu did not open'
+    'Lspsaga Code Action menu did not open'
 )
-local win = picker.list.win.win
-assert(
-    vim.wait(1000, function()
-        return picker.list:count() == picker:count()
-            and #vim.tbl_filter(
-                    function(line)
-                        return vim.trim(line) ~= ''
-                    end,
-                    vim.api.nvim_buf_get_lines(
-                        picker.list.win.buf,
-                        0,
-                        -1,
-                        false
-                    )
-                )
-                == picker:count()
-    end, 10),
-    'The expanded menu did not render all actions'
-)
-local cfg = vim.api.nvim_win_get_config(picker.layout.root.win)
-assert(vim.api.nvim_win_get_height(win) == picker:count())
-assert(cfg.row >= 0 and cfg.col >= 0)
-assert(cfg.row + cfg.height + 3 <= vim.o.lines)
-assert(cfg.col + cfg.width + 2 <= vim.o.columns)
-assert(vim.wo[win].cursorline)
-assert(vim.wo[win].winhighlight:find('SnacksPickerList', 1, true))
-assert(not picker.input.win:valid() and not picker.preview.win:valid())
+local win = saga.action_winid
+local cfg = vim.api.nvim_win_get_config(win)
+local lines = vim.api.nvim_buf_get_lines(saga.action_bufnr, 0, -1, false)
+assert(#lines > 0)
+assert(vim.api.nvim_win_get_height(win) <= #lines)
+assert(vim.wo[win].winhighlight:find('SagaNormal', 1, true))
 assert(vim.fn.maparg('<CR>', 'n', false, true).buffer == 1)
 assert(vim.fn.maparg('<Tab>', 'n', false, true).buffer == 1)
-results.picker = {
-    config = cfg,
-    lines = vim.api.nvim_buf_get_lines(picker.list.win.buf, 0, -1, false),
-    count = picker:count(),
-}
-picker:close()
+results.menu = { config = cfg, lines = lines, count = #lines }
+saga:close_action_window()
 
 return results

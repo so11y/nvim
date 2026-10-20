@@ -67,6 +67,10 @@
     "branch": "main",
     "commit": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d"
   },
+  "lspsaga.nvim": {
+    "branch": "main",
+    "commit": "cf6fc9473bba1d332eda9887855ea29ed9b37701"
+  },
   "mason.nvim": {
     "branch": "main",
     "commit": "2a6940af80375532e5e9e7c1f2fc6319a1b7a69d"

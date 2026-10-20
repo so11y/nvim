@@ -177,6 +177,8 @@ return {
                     BlinkCmpMenuSelection = { link = 'Visual' },
                 },
                 github_dark_default = {
+                    NormalFloat = { bg = '#1c2128' },
+                    FloatBorder = { fg = '#6e7681', bg = '#1c2128' },
                     ['@variable.parameter'] = { fg = '#ffa657' },
                     ['@vscode.member'] = { fg = '#e6edf3' },
                     ['@tag.component.vue'] = { fg = '#ffa657' },
