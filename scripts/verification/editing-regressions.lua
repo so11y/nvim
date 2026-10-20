@@ -28,6 +28,7 @@ assert(
 assert(vim.fn.mode() == 'n', 'Undo/redo left Visual mode active')
 report.visual_undo_redo = true
 
+vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/refactor.ts')
 local vue = {
     '<script setup lang="ts">',
     'const value = 1;',
@@ -54,12 +55,12 @@ for _, case in ipairs(comments) do
     vim.api.nvim_feedkeys(vim.keycode('<A-/>'), 'xt', false)
     assert(
         vim.api.nvim_get_current_line() == case[4],
-        'Native comment failed for ' .. case[1] .. ' row ' .. case[3]
+        'Comment.nvim comment failed for ' .. case[1] .. ' row ' .. case[3]
     )
     vim.api.nvim_feedkeys(vim.keycode('<A-/>'), 'xt', false)
     assert(
         vim.deep_equal(vim.api.nvim_buf_get_lines(0, 0, -1, false), case[2]),
-        'Native uncomment did not restore ' .. case[1]
+        'Comment.nvim uncomment did not restore ' .. case[1]
     )
 end
 scratch({ 'const first = 1;', 'const second = 2;' }, 'typescript')
@@ -70,7 +71,7 @@ assert(
         '// const first = 1;',
         '// const second = 2;',
     }),
-    'Native Visual comment did not cover the selected lines'
+    'Comment.nvim Visual comment did not cover the selected lines'
 )
 vim.api.nvim_feedkeys(vim.keycode('gv<A-/>'), 'xt', false)
 assert(
@@ -78,9 +79,9 @@ assert(
         'const first = 1;',
         'const second = 2;',
     }),
-    'Native Visual uncomment did not restore the selected lines'
+    'Comment.nvim Visual uncomment did not restore the selected lines'
 )
-report.native_comments = { contexts = #comments, visual_round_trip = true }
+report.comment_plugin = { contexts = #comments, visual_round_trip = true }
 
 local rust = scratch({
     'fn f(a: i32, b: i32) -> i32 { a + b }',
