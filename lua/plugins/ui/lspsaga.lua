@@ -32,6 +32,26 @@ return {
     },
     config = function(_, opts)
         require('lspsaga').setup(opts)
+        vim.api.nvim_create_autocmd('FileType', {
+            group = require('lspsaga').saga_augroup,
+            pattern = 'sagarename',
+            callback = function(event)
+                vim.b[event.buf].completion = false
+                for _, key in ipairs({ '<BS>', '<Del>' }) do
+                    vim.keymap.set('s', key, '<C-g>"_c', { buffer = event.buf })
+                end
+            end,
+        })
+        vim.api.nvim_create_autocmd('ModeChanged', {
+            group = require('lspsaga').saga_augroup,
+            pattern = '*:[sS]',
+            callback = function()
+                if vim.bo.filetype == 'sagarename' then
+                    -- Select-mode deletion and replacement use this register.
+                    vim.api.nvim_feedkeys(vim.keycode('<C-r>_'), 'ni', false)
+                end
+            end,
+        })
         local function highlight_float()
             local title =
                 vim.api.nvim_get_hl(0, { name = 'FloatTitle', link = false })
