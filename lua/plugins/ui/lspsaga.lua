@@ -57,6 +57,14 @@ return {
         -- This version has no option to disable code action previews.
         require('lspsaga.codeaction.preview').action_preview = function() end
         local symbols = require('lspsaga.symbol.head')
+        local do_request = symbols.do_request
+        -- A queued symbol refresh can outlive its buffer.
+        symbols.do_request = function(self, buf, client_id)
+            if not vim.api.nvim_buf_is_loaded(buf) then
+                return
+            end
+            return do_request(self, buf, client_id)
+        end
         local group = 'LspsagaSymbols'
         -- Vue document symbols come from vue_ls; vtsls returns no outline.
         vim.api.nvim_clear_autocmds({ group = group, event = 'LspAttach' })

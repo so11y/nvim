@@ -78,6 +78,30 @@ local ok, err = xpcall(function()
     vim.bo[vue_buf].modified = false
     report.vue_outline =
         { client = client.name, selected = 'greet', updated = 'renamedGreet' }
+
+    -- A pending symbol refresh must tolerate its buffer being wiped out.
+    local refresh_ran = false
+    local do_request = symbols.do_request
+    symbols.do_request = function(self, buf, client_id)
+        if buf == vue_buf then
+            refresh_ran = true
+        end
+        return do_request(self, buf, client_id)
+    end
+    vim.api.nvim_exec_autocmds('LspNotify', {
+        buffer = vue_buf,
+        data = { method = 'textDocument/didChange', client_id = client.id },
+    })
+    vim.api.nvim_buf_delete(vue_buf, { force = true })
+    local refreshed = vim.wait(3000, function()
+        return refresh_ran
+    end, 10)
+    symbols.do_request = do_request
+    assert(refreshed, 'Pending symbol refresh did not run')
+    assert(not symbols[vue_buf], 'Deleted buffer regained a symbol cache')
+    assert(vim.v.errmsg == '', vim.v.errmsg)
+    report.outline_disposal = true
+
     local registry =
         require('blink.cmp.sources.snippets.default.registry').new({
             friendly_snippets = false,
