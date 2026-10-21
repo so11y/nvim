@@ -11,7 +11,7 @@ return {
                 if vim.v.count > 0 then
                     vim.wo.scroll = vim.v.count
                 end
-                require('neoscroll').ctrl_d({ duration = 160 })
+                require('neoscroll').ctrl_d({ duration = 100 })
             end,
             desc = '向下滚动半页',
         },
@@ -21,7 +21,7 @@ return {
                 if vim.v.count > 0 then
                     vim.wo.scroll = vim.v.count
                 end
-                require('neoscroll').ctrl_u({ duration = 160 })
+                require('neoscroll').ctrl_u({ duration = 100 })
             end,
             desc = '向上滚动半页',
         },

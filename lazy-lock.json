@@ -23,10 +23,6 @@
     "branch": "main",
     "commit": "7608f3b436ce1f84a4888f75e53079caa981a2e9"
   },
-  "colorful-winsep.nvim": {
-    "branch": "main",
-    "commit": "6134b5cd4a38990c7b720adc90973ed32f726179"
-  },
   "Comment.nvim": {
     "branch": "master",
     "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb"

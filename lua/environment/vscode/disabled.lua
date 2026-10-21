@@ -20,7 +20,6 @@ return {
     'Bekaboo/dropbar.nvim',
     'NvChad/nvim-colorizer.lua',
     'HiPhish/rainbow-delimiters.nvim',
-    'nvim-zh/colorful-winsep.nvim',
     'rachartier/tiny-inline-diagnostic.nvim',
     'petertriho/nvim-scrollbar',
     -- tool
