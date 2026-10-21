@@ -71,6 +71,6 @@ if not ok then
 end
 vim.fn.writefile(
     { vim.json.encode(report) },
-    vim.fn.stdpath('data') .. '/installation-result.json'
+    vim.env.NVIM_TEST_OUTPUT or (vim.fn.tempname() .. '-installation.json')
 )
 vim.cmd(ok and 'qa!' or 'cquit')

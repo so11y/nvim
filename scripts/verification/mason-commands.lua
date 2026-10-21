@@ -8,6 +8,8 @@ local ok, err = xpcall(function()
         'Native LSP did not start'
     )
     assert(package.loaded.mason, 'Mason did not initialize')
+    -- Verify commands against the installed registry without fetching metadata.
+    require('mason.settings').set({ registry_cache = { refresh = false } })
     report.before = {
         mason = true,
         formatter = vim.fn.exepath('prettierd'),

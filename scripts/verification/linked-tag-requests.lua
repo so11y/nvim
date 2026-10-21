@@ -27,9 +27,9 @@ vim.lsp.buf_is_attached = function(b, id)
     return b == buf and id == client.id
 end
 vim.api.nvim_win_set_cursor(0, { 1, 1 })
-require('config.linked_tags').attach(client, buf)
+require('editing.linked_tags').attach(client, buf)
 vim.lsp.buf_is_attached = attached
-local ns = vim.api.nvim_get_namespaces()['config.linked_tags:' .. buf]
+local ns = vim.api.nvim_get_namespaces()['editing.linked_tags:' .. buf]
 local function move(col)
     vim.api.nvim_win_set_cursor(0, { 1, col })
     vim.api.nvim_exec_autocmds('CursorMoved', { buffer = buf })

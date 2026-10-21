@@ -3,6 +3,16 @@ return {
     version = '^9',
     event = { 'BufReadPre', 'BufNewFile' },
     cmd = 'ConformInfo',
+    keys = {
+        {
+            '<A-F>',
+            function()
+                require('config.format').format()
+            end,
+            mode = { 'n', 'i' },
+            desc = '格式化代码',
+        },
+    },
     opts = function()
         return {
             formatters_by_ft = require('config.format').formatters,
@@ -20,5 +30,8 @@ return {
                 },
             },
         }
+    end,
+    config = function(_, opts)
+        require('config.format').setup(opts)
     end,
 }

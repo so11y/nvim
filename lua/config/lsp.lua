@@ -29,7 +29,6 @@ function M.setup()
     vim.lsp.config('eslint', {
         settings = { format = false },
     })
-    local format = require('config.format')
     vim.lsp.enable(M.servers)
 
     vim.diagnostic.config({
@@ -68,7 +67,7 @@ function M.setup()
                 and client:supports_method('textDocument/linkedEditingRange')
             then
                 vim.schedule(function()
-                    require('config.linked_tags').attach(client, ev.buf)
+                    require('editing.linked_tags').attach(client, ev.buf)
                 end)
             end
             if
@@ -124,14 +123,6 @@ function M.setup()
             end
             vim.api.nvim_clear_autocmds({ group = highlights, buffer = ev.buf })
             vim.lsp.buf.clear_references()
-        end,
-    })
-    vim.api.nvim_create_autocmd('BufWritePre', {
-        group = group,
-        callback = function(ev)
-            if vim.bo[ev.buf].buftype == '' then
-                format.format(ev.buf)
-            end
         end,
     })
 end

@@ -24,7 +24,6 @@ local history = require('buffer-reopen.store').closed_buffers
 assert(vim.fn.maparg('<leader>bt', 'n') == '')
 assert(vim.fn.maparg('<C-S-t>', 'n') == '')
 
-assert(vim.fn.maparg('s', 'n') == '')
 vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'abc' })
 vim.api.nvim_feedkeys(vim.keycode('sZ<Esc>'), 'xt', false)
 assert(

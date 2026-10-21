@@ -2,6 +2,10 @@
   "name": "nvim-upgrade-verification",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test": "node run.mjs",
+    "test:list": "node run.mjs --list"
+  },
   "dependencies": {
     "@msgpack/msgpack": "3.1.3"
   }

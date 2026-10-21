@@ -66,7 +66,7 @@ function M.select(capture)
     -- Resolve during the expression mapping so an absent/empty object cancels
     -- the operator. Apply after textlock ends; c must never reach Insert here.
     return string.format(
-        '<Cmd>lua require("config.textobjects").apply({%d,%d,%d,%d},%q)<CR>',
+        '<Cmd>lua require("editing.textobjects").apply({%d,%d,%d,%d},%q)<CR>',
         start_row,
         start_col,
         end_row,

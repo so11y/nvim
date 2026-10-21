@@ -17,9 +17,9 @@ return {
         opts = { select = { lookahead = true }, move = { set_jumps = true } },
         config = function(_, opts)
             require('nvim-treesitter-textobjects').setup(opts)
-            local textobjects = require('config.textobjects')
+            local textobjects = require('editing.textobjects')
             local nxo = { 'n', 'x', 'o' }
-            local motion = require('config.ast_move')
+            local motion = require('editing.ast_move')
             local descriptions = {
                 a = { '下一个参数', '上一个参数' },
                 c = { '下一处调用', '上一处调用' },

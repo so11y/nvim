@@ -31,7 +31,6 @@ return {
     'NeogitOrg/neogit',
     'esmuellert/codediff.nvim',
     'folke/which-key.nvim',
-    'nvzone/showkeys',
     'MagicDuck/grug-far.nvim',
     'folke/lazydev.nvim',
     -- editor

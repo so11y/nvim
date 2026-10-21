@@ -232,7 +232,7 @@ local ok, err = xpcall(function()
             callback(tree, language)
         end)
     end
-    local move = require('config.ast_move').move
+    local move = require('editing.ast_move').move
     local function edited_jump(capture)
         revision = revision + 1
         vim.api.nvim_buf_set_lines(sparse_buf, 1, 2, false, {
@@ -279,6 +279,6 @@ if not ok then
 end
 vim.fn.writefile(
     { vim.json.encode(report) },
-    vim.fn.stdpath('data') .. '/benchmark.json'
+    vim.env.NVIM_TEST_OUTPUT or (vim.fn.tempname() .. '-benchmark.json')
 )
 vim.cmd(ok and 'qa!' or 'cquit')

@@ -3,16 +3,6 @@ return {
         'neovim/nvim-lspconfig',
         version = '^2',
         event = { 'BufReadPre', 'BufNewFile', 'FileType' },
-        keys = {
-            {
-                '<A-F>',
-                function()
-                    require('config.format').format()
-                end,
-                mode = { 'n', 'i' },
-                desc = '格式化代码',
-            },
-        },
         config = function()
             require('config.lsp').setup()
         end,

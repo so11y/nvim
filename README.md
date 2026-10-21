@@ -1,69 +1,29 @@
 # Neovim 配置
 
-![代码与文件树](docs/images/nvim-fulate-overview.png)
+![代码与文件树](docs/images/nvim-overview.png)
 
 ## 安装与维护
 
-支持 Windows 和 macOS，使用 Neovim 0.12+。基础工具由系统包管理器安装，插件、语言工具和解析器由你通过 Lazy 主动安装。语言服务器、格式化工具和调试适配器交给 Mason，解析器交给 Tree-sitter。已有配置请先备份；安装需要访问 GitHub 和 npm。
+| 环境 | 要求 |
+| --- | --- |
+| 通用 | Neovim 0.12+、Git、Node.js/npm（可复用已有兼容版本）、ripgrep、C 编译器、tar、curl、解压工具，均需加入 PATH |
+| Windows | 可用 Scoop：`scoop install neovim git nodejs-lts ripgrep gcc` |
+| macOS | `brew install neovim git node ripgrep`；编译器用 Xcode Command Line Tools（`xcode-select --install`） |
+| 可选 | 7-Zip（解压）、Nerd Font（图标）、Neovide、LazyGit、opencode CLI；VS Code 需 vscode-neovim 扩展 |
+| Rust | 另装 Rust 工具链、rust-analyzer、rustfmt；Windows/MSVC 还需 C++ Build Tools 和 Windows SDK |
 
-### Windows
-
-已安装 [Scoop](https://scoop.sh/) 时，在 PowerShell 中执行：
-
-```powershell
-scoop install neovim git nodejs-lts ripgrep gcc 7zip
-git clone https://github.com/so11y/nvim.git "$env:LOCALAPPDATA\nvim"
-nvim
-```
-
-也可以使用已有的 Winget、Chocolatey 或其他安装方式。确保 `nvim`、`git`、`node`、`npm`、`rg`、C 编译器及解压工具在 PATH 中；Windows 10/11 提供的 `tar`、`curl` 也需要可用。配置复用现有编译器，保留显式 `CC`，没有设置 `CC` 时会采用 PATH 中的 GCC。
-
-### macOS
-
-已安装 [Homebrew](https://brew.sh/) 时执行：
-
-```sh
-brew install neovim git node ripgrep
-git clone https://github.com/so11y/nvim.git ~/.config/nvim
-nvim
-```
-
-编译器使用 Xcode Command Line Tools 提供的 Clang；未安装时运行 `xcode-select --install`。Node.js 使用仍在维护的版本；`tar` 和 `curl` 使用系统工具。
-
-### 首次启动与更新
-
-首次运行 `nvim` 会引导 lazy.nvim；进入 `:Lazy` 管理界面，执行 `:Lazy install` 安装缺失插件。相关构建钩子会安装语言工具及解析器。普通启动只初始化已安装的插件，不自动补装插件、工具或解析器，也不对齐工具版本。
+将[本仓库](https://github.com/so11y/nvim)克隆到 Windows 的 `%LOCALAPPDATA%\nvim` 或 macOS 的 `~/.config/nvim`，然后启动 `nvim`。已有配置先备份，安装需访问 GitHub 和 npm。
 
 | 操作 | 命令 |
 | --- | --- |
-| 首次安装插件 | `:Lazy install` |
+| 首次安装 | `:Lazy install`，完成后重启 |
 | 更新插件 | `:Lazy update` |
-| 补装语言工具、应用工具清单或兼容版本 | `:Lazy build mason.nvim` |
-| 补装、更新解析器 | `:Lazy build nvim-treesitter` |
+| 补装或对齐语言工具 | `:Lazy build mason.nvim` |
+| 补装或更新解析器 | `:Lazy build nvim-treesitter` |
 
-Install／Sync 不保证重建已经安装的插件；补装或重试请执行对应的 Build。修改配置清单或版本锁后，重启以加载配置，再执行 Build。安装失败查看 `:Lazy`、`:MasonLog` 和 `:messages`；诊断使用 `:checkhealth lazy mason nvim-treesitter conform`。
+普通启动不自动补装；修改工具清单或版本锁后，重启再 Build。失败查看 `:Lazy`、`:MasonLog`；VS Code 用户先在独立 Neovim 中完成安装。
 
-运行 `:echo stdpath('data')` 查看安装位置：该目录的 `lazy/` 存放插件，`mason/` 存放语言工具，`site/` 存放解析器和查询文件。
-
-首次安装结束后重启 Neovim，再开始编辑。构建失败可再次手动执行 Build。安装进程被强制中断后，如 Mason 报残留锁，确认其他安装进程已结束，再使用原生 `:MasonInstall --force 包名` 重装。
-
-插件由 `lazy-lock.json` 记录提交，更新并验证后提交新的版本锁。Mason 工具清单位于 `lua/config/mason_tools.lua`；构建时只补齐缺失的普通工具，后续通过 `:Mason` 更新。`tools.lock.json` 只锁定 vtsls、Vue language server 和 TypeScript SDK 的兼容组合，执行 Mason Build 时会对齐这组版本。Mason 使用原生包名，例如 `:MasonInstall vue-language-server`；LSP 由 `vim.lsp.enable` 启用。`:ConformInfo` 查看格式化工具。
-
-系统工具使用 `scoop update` 或 `brew upgrade` 维护，配置不下载或托管 Neovim、Node、编译器和各平台编译产物。
-
-### 特殊依赖与可选功能
-
-- Vue 使用配套版本的 vtsls、Vue language server 和 TypeScript SDK；Mason 安装时补齐服务器目录中的 SDK，vtsls 固定使用这份 SDK，以保持路径补全行为一致。保留的 Mason 编译器适配只补齐这个 SDK，工具版本通过 Mason 原生安装参数指定。
-- 格式化使用 Conform 调用 prettierd、StyLua，Rust 使用语言服务器；沿用项目配置、保存格式化、错误通知及失败时保留原文。已移除 EFM 自编译补丁，基础安装不需要 Go。
-- Rust 项目需要自己的 Rust 工具链；使用 Rustup 时运行 `rustup component add rust-analyzer rustfmt`，项目的工具链选择由 Rustup 管理。Windows 的 MSVC 工具链还需要 C++ Build Tools 和 Windows SDK，见 [Rustup 要求](https://rust-lang.github.io/rustup/installation/windows-msvc.html)；链接器环境不完整时从 Visual Studio 开发者终端启动 Neovim。
-- 图标需要终端使用 Nerd Font。Neovide 默认使用 FiraCode Nerd Font；Neovide、LazyGit 和 opencode CLI 按用途通过系统包管理器安装。
-- VS Code 使用 vscode-neovim 扩展。先在独立 Neovim 中通过 Lazy 完成安装，再配置扩展使用系统 Neovim；补全、格式化及界面由 VS Code 提供。
-- Windows 暂停 Lua 磁盘缓存，避免缓存编码完整路径后超过 Windows 路径长度限制；macOS 保留默认缓存。
-- 手动安装模式会暂停未安装插件的延迟事件，安装完成后恢复，保证首次打开 Lazy 管理界面时不会被缺失插件的事件阻断。
-
-直接运行 PATH 中的 `nvim` 或 `neovide`。配置遵循 Neovim 的标准目录；使用其他配置命名时按照 `NVIM_APPNAME` 选择对应目录。
-
-维护者可在配置目录运行 `nvim --headless -i NONE -c "Lazy! install" -c "Lazy! build mason.nvim nvim-treesitter" -c "lua dofile('scripts/verification/installation.lua')"` 显式安装并验证工具、解析器和 Lua 语法。编辑功能回归位于 `scripts/verification`。
+回归测试与维护脚本见[验证说明](scripts/verification/README.md)。
 
 ## Leader 组合键
 
@@ -125,6 +85,8 @@ Install／Sync 不保证重建已经安装的插件；补装或重试请执行�
 | 代码操作 | `j/k` 选择，`Enter/Tab` 执行，`q/Esc` 关闭 |
 
 HTML/Vue 的代码操作包含删除标签、移除外层标签、转换空标签和添加外层标签。
+
+![Glance 引用导航](docs/images/nvim-glance.png)
 
 ## 编辑与移动
 
@@ -233,9 +195,9 @@ Vue 模板中，`al/ad` 选择整个带 `v-for` 或 `v-if/v-else-if/v-else` 的�
 | `d d` | 查看当前文件或提交差异 |
 | `?` | 操作菜单 |
 
-![差异视图](docs/images/nvim-fulate-codediff.png)
+![差异视图](docs/images/nvim-codediff.png)
 
-![Git 状态面板](docs/images/nvim-fulate-neogit.png)
+![Git 状态面板](docs/images/nvim-neogit.png)
 
 ## 补全与调试
 

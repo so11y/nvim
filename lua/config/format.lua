@@ -56,4 +56,16 @@ function M.format(bufnr)
     end)
 end
 
+function M.setup(opts)
+    require('conform').setup(opts)
+    vim.api.nvim_create_autocmd('BufWritePre', {
+        group = vim.api.nvim_create_augroup('config.format', { clear = true }),
+        callback = function(ev)
+            if vim.bo[ev.buf].buftype == '' then
+                M.format(ev.buf)
+            end
+        end,
+    })
+end
+
 return M
