@@ -5,8 +5,11 @@ for _, name in ipairs({
     'mason.nvim',
     'rustaceanvim',
     'blink.cmp',
+    'blink.indent',
     'nvim-dap',
     'snacks.nvim',
+    'glance.nvim',
+    'neoscroll.nvim',
     'neogit',
     'codediff.nvim',
     'vim-visual-multi',
@@ -39,6 +42,8 @@ end
 assert(vim.fn.maparg('<leader>cr', 'n') == '')
 assert(vim.fn.maparg('<leader>ca', 'n') == '')
 assert(vim.fn.maparg('mcc', 'n') == '')
+assert(vim.fn.maparg('J', 'n') == '<C-D>')
+assert(vim.fn.maparg('K', 'n') == '<C-U>')
 vim.fn.maparg('<Esc>', 'n', false, true).callback()
 vim.wait(300)
 assert(#vim.lsp.get_clients() == 0)

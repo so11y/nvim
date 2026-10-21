@@ -2,6 +2,9 @@ local vue_language_server_path = vim.fn.stdpath('data')
     .. '/mason/packages/vue-language-server'
 
 return {
+    capabilities = {
+        textDocument = { codeAction = { disabledSupport = false } },
+    },
     filetypes = {
         'javascript',
         'javascriptreact',

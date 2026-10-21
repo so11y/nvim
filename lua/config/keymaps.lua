@@ -20,6 +20,7 @@ end
 -- 1. 禁用/覆盖原生 Vim 键位
 -- =======================================================
 -- 字母映射使用 x（可视模式），保留选择模式直接输入文字的行为。
+vim.keymap.del('x', 'gra')
 -- 禁用撤销、删行、重做 (完全依赖 Alt 组合键)
 map({ 'n', 'x' }, 'u', '<nop>') -- 禁用 u
 map({ 'n', 'x' }, 'dd', '<nop>') -- 禁用 dd
@@ -58,14 +59,6 @@ map({ 'n', 'x' }, 'G', 'gg', {
 })
 map({ 'n', 'x' }, 'gg', 'G', {
     desc = '跳到文件结尾',
-})
-
--- 滚动 (替代 Ctrl+d/u)
-map('n', 'J', '<C-d>', {
-    desc = '向下滚动半页',
-})
-map('n', 'K', '<C-u>', {
-    desc = '向上滚动半页',
 })
 
 -- 跳转历史 (光标前进后退)
@@ -210,15 +203,7 @@ map('n', '<leader>ws', ':split<CR>', {
 })
 
 -- 窗口跳转 (Ctrl + hjkl)
-map('n', '<C-h>', function()
-    local finder = package.loaded['lspsaga.finder']
-    return finder
-            and finder.rwinid == vim.api.nvim_get_current_win()
-            and require('lspsaga').config.finder.keys.shuttle
-        or '<C-w>h'
-end, {
-    expr = true,
-    remap = true,
+map('n', '<C-h>', '<C-w>h', {
     desc = '跳转左窗口',
 })
 map('n', '<C-j>', '<C-w>j', {
@@ -227,15 +212,7 @@ map('n', '<C-j>', '<C-w>j', {
 map('n', '<C-k>', '<C-w>k', {
     desc = '跳转上窗口',
 })
-map('n', '<C-l>', function()
-    local finder = package.loaded['lspsaga.finder']
-    return finder
-            and finder.lwinid == vim.api.nvim_get_current_win()
-            and require('lspsaga').config.finder.keys.shuttle
-        or '<C-w>l'
-end, {
-    expr = true,
-    remap = true,
+map('n', '<C-l>', '<C-w>l', {
     desc = '跳转右窗口',
 })
 

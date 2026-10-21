@@ -117,9 +117,6 @@ return {
                         fg = '#585B70',
                         italic = true,
                     },
-                    SnacksIndent = {
-                        fg = colors.surface0,
-                    },
                     StatusLine = {
                         bg = colors.mantle,
                     },
@@ -144,7 +141,7 @@ return {
                     },
                 }
             end,
-            integrations = {},
+            integrations = { blink_indent = true },
         },
         config = function(_, opts)
             require('catppuccin').setup(opts)
@@ -247,8 +244,8 @@ return {
                     CursorLineNr = { bg = 'bg3' },
                     CursorLineSign = { link = 'CursorLine' },
                     CursorLineFold = { link = 'CursorLine' },
-                    SnacksIndent = { fg = '#272c32' },
-                    SnacksIndentScope = { fg = '#41464c' },
+                    BlinkIndent = { fg = '#272c32' },
+                    BlinkIndentScope = { fg = '#41464c' },
                 },
             },
         },

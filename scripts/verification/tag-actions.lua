@@ -189,7 +189,7 @@ assert(contents(html_buf):find('你好😀', 1, true))
 
 local pos = position(2, '<span>')
 vim.api.nvim_win_set_cursor(0, { pos.line + 1, pos.character })
-require('config.code_action').open()
+vim.cmd.Lspsaga('code_action')
 local saga = require('lspsaga.codeaction')
 assert(
     vim.wait(5000, function()

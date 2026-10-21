@@ -39,7 +39,7 @@ if vim.g.neovide then
     vim.g.neovide_opacity = 1
     vim.g.neovide_normal_opacity = 1
     vim.g.neovide_window_blurred = false
-    vim.g.neovide_scroll_animation_length = 0.16
+    vim.g.neovide_scroll_animation_length = 0
     vim.g.neovide_position_animation_length = 0.1
 end
 

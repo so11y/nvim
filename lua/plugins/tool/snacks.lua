@@ -72,21 +72,7 @@ return {
                     open = true, -- 显示展开图标
                 },
             },
-            indent = {
-                enabled = true,
-                animate = {
-                    enabled = false,
-                    easing = 'outQuad',
-                    duration = { step = 8, total = 160 },
-                },
-                scope = {
-                    enabled = true, -- enable highlighting the current scope
-                    underline = false, -- underline the start of the scope
-                },
-                chunk = {
-                    enabled = false,
-                },
-            },
+            indent = { enabled = false },
             input = {
                 enabled = true,
             },
@@ -107,16 +93,7 @@ return {
                 enabled = true,
                 cursor = false,
             },
-            scroll = {
-                enabled = not vim.g.neovide,
-                animate = {
-                    duration = { step = 8, total = 160 },
-                    easing = 'outQuad',
-                },
-                animate_repeat = {
-                    duration = { step = 3, total = 50 },
-                },
-            },
+            scroll = { enabled = false },
             picker = {
                 ui_select = true,
                 focus = 'list',
@@ -327,13 +304,6 @@ return {
                     require('snacks').picker.grep()
                 end,
                 desc = '全局搜索',
-            },
-            {
-                'grt',
-                function()
-                    Snacks.picker.lsp_type_definitions()
-                end,
-                desc = '转到类型定义',
             },
             {
                 '<leader>xf',

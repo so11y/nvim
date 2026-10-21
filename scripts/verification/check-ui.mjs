@@ -93,9 +93,7 @@ return {configured=require('lazy.core.config').plugins['dropbar.nvim']~=nil,
  picker=vim.fn.maparg('<Space>;','n'),toggle=vim.fn.maparg('<Space>wd','n'),errmsg=vim.v.errmsg}`,[]]);
   if(result.configured||result.loaded||result.winbar!==''||result.autocmds||result.picker||result.toggle||result.errmsg)throw new Error('Breadcrumb plugin was not disabled: '+JSON.stringify(result));
  }else if(suite==='navigation-performance'){
-   // Measure input handling without scroll animation rewinding the view.
-   const setup=await rpc('nvim_exec_lua',[`Snacks.scroll.disable()
-vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts')
+   const setup=await rpc('nvim_exec_lua',[`vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts')
 assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=0,name='vtsls'})>0 end,50))
 local lines={}
 for i=1,600 do vim.list_extend(lines,{('export function nav%d() {'):format(i),'  const value = 1;','  return value;','}'}) end
@@ -190,37 +188,10 @@ assert(vim.wait(15000,function()
  local clients=vim.lsp.get_clients({bufnr=0,name='vtsls'})
  return #vim.lsp.get_clients({bufnr=0,name='tag_fix'})==1 and clients[1] and clients[1].initialized
 end,20))
-local client=vim.lsp.get_clients({bufnr=0,name='tag_fix'})[1]
-_G.__tag_ui={original=vim.lsp.buf_request_all,selection=vim.o.selection,startup_errmsg=vim.v.errmsg}
+_G.__tag_ui={startup_errmsg=vim.v.errmsg}
 vim.v.errmsg=''
-vim.lsp.buf_request_all=function(bufnr,method,params,callback)
- _G.__tag_ui.range=params(client).range
- _G.__tag_ui.utf16=params(setmetatable({offset_encoding='utf-16'},{__index=client})).range
-end
-local line=vim.api.nvim_buf_get_lines(0,5,6,false)[1]
-local first=assert(line:find('你',1,true))-1
-local last=assert(line:find('😀',1,true))-1
-vim.api.nvim_win_set_cursor(0,{6,first})
-return {first=first,last=last,first16=vim.str_utfindex(line,'utf-16',first,false),last16=vim.str_utfindex(line,'utf-16',last,false),startup_errmsg=_G.__tag_ui.startup_errmsg,mapped=vim.fn.maparg('gra','x')~=''}`,[]]);
-  await rpc('nvim_input',['v']);await delay(50);
-  await rpc('nvim_win_set_cursor',[0,[6,setup.last]]);
-  await rpc('nvim_input',['gra']);await delay(100);
-  const visual=await rpc('nvim_exec_lua',["return {range=_G.__tag_ui.range,utf16=_G.__tag_ui.utf16,selection_restored=vim.o.selection==_G.__tag_ui.selection,errmsg=vim.v.errmsg}",[]]);
-  await rpc('nvim_input',['<Esc>']);await delay(50);
-  if(!setup.mapped||visual.range.start.line!==5||visual.range.start.character!==setup.first||visual.range.end.character!==setup.last+4||visual.utf16.start.character!==setup.first16||visual.utf16.end.character!==setup.last16+2||!visual.selection_restored||visual.errmsg)throw new Error('Saga Unicode visual range failed: '+JSON.stringify({setup,visual}));
-  const selection=await rpc('nvim_exec_lua',[`local first=vim.api.nvim_buf_get_lines(0,9,10,false)[1]
-local last=vim.api.nvim_buf_get_lines(0,10,11,false)[1]
-local start=assert(first:find('<span>A',1,true))-1
-local finish=assert(last:find('</span>',1,true))+#'</span>'-2
-vim.api.nvim_win_set_cursor(0,{10,start})
-return {start=start,finish=finish}`,[]]);
-  await rpc('nvim_input',['v']);await delay(50);
-  await rpc('nvim_win_set_cursor',[0,[11,selection.finish]]);
-  await rpc('nvim_input',['gra']);await delay(100);
-  const multiline=await rpc('nvim_exec_lua',[`vim.lsp.buf_request_all=_G.__tag_ui.original
-return {range=_G.__tag_ui.range,errmsg=vim.v.errmsg}`,[]]);
-  await rpc('nvim_input',['<Esc>']);await delay(50);
-  if(multiline.range.start.line!==9||multiline.range.start.character!==selection.start||multiline.range.end.line!==10||multiline.range.end.character!==selection.finish+1||multiline.errmsg)throw new Error('Saga multiline visual range failed: '+JSON.stringify({selection,multiline}));
+return {startup_errmsg=_G.__tag_ui.startup_errmsg,mapped=vim.fn.maparg('gra','n'),visual_mapped=vim.fn.maparg('gra','x')~=''}`,[]]);
+  if(setup.mapped!=='<Cmd>Lspsaga code_action<CR>'||setup.visual_mapped)throw new Error('Saga default action mapping failed: '+JSON.stringify(setup));
   const wrapMenu=await rpc('nvim_exec_lua',[`local state=_G.__tag_ui
 state.bufnr=vim.api.nvim_get_current_buf()
 state.before=table.concat(vim.api.nvim_buf_get_lines(state.bufnr,0,-1,false),'\\n')
@@ -229,7 +200,7 @@ state.prompts=0
 vim.ui.input=function(_,callback) state.prompts=state.prompts+1; callback('div.wrapper') end
 local line=vim.api.nvim_buf_get_lines(0,5,6,false)[1]
 vim.api.nvim_win_set_cursor(0,{6,assert(line:find('visible',1,true))-1})
-require('config.code_action').open()
+vim.cmd.Lspsaga('code_action')
 local saga=require('lspsaga.codeaction')
 assert(vim.wait(15000,function()
  return saga.action_winid and vim.api.nvim_win_is_valid(saga.action_winid)
@@ -271,7 +242,7 @@ local result={height=config.height,width=config.width,row=pos[1],col=pos[2],coun
 saga:close_action_window()
 return result`,[]]);
   if(edge.row<1||edge.col<1||edge.row+edge.height>16||edge.col+edge.width>50||edge.height<1||edge.height>=10||edge.count!==10||edge.errmsg)throw new Error('Saga edge menu failed: '+JSON.stringify(edge));
-  result={setup,visual,selection,multiline,wrapMenu,wrapped,edge};
+  result={setup,wrapMenu,wrapped,edge};
  }else if(suite==='action-ui'){
   const setup=await rpc('nvim_exec_lua',[`vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.html')
 assert(vim.wait(5000,function() return #vim.lsp.get_clients({bufnr=0,name='tag_fix'})==1 end,20))
@@ -286,7 +257,6 @@ local actions={}
 for i=1,12 do actions[i]={title=('Action %02d'):format(i),edit=edit,kind='quickfix'} end
 actions[12].title='Action with a command'
 actions[12].command={title='After edit',command='verify.saga.action'}
-actions[#actions+1]={title='Disabled action',disabled={reason='Unavailable'},edit=edit}
 _G.__action_ui={bufnr=bufnr,client=client,original=vim.lsp.buf_request_all,actions=actions,before=line,commands=0}
 client.commands['verify.saga.action']=function()
  assert(vim.api.nvim_buf_get_lines(bufnr,0,-1,false)[1]:find('const applied =',1,true),'Command ran before its edit')
@@ -294,9 +264,9 @@ client.commands['verify.saga.action']=function()
 end
 vim.lsp.buf_request_all=function(buf,method,params,callback)
  local state=_G.__action_ui
- callback({[state.client.id]={result=state.actions,context={bufnr=buf,client_id=state.client.id,method=method,params=params(state.client)}}})
+ callback({[state.client.id]={result=state.actions}})
 end
-require('config.code_action').open()
+vim.cmd.Lspsaga('code_action')
 return {before=line}`,[]]);
   await delay(150);
   const snapshot=()=>rpc('nvim_exec_lua',[`local saga=require('lspsaga.codeaction')
@@ -309,7 +279,7 @@ for _,win in ipairs(vim.api.nvim_list_wins()) do
 end
 return {config=vim.api.nvim_win_get_config(saga.action_winid),lines=vim.api.nvim_buf_get_lines(saga.action_bufnr,0,-1,false),height=vim.api.nvim_win_get_height(saga.action_winid),preview=preview,unchanged=vim.api.nvim_buf_get_lines(_G.__action_ui.bufnr,0,-1,false)[1]==_G.__action_ui.before,errmsg=vim.v.errmsg}`,[]]);
   const shown=await snapshot();
-  if(shown.lines.length!==12||shown.lines.some(line=>line.includes('Disabled action'))||!shown.unchanged||shown.errmsg)throw new Error('Saga action list failed: '+JSON.stringify(shown));
+  if(shown.lines.length!==12||!shown.unchanged||shown.errmsg)throw new Error('Saga action list failed: '+JSON.stringify(shown));
   await rpc('nvim_input',['j']);await delay(150);
   const previewed=await snapshot();
   if(shown.preview.length||previewed.preview.length||!previewed.unchanged||previewed.errmsg)throw new Error('Saga navigation opened a preview or changed source: '+JSON.stringify({shown,previewed}));
@@ -317,7 +287,7 @@ return {config=vim.api.nvim_win_get_config(saga.action_winid),lines=vim.api.nvim
   const cancelled=await rpc('nvim_exec_lua',[`local saga=require('lspsaga.codeaction')
 return {unchanged=vim.api.nvim_buf_get_lines(_G.__action_ui.bufnr,0,-1,false)[1]==_G.__action_ui.before,closed=not (saga.action_winid and vim.api.nvim_win_is_valid(saga.action_winid))}`,[]]);
   if(!cancelled.unchanged||!cancelled.closed)throw new Error('Saga cancellation failed: '+JSON.stringify(cancelled));
-  await rpc('nvim_exec_lua',["require('config.code_action').open()",[]]);await delay(100);
+  await rpc('nvim_exec_lua',["vim.cmd.Lspsaga('code_action')",[]]);await delay(100);
   await rpc('nvim_input',['j'.repeat(11)]);await delay(100);
   await rpc('nvim_input',['<Tab>']);await delay(150);
   const applied=await rpc('nvim_exec_lua',[`local state=_G.__action_ui
@@ -325,35 +295,17 @@ local line=vim.api.nvim_buf_get_lines(state.bufnr,0,-1,false)[1]
 vim.cmd.undo()
 return {line=line,commands=state.commands,errmsg=vim.v.errmsg}`,[]]);
   if(!applied.line.includes('const applied =')||!applied.line.includes('😀')||applied.commands!==1||applied.errmsg)throw new Error('Saga Tab, Unicode edit or command failed: '+JSON.stringify(applied));
-  await rpc('nvim_exec_lua',["require('config.code_action').open()",[]]);await delay(100);
+  await rpc('nvim_exec_lua',["vim.cmd.Lspsaga('code_action')",[]]);await delay(100);
   await rpc('nvim_input',['2']);await delay(150);
   const numbered=await rpc('nvim_exec_lua',[`local state=_G.__action_ui
 local line=vim.api.nvim_buf_get_lines(state.bufnr,0,-1,false)[1]
-state.actions={{title='Disabled only',disabled={reason='Unavailable'}}}
-require('config.code_action').open()
+state.actions={}
+vim.cmd.Lspsaga('code_action')
 vim.lsp.buf_request_all=state.original
 local saga=require('lspsaga.codeaction')
 return {line=line,no_empty_menu=not (saga.action_winid and vim.api.nvim_win_is_valid(saga.action_winid)),errmsg=vim.v.errmsg}`,[]]);
-  if(!numbered.line.includes('const applied =')||!numbered.no_empty_menu||numbered.errmsg)throw new Error('Saga number shortcut or disabled filtering failed: '+JSON.stringify(numbered));
-  await rpc('nvim_exec_lua',[`vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/App.vue')
-local client
-assert(vim.wait(15000,function()
- client=vim.lsp.get_clients({bufnr=0,name='vtsls'})[1]
- return client and client.initialized
-end,50))
-local original=vim.lsp.buf_request_all
-vim.lsp.buf_request_all=function(buf,method,params,callback)
- callback({[client.id]={result={{title='Move to new file',kind='refactor.move.newFile'},{title='Usable Vue action',kind='quickfix',edit={changes={}}}},context={bufnr=buf,client_id=client.id,method=method,params=params(client)}}})
-end
-require('config.code_action').open()
-vim.lsp.buf_request_all=original`,[]]);
-  await delay(100);
-  const filtered=await rpc('nvim_exec_lua',[`local saga=require('lspsaga.codeaction')
-local result={lines=vim.api.nvim_buf_get_lines(saga.action_bufnr,0,-1,false),errmsg=vim.v.errmsg}
-saga:close_action_window()
-return result`,[]]);
-  if(filtered.lines.length!==1||!filtered.lines[0].includes('Usable Vue action')||filtered.lines.some(line=>line.includes('Move to new file'))||filtered.errmsg)throw new Error('Unsupported Vue action was not filtered: '+JSON.stringify(filtered));
-  result={setup,shown,previewed,cancelled,applied,numbered,filtered};
+  if(!numbered.line.includes('const applied =')||!numbered.no_empty_menu||numbered.errmsg)throw new Error('Saga number shortcut or empty response failed: '+JSON.stringify(numbered));
+  result={setup,shown,previewed,cancelled,applied,numbered};
  }else if(suite==='fold-colors'){
    result=await rpc('nvim_exec_lua',[`vim.cmd.colorscheme('catppuccin-mocha')
  local cases={

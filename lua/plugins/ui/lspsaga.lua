@@ -3,15 +3,11 @@ return {
     cmd = 'Lspsaga',
     event = 'LspAttach',
     keys = {
-        { 'gd', '<cmd>Lspsaga finder def<CR>', desc = '转到定义' },
-        { 'grr', '<cmd>Lspsaga finder ref<CR>', desc = '转到引用' },
-        { 'gri', '<cmd>Lspsaga finder imp<CR>', desc = '转到实现' },
         { '<leader>co', '<cmd>Lspsaga outline<CR>', desc = '代码大纲' },
         { 'grn', '<cmd>Lspsaga rename<CR>', desc = '重命名' },
         {
             'gra',
-            require('config.code_action').open,
-            mode = { 'n', 'x' },
+            '<cmd>Lspsaga code_action<CR>',
             desc = '代码操作',
         },
     },
@@ -22,9 +18,6 @@ return {
         },
         lightbulb = { enable = false },
         symbol_in_winbar = { enable = false },
-        finder = {
-            keys = { toggle_or_open = '<CR>', quit = { 'q', '<Esc>' } },
-        },
         rename = { keys = { quit = { '<Esc>', '<C-c>' } } },
         outline = {
             layout = 'float',
@@ -45,39 +38,16 @@ return {
                 'SagaTitle',
                 'RenameNormal',
                 'SagaFinderFname',
-                'SagaText',
                 'FloatTitle',
             }) do
                 vim.api.nvim_set_hl(0, group, { link = 'NormalFloat' })
             end
-            vim.api.nvim_set_hl(
-                0,
-                'SagaInCurrent',
-                { link = 'SnacksIndentScope' }
-            )
         end
         highlight_float()
         vim.api.nvim_create_autocmd('ColorScheme', {
             group = require('lspsaga').saga_augroup,
             callback = highlight_float,
         })
-        local finder_box = require('lspsaga.finder.box')
-        local indent_current = finder_box.indent_current
-        finder_box.indent_current = function(inlevel)
-            indent_current(inlevel)
-            -- Keep inactive branches visible while preserving the active branch.
-            for row = 0, vim.api.nvim_buf_line_count(0) - 1 do
-                for col = 0, 4, 2 do
-                    local group = 'SagaIndent' .. row .. col
-                    if
-                        vim.api.nvim_get_hl(0, { name = group, link = true }).link
-                        ~= 'SagaInCurrent'
-                    then
-                        vim.api.nvim_set_hl(0, group, { link = 'SnacksIndent' })
-                    end
-                end
-            end
-        end
         -- This version has no option to disable code action previews.
         require('lspsaga.codeaction.preview').action_preview = function() end
         local symbols = require('lspsaga.symbol.head')

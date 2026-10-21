@@ -9,7 +9,10 @@ return {
     'stevearc/conform.nvim',
     'mrcjkb/rustaceanvim',
     -- ui
+    'saghen/blink.indent',
     'nvimdev/lspsaga.nvim',
+    'DNLHC/glance.nvim',
+    'karb94/neoscroll.nvim',
     'akinsho/bufferline.nvim',
     'nvim-neo-tree/neo-tree.nvim',
     'folke/noice.nvim',

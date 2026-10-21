@@ -3,6 +3,10 @@
     "branch": "main",
     "commit": "78336bc89ee5365633bcf754d93df01678b5c08f"
   },
+  "blink.indent": {
+    "branch": "main",
+    "commit": "2e9c9768affeaf3a48b2dc329eb59763012f79f6"
+  },
   "buffer-reopen.nvim": {
     "branch": "main",
     "commit": "e08dfc4bfea21bbb771f24e1dd032b437a0f8401"
@@ -47,6 +51,10 @@
     "branch": "main",
     "commit": "c106c9472154d6b2c74b74565616b877ae8ed31d"
   },
+  "glance.nvim": {
+    "branch": "master",
+    "commit": "5a8eab1c1c48bfa19a33b556328a3c553138366e"
+  },
   "gitsigns.nvim": {
     "branch": "main",
     "commit": "070a5d7b985546cc57e1fc61e5bc507fecac6045"
@@ -86,6 +94,10 @@
   "neogit": {
     "branch": "master",
     "commit": "70708be9664b7fcdd010eb07bdc3ebc9311c2027"
+  },
+  "neoscroll.nvim": {
+    "branch": "master",
+    "commit": "c8d29979cb0cb3a2437a8e0ae683fd82f340d3b8"
   },
   "noice.nvim": {
     "branch": "main",
