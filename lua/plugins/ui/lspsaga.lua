@@ -33,14 +33,20 @@ return {
     config = function(_, opts)
         require('lspsaga').setup(opts)
         local function highlight_float()
-            for _, group in ipairs({
-                'SagaActionTitle',
-                'SagaTitle',
-                'RenameNormal',
-                'SagaFinderFname',
-                'FloatTitle',
+            local title =
+                vim.api.nvim_get_hl(0, { name = 'FloatTitle', link = false })
+            title.bg = vim.api.nvim_get_hl(
+                0,
+                { name = 'NormalFloat', link = false }
+            ).bg
+            vim.api.nvim_set_hl(0, 'SagaActionTitle', title)
+            for group, target in pairs({
+                SagaNormal = 'NormalFloat',
+                SagaTitle = 'FloatTitle',
+                RenameNormal = 'NormalFloat',
+                SagaFinderFname = 'NormalFloat',
             }) do
-                vim.api.nvim_set_hl(0, group, { link = 'NormalFloat' })
+                vim.api.nvim_set_hl(0, group, { link = target })
             end
         end
         highlight_float()

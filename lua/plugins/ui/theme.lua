@@ -81,7 +81,7 @@ return {
                         link = 'Visual',
                     },
                     NeoTreeIndentMarker = {
-                        fg = colors.surface0,
+                        link = 'BlinkIndent',
                     },
                     NeoTreeWinSeparator = {
                         fg = colors.mantle,
@@ -104,18 +104,21 @@ return {
                     },
                     -- 4. 其它同步
                     GitSignsTopdelete = {
-                        fg = '#AC7A7D',
-                        bg = 'NONE',
+                        link = 'GitSignsDelete',
                     },
                     GitSignsChangedelete = {
-                        fg = '#B5A480',
-                        bg = 'NONE',
+                        link = 'GitSignsChange',
                     },
                     -- 5. 未追踪 (Untracked):
                     GitSignsUntracked = {
                         fg = '#7F849C',
                         bg = 'NONE',
                     },
+                    NeoTreeGitAdded = { link = 'GitSignsAdd' },
+                    NeoTreeGitModified = { link = 'GitSignsChange' },
+                    NeoTreeGitDeleted = { link = 'GitSignsDelete' },
+                    NeoTreeGitRenamed = { link = 'GitSignsChange' },
+                    NeoTreeGitUntracked = { link = 'GitSignsUntracked' },
                     -- 当前行 Git Blame
                     GitSignsCurrentLineBlame = {
                         fg = '#585B70',
@@ -181,7 +184,19 @@ return {
                     BlinkCmpDocBorder = { link = 'FloatBorder' },
                     BlinkCmpKind = { fg = 'fg1' },
                     BlinkCmpLabelDescription = { fg = 'fg2' },
+                    BlinkCmpLabelDetail = { link = 'BlinkCmpLabelDescription' },
+                    BlinkCmpSource = { link = 'BlinkCmpLabelDescription' },
+                    BlinkCmpLabelDeprecated = {
+                        fg = 'fg2',
+                        style = 'strikethrough',
+                    },
+                    NeoTreeIndentMarker = { link = 'BlinkIndent' },
                     NeoTreeWinSeparator = { fg = 'bg0', bg = 'bg0' },
+                    NeoTreeGitAdded = { link = 'GitSignsAdd' },
+                    NeoTreeGitModified = { link = 'GitSignsChange' },
+                    NeoTreeGitDeleted = { link = 'GitSignsDelete' },
+                    NeoTreeGitRenamed = { link = 'GitSignsChange' },
+                    NeoTreeGitUntracked = { link = 'GitSignsUntracked' },
                 },
                 github_dark_default = {
                     NoiceSearchCount = { fg = '#e3b341' },
