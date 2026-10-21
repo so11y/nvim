@@ -34,18 +34,19 @@ return {
                     ['O'] = function(state)
                         local node = state.tree:get_node()
                         local path = node:get_id()
-                        if node.type == 'directory' then
-                            os.execute(
-                                string.format([[start explorer "%s"]], path)
-                            )
+                        local command
+                        if vim.fn.has('win32') == 1 then
+                            command = node.type == 'directory'
+                                    and { 'explorer.exe', path }
+                                or { 'explorer.exe', '/select,', path }
+                        elseif vim.fn.has('mac') == 1 then
+                            command = node.type == 'directory'
+                                    and { 'open', path }
+                                or { 'open', '-R', path }
                         else
-                            os.execute(
-                                string.format(
-                                    [[start explorer /select,"%s"]],
-                                    path
-                                )
-                            )
+                            return
                         end
+                        vim.fn.jobstart(command, { detach = true })
                     end,
                 },
             },

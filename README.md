@@ -8,6 +8,7 @@
 | --- | --- |
 | 通用 | Neovim 0.12+、Git、Node.js/npm（可复用已有兼容版本）、ripgrep、C 编译器、tar、curl、解压工具，均需加入 PATH |
 | Windows | 可用 Scoop：`scoop install neovim git nodejs-lts ripgrep gcc` |
+| Windows 终端 | PowerShell + [inshellisense](https://github.com/microsoft/inshellisense)：`npm install -g @microsoft/inshellisense` |
 | macOS | `brew install neovim git node ripgrep`；编译器用 Xcode Command Line Tools（`xcode-select --install`） |
 | 可选 | 7-Zip（解压）、Nerd Font（图标）、Neovide、LazyGit、opencode CLI；VS Code 需 vscode-neovim 扩展 |
 | Rust | 另装 Rust 工具链、rust-analyzer、rustfmt；Windows/MSVC 还需 C++ Build Tools 和 Windows SDK |
