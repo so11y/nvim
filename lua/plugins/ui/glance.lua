@@ -19,6 +19,15 @@ return {
             border = { enable = true, top_char = '━', bottom_char = '▁' },
             list = { position = 'right', width = 0.4 },
             folds = { folded = false },
+            hooks = {
+                before_open = function(results, open, jump, method)
+                    if method == 'definitions' and #results == 1 then
+                        jump(results[1])
+                    else
+                        open(results)
+                    end
+                end,
+            },
             mappings = {
                 list = { ['<C-h>'] = actions.enter_win('preview') },
                 preview = {
@@ -40,9 +49,19 @@ return {
             end
             local title = {}
             for _, section in ipairs({ 'filename', 'filepath', 'title' }) do
-                if values[section] then
+                local value = values[section]
+                if value then
+                    if section == 'filepath' then
+                        local path = vim.fs.normalize(value)
+                        local root = vim.fs.root(
+                            path,
+                            { { 'package.json', '.git' } }
+                        ) or vim.fn.getcwd()
+                        value = vim.fs.relpath(root, path)
+                            or vim.fn.fnamemodify(path, ':~')
+                    end
                     title[#title + 1] = {
-                        ' ' .. tostring(values[section]) .. ' ',
+                        ' ' .. tostring(value) .. ' ',
                         self.sections[section],
                     }
                 end
