@@ -45,7 +45,7 @@ return {
                 for name, highlight in pairs(highlights) do
                     highlight.bg = {
                         attribute = 'bg',
-                        highlight = name:match('_selected$') and 'CursorLine'
+                        highlight = name:match('_selected$') and 'Normal'
                             or 'NeoTreeNormal',
                     }
                     highlight.bold = false
