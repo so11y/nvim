@@ -174,8 +174,6 @@ return {
             groups = {
                 all = {
                     NoiceSearchCount = { link = 'WarningMsg' },
-                    ['@lsp.type.class.vue'] = { link = '@property' },
-                    ['@lsp.type.method.vue'] = { link = '@property' },
                     LspInlayHint = { bg = 'NONE' },
                     BlinkCmpMenu = { link = 'NormalFloat' },
                     BlinkCmpMenuBorder = { link = 'FloatBorder' },
@@ -199,43 +197,6 @@ return {
                 },
                 github_dark_default = {
                     NoiceSearchCount = { fg = '#e3b341' },
-                    ['@variable.parameter'] = { fg = '#ffa657' },
-                    ['@vscode.member'] = { fg = '#e6edf3' },
-                    ['@tag.component.vue'] = { fg = '#ffa657' },
-                    ['@type.builtin.typescript'] = { fg = '#79c0ff' },
-                    ['@type.builtin.javascript'] = {
-                        link = '@type.builtin.typescript',
-                    },
-                    ['@type.builtin.tsx'] = {
-                        link = '@type.builtin.typescript',
-                    },
-                    ['@operator.typescript'] = { fg = '#ff7b72' },
-                    ['@operator.javascript'] = {
-                        link = '@operator.typescript',
-                    },
-                    ['@operator.tsx'] = { link = '@operator.typescript' },
-                    ['@operator.vue'] = { fg = '#e6edf3' },
-                    ['@lsp.type.class'] = { link = '@type' },
-                    ['@lsp.type.interface'] = { link = '@type' },
-                    ['@lsp.type.class.vue'] = { link = '@type' },
-                    ['@lsp.type.method.vue'] = { link = '@function.method' },
-                    ['@lsp.type.property.vue'] = {
-                        link = '@variable.member',
-                    },
-                    ['@lsp.typemod.variable.readonly'] = { link = '@variable' },
-                    ['@lsp.typemod.property.readonly'] = { link = '@constant' },
-                    ['@lsp.typemod.enumMember.readonly'] = {
-                        link = '@constant',
-                    },
-                    ['@lsp.typemod.class.defaultLibrary'] = {
-                        fg = '#79c0ff',
-                    },
-                    RainbowDelimiterBlue = { fg = '#79c0ff' },
-                    RainbowDelimiterGreen = { fg = '#56d364' },
-                    RainbowDelimiterYellow = { fg = '#e3b341' },
-                    RainbowDelimiterOrange = { fg = '#ffa198' },
-                    RainbowDelimiterRed = { fg = '#ff9bce' },
-                    RainbowDelimiterViolet = { fg = '#d2a8ff' },
                     CursorLineNr = { bg = 'bg3' },
                     CursorLineSign = { link = 'CursorLine' },
                     CursorLineFold = { link = 'CursorLine' },
