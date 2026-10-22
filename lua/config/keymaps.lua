@@ -77,6 +77,20 @@ map('n', '<CR>', 'a', {
     desc = '在光标后插入',
 })
 
+-- 普通模式也可继续跳转片段占位符。
+map('n', '<Tab>', function()
+    if vim.snippet.active({ direction = 1 }) then
+        return '<Cmd>lua vim.snippet.jump(1)<CR>'
+    end
+    return '<Tab>'
+end, { expr = true, silent = true, desc = '下一个片段占位符' })
+map('n', '<S-Tab>', function()
+    if vim.snippet.active({ direction = -1 }) then
+        return '<Cmd>lua vim.snippet.jump(-1)<CR>'
+    end
+    return '<S-Tab>'
+end, { expr = true, silent = true, desc = '上一个片段占位符' })
+
 -- 取消搜索高亮
 map('n', '<Esc>', function()
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do

@@ -4,6 +4,7 @@ local M = {
         'typescript',
         'tsx',
         'javascript',
+        'jsdoc',
         'html',
         'css',
         'scss',
