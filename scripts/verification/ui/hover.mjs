@@ -77,6 +77,52 @@ return {rows=rows,errmsg=vim.v.errmsg}`,
       'Hover folding, Markdown conceal or Esc behavior failed: ' +
         JSON.stringify({ foldState, phases, rendered }),
     );
-  const result = { foldState, phases, rendered };
+  const source = await rpc('nvim_exec_lua', [
+    `vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/fold.ts')
+assert(vim.wait(10000,function() return vim.fn.foldlevel(1)>0 end,25),'Fold provider did not initialize')
+require('ufo').closeAllFolds()
+vim.api.nvim_win_set_cursor(0,{1,0})
+assert(vim.fn.foldclosed(1)==1,'Fixture did not fold')
+return vim.api.nvim_get_current_win()`,
+    [],
+  ]);
+  const previewState = () =>
+    rpc('nvim_exec_lua', [
+      `local source=...
+local wins={}
+for _,win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+ local buf=vim.api.nvim_win_get_buf(win)
+ if vim.api.nvim_win_get_config(win).relative~='' and vim.api.nvim_buf_get_lines(buf,0,-1,false)[1]=='export function sum(a: number, b: number) {' then
+  wins[#wins+1]=win
+ end
+end
+return {wins=wins,current=vim.api.nvim_get_current_win(),source=source,escape_buffer=vim.fn.maparg('<Esc>','n',false,true).buffer,errmsg=vim.v.errmsg}`,
+      [source],
+    ]);
+  const previews = [];
+  await rpc('nvim_input', ['<Space>ch']);
+  await delay(100);
+  previews.push(await previewState());
+  await rpc('nvim_input', ['<Space>ch']);
+  await delay(100);
+  previews.push(await previewState());
+  await rpc('nvim_input', ['<Esc>']);
+  await delay(100);
+  previews.push(await previewState());
+  if (
+    previews[0].wins.length !== 1 ||
+    previews[1].wins.length !== 1 ||
+    previews[0].current !== source ||
+    previews[1].current !== source ||
+    previews[2].wins.length ||
+    previews[2].current !== source ||
+    previews[2].escape_buffer !== 0 ||
+    previews.some((p) => p.errmsg)
+  )
+    throw new Error(
+      'Fold preview focus, Esc close or mapping restoration failed: ' +
+        JSON.stringify(previews),
+    );
+  const result = { foldState, phases, rendered, fold_preview: previews };
   return result;
 }

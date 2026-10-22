@@ -7,7 +7,6 @@ vim.opt.relativenumber = true -- 显示相对行号
 vim.wo.cursorline = true -- 高亮当前光标所在的行（方便定位）
 vim.opt.list = true -- 显示不可见字符（如空格、Tab）
 
-vim.g.loaded_matchparen = 1
 vim.o.signcolumn = 'yes:1' -- 左侧“符号栏”始终显示，宽度固定为1。防止 Git 符号或错误提示出现时屏幕抖动。
 vim.wo.wrap = false -- 关闭自动换行（长行会超出屏幕，需水平滚动）
 vim.opt.conceallevel = 0 -- 开启隐藏模式（主要用于 Markdown/JSON）。例如 `**bold**` 会直接显示为加粗的 **bold**，而不显示星号。

@@ -20,6 +20,7 @@ const ui = new Map(
 );
 for (const name of [
   'config-audit',
+  'definitions',
   'editing-regressions',
   'emmet-context',
   'emmet-vue',

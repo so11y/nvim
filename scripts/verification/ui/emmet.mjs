@@ -139,13 +139,14 @@ export async function verifyEmmetUI(rpc) {
 
   const file = join(root, 'indent.txt');
   writeFileSync(file, '\n');
-  await lua(
-    'vim.cmd.edit(...);vim.bo.expandtab=true;vim.bo.softtabstop=4',
+  const indentWidth = await lua(
+    'vim.cmd.edit(...);return vim.fn.shiftwidth()',
     file,
   );
   await input('i<Tab>');
   const indent = await lua(
-    "assert(vim.api.nvim_get_current_line()=='    ');return true",
+    "assert(vim.api.nvim_get_current_line()==string.rep(' ',...),'Tab fallback did not respect indentation width');return true",
+    indentWidth,
   );
   await lua("vim.snippet.expand('first $'..'{1:one} second $'..'{2:two}$0')");
   const first = await lua('return vim.api.nvim_win_get_cursor(0)');
@@ -153,13 +154,41 @@ export async function verifyEmmetUI(rpc) {
   const second = await lua('return vim.api.nvim_win_get_cursor(0)');
   if (JSON.stringify(first) === JSON.stringify(second))
     throw new Error('Tab did not move to the next snippet field');
+  await input('<S-Tab>');
+  await input('sec');
+  await lua(
+    "require('blink.cmp').show({providers={'buffer'}});assert(vim.wait(5000,function() return require('blink.cmp').is_visible() end,20),'Snippet edit did not show completion')",
+  );
   await input('<Esc>');
-  await lua('vim.snippet.stop();vim.bo.modified=false');
+  const escaped = await lua(
+    "assert(vim.fn.mode()=='n','Esc did not leave insert mode');assert(not require('blink.cmp').is_visible(),'Esc did not close completion');assert(vim.snippet.active({direction=1}),'Esc ended the snippet');local line=vim.api.nvim_get_current_line();assert(line:find('first sec second two',1,true),'Snippet edit changed unexpectedly');return {mode=vim.fn.mode(),line=line}",
+  );
+  await input('<Tab>');
+  const normalNext = await lua('return vim.api.nvim_win_get_cursor(0)');
+  if (JSON.stringify(normalNext) !== JSON.stringify(second))
+    throw new Error('Normal-mode Tab missed the next snippet field');
+  await input('<Esc>');
+  await input('<S-Tab>');
+  const normalPrevious = await lua('return vim.api.nvim_win_get_cursor(0)');
+  if (JSON.stringify(normalPrevious) !== JSON.stringify(first))
+    throw new Error('Normal-mode Shift-Tab missed the previous snippet field');
+  await input('<Esc>');
+  await input('<Esc>');
+  const stopped = await lua(
+    "assert(not vim.snippet.active(),'Normal-mode Esc did not end the snippet');vim.bo.modified=false;return true",
+  );
   return {
     root,
     completions: results,
     indent,
-    snippet_navigation: { first, second },
+    snippet_navigation: {
+      first,
+      second,
+      escaped,
+      normalNext,
+      normalPrevious,
+      stopped,
+    },
     errmsg: await lua('return vim.v.errmsg'),
   };
 }
