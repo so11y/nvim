@@ -58,7 +58,6 @@ local function apply_ui_highlights()
     )
     local groups = {
         NoiceSearchCount = { fg = palette.yellow },
-        BufferLineIndicatorSelected = { fg = '#f78166', bg = background },
         CursorLine = { bg = cursorline },
         CursorLineNr = cursorline_nr,
         CursorLineSign = { link = 'CursorLine' },

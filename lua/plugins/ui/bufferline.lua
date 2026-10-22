@@ -10,7 +10,7 @@ return {
         return {
             options = {
                 separator_style = { '', '' },
-                indicator = { icon = '▏', style = 'icon' },
+                indicator = { icon = '▎', style = 'icon' },
                 diagnostics = 'nvim_lsp',
                 modified_icon = '●',
                 close_icon = '',
@@ -45,7 +45,7 @@ return {
                 for name, highlight in pairs(highlights) do
                     highlight.bg = {
                         attribute = 'bg',
-                        highlight = name:match('_selected$') and 'Normal'
+                        highlight = name:match('_selected$') and 'CursorLine'
                             or 'NeoTreeNormal',
                     }
                     highlight.bold = false
