@@ -14,8 +14,10 @@ return {
         },
     },
     opts = function()
+        local format = require('config.format')
         return {
-            formatters_by_ft = require('config.format').formatters,
+            formatters_by_ft = format.formatters,
+            format_on_save = format.format_options,
             notify_on_error = false,
             notify_no_formatters = false,
             default_format_opts = {
@@ -30,8 +32,5 @@ return {
                 },
             },
         }
-    end,
-    config = function(_, opts)
-        require('config.format').setup(opts)
     end,
 }

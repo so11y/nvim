@@ -105,7 +105,7 @@ return {
 
                 vim.keymap.set('n', '<leader>ch', function()
                     if not ufo.peekFoldedLinesUnderCursor() then
-                        vim.lsp.buf.hover()
+                        vim.lsp.buf.hover({ silent = true })
                     end
                 end, {
                     desc = '折叠预览 / 悬停提示',

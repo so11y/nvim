@@ -88,9 +88,7 @@ return {
                     function()
                         local col = vim.api.nvim_win_get_cursor(0)[2]
                         local line = vim.api.nvim_get_current_line()
-                        if
-                            line:sub(col + 1, col + 1):match('[%])}>"\'`]')
-                        then
+                        if line:sub(col + 1, col + 1):match('[%])}>"\'`]') then
                             return vim.api.nvim_replace_termcodes(
                                 '<Right>',
                                 true,

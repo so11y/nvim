@@ -1,15 +1,13 @@
 return {
     {
         'MagicDuck/grug-far.nvim',
-        config = function()
-            require('grug-far').setup({
-                keymaps = {
-                    close = {
-                        n = '<A-w>',
-                    },
+        opts = {
+            keymaps = {
+                close = {
+                    n = '<A-w>',
                 },
-            })
-        end,
+            },
+        },
 
         keys = {
             {

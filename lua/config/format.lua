@@ -36,7 +36,7 @@ function M.info(bufnr)
     return conform.get_formatter_info(formatters[1], bufnr)
 end
 
-function M.format(bufnr)
+function M.format_options(bufnr)
     bufnr = bufnr or vim.api.nvim_get_current_buf()
     local ft = vim.bo[bufnr].filetype
     local formatters = M.formatters[ft]
@@ -44,7 +44,7 @@ function M.format(bufnr)
         return
     end
     local name = ft == 'rust' and 'rustfmt' or formatters[1]
-    require('conform').format({
+    return {
         bufnr = bufnr,
     }, function(err)
         if err then
@@ -53,19 +53,14 @@ function M.format(bufnr)
                 vim.log.levels.WARN
             )
         end
-    end)
+    end
 end
 
-function M.setup(opts)
-    require('conform').setup(opts)
-    vim.api.nvim_create_autocmd('BufWritePre', {
-        group = vim.api.nvim_create_augroup('config.format', { clear = true }),
-        callback = function(ev)
-            if vim.bo[ev.buf].buftype == '' then
-                M.format(ev.buf)
-            end
-        end,
-    })
+function M.format(bufnr)
+    local opts, callback = M.format_options(bufnr)
+    if opts then
+        require('conform').format(opts, callback)
+    end
 end
 
 return M

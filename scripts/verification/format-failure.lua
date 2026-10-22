@@ -26,6 +26,30 @@ assert(
     'Failed formatter changed the buffer'
 )
 
+local notify = vim.notify
+local save_failure
+vim.notify = function(message, level, ...)
+    if tostring(message):find('Formatting (prettierd)', 1, true) then
+        save_failure = { message = message, level = level }
+    end
+    return notify(message, level, ...)
+end
+vim.cmd.write()
+vim.notify = notify
+assert(
+    save_failure and save_failure.level == vim.log.levels.WARN,
+    'Save formatting did not report its failure as a warning'
+)
+assert(
+    not save_failure.message:find('\27[', 1, true),
+    'Save formatting left ANSI codes in the failure notification'
+)
+assert(
+    vim.api.nvim_get_current_line() == 'const = ;'
+        and vim.fn.readfile(filename)[1] == 'const = ;',
+    'Failed save formatting changed the original text'
+)
+
 local project = vim.fs.normalize(vim.fn.tempname())
 vim.fn.mkdir(project, 'p')
 local install =
@@ -91,6 +115,7 @@ assert(queries == 0, 'Cached status line repeated formatter checks')
 
 return {
     notices = notices,
+    save_failure = save_failure,
     errmsg = vim.v.errmsg,
     buffer = buffer,
     project_formatter = formatter.command,

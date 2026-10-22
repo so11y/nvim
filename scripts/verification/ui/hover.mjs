@@ -19,7 +19,7 @@ export async function verifyHoverUI(rpc) {
     return hoverState();
   };
   const phases = [];
-  await rpc('nvim_exec_lua', ['vim.lsp.buf.hover()', []]);
+  await rpc('nvim_input', ['<Space>ch']);
   phases.push(await waitForHover());
   const foldState = await rpc('nvim_exec_lua', [
     `local win=assert(vim.tbl_filter(function(w) return vim.w[w]['textDocument/hover']~=nil end,vim.api.nvim_tabpage_list_wins(0))[1])

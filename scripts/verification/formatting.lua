@@ -7,7 +7,7 @@ vim.env.PATH = vim.fn.stdpath('data')
     .. vim.env.PATH
 vim.opt.undofile = false
 local spec = require('plugins.completion.format')
-spec.config(nil, spec.opts())
+require('conform').setup(spec.opts())
 local filename = vim.fn.tempname() .. '.lua'
 vim.fn.writefile({ 'local value={answer=42}' }, filename)
 vim.cmd.edit(filename)
@@ -23,6 +23,33 @@ assert(
     vim.api.nvim_get_current_line() == 'local manual = { answer = 43 }',
     'Manual formatting without LSP did not format the buffer'
 )
+
+local other_filename = vim.fn.tempname() .. '.lua'
+vim.fn.writefile({ 'local other={answer=44}' }, other_filename)
+local other = vim.fn.bufadd(other_filename)
+vim.fn.bufload(other)
+vim.bo[other].filetype = 'lua'
+vim.api.nvim_exec_autocmds('BufWritePre', { buffer = other, modeline = false })
+assert(
+    vim.api.nvim_buf_get_lines(other, 0, 1, false)[1]
+        == 'local other = { answer = 44 }',
+    'Save formatting targeted the current buffer instead of the event buffer'
+)
+assert(
+    vim.api.nvim_get_current_line() == 'local manual = { answer = 43 }',
+    'Formatting another buffer changed the current buffer'
+)
+
+vim.bo[other].filetype = 'text'
+vim.api.nvim_buf_set_lines(other, 0, -1, false, { 'leave this = raw' })
+vim.api.nvim_exec_autocmds('BufWritePre', { buffer = other, modeline = false })
+require('config.format').format(other)
+assert(
+    vim.api.nvim_buf_get_lines(other, 0, 1, false)[1] == 'leave this = raw',
+    'An unconfigured filetype was formatted'
+)
+vim.api.nvim_buf_delete(other, { force = true })
+vim.fn.delete(other_filename)
 assert(
     not package.loaded['config.lsp'],
     'Formatting loaded the LSP configuration'
@@ -30,4 +57,6 @@ assert(
 assert(vim.v.errmsg == '', vim.v.errmsg)
 vim.api.nvim_buf_delete(0, { force = true })
 vim.fn.delete(filename)
-print('PASS: save and manual formatting without LSP')
+print(
+    'PASS: save, manual, other-buffer and unconfigured-filetype formatting without LSP'
+)

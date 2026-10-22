@@ -58,8 +58,6 @@ return {
             custom_highlights = function(colors)
                 return {
                     NoiceSearchCount = { fg = colors.yellow },
-                    ['@lsp.type.class.vue'] = { link = '@property' },
-                    ['@lsp.type.method.vue'] = { link = '@property' },
                     LspInlayHint = {
                         bg = 'NONE', -- colors.base,
                     },
@@ -205,8 +203,5 @@ return {
                 },
             },
         },
-        config = function(_, opts)
-            require('github-theme').setup(opts)
-        end,
     },
 }
