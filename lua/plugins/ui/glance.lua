@@ -48,23 +48,21 @@ return {
                 return
             end
             local title = {}
-            for _, section in ipairs({ 'filename', 'filepath', 'title' }) do
-                local value = values[section]
-                if value then
-                    if section == 'filepath' then
-                        local path = vim.fs.normalize(value)
-                        local root = vim.fs.root(
-                            path,
-                            { { 'package.json', '.git' } }
-                        ) or vim.fn.getcwd()
-                        value = vim.fs.relpath(root, path)
-                            or vim.fn.fnamemodify(path, ':~')
-                    end
-                    title[#title + 1] = {
-                        ' ' .. tostring(value) .. ' ',
-                        self.sections[section],
-                    }
-                end
+            if values.filename then
+                local path = vim.fs.joinpath(
+                    vim.fs.normalize(values.filepath),
+                    values.filename
+                )
+                local root = vim.fs.root(path, { { 'package.json', '.git' } })
+                    or vim.fn.getcwd()
+                local filename = vim.fs.relpath(root, path)
+                    or vim.fn.fnamemodify(path, ':~')
+                title[1] = { ' ' .. filename .. ' ', self.sections.filename }
+            elseif values.title then
+                title[1] = {
+                    ' ' .. tostring(values.title) .. ' ',
+                    self.sections.title,
+                }
             end
             vim.wo[self.winnr].winbar = ''
             vim.api.nvim_win_set_config(self.winnr, {
