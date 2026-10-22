@@ -1,10 +1,5 @@
 return {
     {
-        'folke/persistence.nvim',
-        event = 'BufReadPre',
-        opts = {},
-    },
-    {
         'folke/snacks.nvim',
         lazy = false,
         ---@type snacks.Config
@@ -325,21 +320,5 @@ return {
                 desc = '选择项目',
             },
         },
-        config = function(_, opts)
-            require('snacks').setup(opts)
-
-            local function show_diagnostic(_, bufnr)
-                vim.diagnostic.open_float({
-                    bufnr = bufnr,
-                    scope = 'cursor',
-                    focus = false,
-                })
-            end
-            require('utils.repeatable').map_jump(']x', '[x', function()
-                vim.diagnostic.jump({ count = 1, on_jump = show_diagnostic })
-            end, function()
-                vim.diagnostic.jump({ count = -1, on_jump = show_diagnostic })
-            end, '下一个诊断', '上一个诊断')
-        end,
     },
 }

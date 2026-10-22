@@ -14,7 +14,7 @@ local function reopen()
     vim.api.nvim_feedkeys(' wr', 'xt', false)
 end
 local close
-for _, key in ipairs(require('plugins.tool.snacks')[2].keys) do
+for _, key in ipairs(require('plugins.tool.snacks')[1].keys) do
     if key[1] == '<A-w>' then
         close = key[2]
     end

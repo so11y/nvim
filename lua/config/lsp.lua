@@ -12,6 +12,21 @@ local M = {
     },
 }
 
+function M.setup_keymaps()
+    local function show_diagnostic(_, bufnr)
+        vim.diagnostic.open_float({
+            bufnr = bufnr,
+            scope = 'cursor',
+            focus = false,
+        })
+    end
+    require('utils.repeatable').map_jump(']x', '[x', function()
+        vim.diagnostic.jump({ count = 1, on_jump = show_diagnostic })
+    end, function()
+        vim.diagnostic.jump({ count = -1, on_jump = show_diagnostic })
+    end, '下一个诊断', '上一个诊断')
+end
+
 function M.setup()
     M.capabilities = require('blink.cmp').get_lsp_capabilities()
     vim.lsp.config('*', { capabilities = M.capabilities })

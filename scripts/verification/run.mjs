@@ -43,6 +43,20 @@ for (const name of [
   ui.set(name, name + '.lua');
 ui.set('workflows', 'workflows');
 ui.set('host', 'host');
+const selfContained = new Set([
+  'emmet',
+  'emmet-context',
+  'emmet-vue',
+  'emmet-wrap',
+  'git',
+  'host',
+  'import-paths',
+  'mason-tools',
+  'multicursor',
+  'search-count',
+  'tag-jsx',
+  'treesitter-undo',
+]);
 const optional = new Set([
   'performance',
   'navigation-performance',
@@ -75,7 +89,10 @@ if (selected.includes('host') && !process.env.NVIM_VSCODE_RUNTIME) {
 
 const output = await mkdtemp(join(tmpdir(), 'nvim-verification-results-'));
 console.log('Results: ' + output);
-const template = selected.some((name) => ui.has(name) && name !== 'host')
+const fixtureSuites = new Set(
+  selected.filter((name) => ui.has(name) && !selfContained.has(name)),
+);
+const template = fixtureSuites.size
   ? await createFixtures(join(output, 'template'))
   : null;
 const results = [];
@@ -86,7 +103,7 @@ for (const name of selected) {
     NVIM_APPNAME: basename(root),
     NVIM_TEST_OUTPUT: join(output, name + '.json'),
   };
-  if (ui.has(name) && name !== 'host') {
+  if (fixtureSuites.has(name)) {
     // Share installed dependencies, but give every scenario its own editable files.
     const fixture = join(output, 'fixtures', name);
     await mkdir(dirname(fixture), { recursive: true });

@@ -3,6 +3,11 @@ return {
         'neovim/nvim-lspconfig',
         version = '^2',
         event = { 'BufReadPre', 'BufNewFile', 'FileType' },
+        init = function()
+            if not vim.g.vscode then
+                require('config.lsp').setup_keymaps()
+            end
+        end,
         config = function()
             require('config.lsp').setup()
         end,

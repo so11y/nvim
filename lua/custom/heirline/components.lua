@@ -205,9 +205,7 @@ M.Git = {
             or self.status_dict.changed ~= 0
     end,
     hl = function(self)
-        return {
-            fg = self.has_changes and 'maroon' or 'dim',
-        }
+        return self.has_changes and 'GitSignsChange' or { fg = 'dim' }
     end,
     provider = function(self)
         local head = self.status_dict.head:gsub('%%', '%%%%')

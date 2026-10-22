@@ -4,6 +4,27 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 return {
     {
+        'folke/flash.nvim',
+        keys = {
+            {
+                '<leader>jj',
+                mode = 'n',
+                function()
+                    require('flash').jump({
+                        action = function(match, state)
+                            require('environment.vscode.navigation').jump(
+                                vim.api.nvim_win_get_buf(match.win),
+                                match.pos
+                            )
+                            require('flash.jump').on_jump(state)
+                        end,
+                    })
+                end,
+                desc = '快速跳转',
+            },
+        },
+    },
+    {
         'vscode-neovim/vscode-multi-cursor.nvim',
         event = 'VeryLazy',
         opts = {

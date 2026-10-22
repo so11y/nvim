@@ -1,12 +1,16 @@
 return {
     'akinsho/bufferline.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons', 'folke/snacks.nvim' },
+    dependencies = {
+        'nvim-tree/nvim-web-devicons',
+        'folke/snacks.nvim',
+    },
     event = 'VeryLazy',
     opts = function()
         local bufdelete = require('snacks.bufdelete').delete
         return {
             options = {
-                separator_style = 'thin',
+                separator_style = { '', '' },
+                indicator = { icon = '▏', style = 'icon' },
                 diagnostics = 'nvim_lsp',
                 modified_icon = '●',
                 close_icon = '',
@@ -19,6 +23,7 @@ return {
                 offsets = {
                     {
                         filetype = 'neo-tree',
+                        padding = 1, -- 计入右侧窗口分隔列
                         text = 'EXPLORER',
                         highlight = 'Directory',
                         text_align = 'center',
@@ -27,16 +32,6 @@ return {
             },
             highlights = function(defaults)
                 local highlights = defaults.highlights
-                for name, highlight in pairs(highlights) do
-                    if name:match('_selected$') then
-                        highlight.bg = {
-                            attribute = 'bg',
-                            highlight = 'CursorLine',
-                        }
-                    end
-                end
-                highlights.buffer_selected.bold = false -- 禁用加粗
-                highlights.buffer_selected.italic = false -- 禁用斜体
                 highlights.error = {
                     fg = {
                         attribute = 'fg',
@@ -47,9 +42,22 @@ return {
                         highlight = 'BufferLineBackground',
                     },
                 }
+                for name, highlight in pairs(highlights) do
+                    highlight.bg = {
+                        attribute = 'bg',
+                        highlight = name:match('_selected$') and 'Normal'
+                            or 'NeoTreeNormal',
+                    }
+                    highlight.bold = false
+                    highlight.italic = false
+                end
                 return highlights
             end,
         }
+    end,
+    config = function(_, opts)
+        require('bufferline').setup(opts)
+        require('config.bufferline_git').setup()
     end,
 
     keys = { -- 切换标签，使用相同的快捷键

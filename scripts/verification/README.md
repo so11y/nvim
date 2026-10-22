@@ -7,7 +7,7 @@ npm --prefix scripts/verification ci
 npm --prefix scripts/verification test
 ```
 
-需要 PATH 中的 Neovim 0.12+、Node.js、npm、Git 和 LazyGit，以及已通过 Lazy 安装的插件、Mason 工具和 Tree-sitter 解析器。普通回归不会安装或更新这些组件；样例项目使用锁文件执行 `npm ci`，因此需要能访问 npm 或已有 npm 缓存。Node 调试检查使用 Mason 的 js-debug-adapter。Git UI 检查需要 LazyGit 已完成首次启动提示。
+需要 PATH 中的 Neovim 0.12+、Node.js、npm、Git 和 LazyGit，以及已通过 Lazy 安装的插件、Mason 工具和 Tree-sitter 解析器。普通回归不会安装或更新这些组件；使用公共样例的场景会按锁文件执行 `npm ci`，需要能访问 npm 或已有 npm 缓存。Node 调试检查使用 Mason 的 js-debug-adapter。Git UI 检查需要 LazyGit 已完成首次启动提示。
 
 统一入口从仓库根目录启动 Neovim，并按配置目录名设置 `NVIM_APPNAME`。可用 `NEOVIM_BIN` 指定 Neovim 可执行文件。
 
@@ -40,7 +40,7 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 入口在系统临时目录创建 `nvim-verification-results-*`，开始和结束时都会打印绝对路径。目录中保存 `results.json` 汇总、各场景日志及 UI 场景的 JSON 和 `.errors`。性能和安装检查也将 JSON 写入该目录。
 
-`fixtures/` 是版本管理中的只读模板。每次运行只安装一次样例依赖，每个场景使用独立的临时文件副本并共享该次运行的依赖目录；测试中的保存、重命名和格式化不会修改仓库里的模板。结果保留供检查，可在不再需要时删除对应临时目录。
+`fixtures/` 是版本管理中的只读模板。需要公共样例时，每次运行只安装一次依赖，各场景使用独立的临时文件副本并共享依赖目录；Emmet、导入路径等自行准备样例的场景会跳过这一步。测试中的保存、重命名和格式化不会修改仓库里的模板。结果保留供检查，可在不再需要时删除对应临时目录。
 
 ## 脚本分工
 
@@ -54,4 +54,4 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 | `../check-workflows.lua` | 多语言编辑工作流 |
 | `../check-performance.lua` | 结构跳转基准 |
 
-新增 UI 场景时在 `ui/index.mjs` 注册即可；新增独立 Lua 场景时在 `run.mjs` 对应列表登记。需要单独调试 UI 执行器时，先运行 `node scripts/verification/create-fixtures.mjs`，按输出设置 `NVIM_TEST_ROOT`，再运行 `node scripts/verification/check-ui.mjs 场景名`；未指定结果路径时仍写入新的临时目录。
+新增 UI 场景时在 `ui/index.mjs` 注册；新增独立 Lua 场景时在 `run.mjs` 对应列表登记。不使用公共样例的 UI 或 Lua 场景同时加入 `selfContained`。单独调试需要公共样例的场景时，先运行 `node scripts/verification/create-fixtures.mjs`，按输出设置 `NVIM_TEST_ROOT`，再运行 `node scripts/verification/check-ui.mjs 场景名`；未指定结果路径时仍写入新的临时目录。

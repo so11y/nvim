@@ -2,6 +2,7 @@
 --  VSCode 环境下的快捷键
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 local vscode = require('vscode')
+local navigation = require('environment.vscode.navigation')
 local map = vim.keymap.set
 
 vim.opt.shortmess:append('sS')
@@ -11,27 +12,27 @@ vim.o.cmdheight = 50
 map('n', 'J', '<C-d>', { desc = '向下滚动半页' })
 map('n', 'K', '<C-u>', { desc = '向上滚动半页' })
 
-map('n', 'j', function()
-    if vim.v.count == 0 then
-        vscode.call('cursorDown')
-    else
-        return 'j'
-    end
-end, {
-    expr = true,
-    silent = true,
-})
+-- 直接使用宿主历史，避免 Ctrl-i / Tab 的键码重合。
+for _, binding in ipairs({
+    { '<A-u>', 'workbench.action.navigateBack', '后退跳转位置' },
+    { '<A-i>', 'workbench.action.navigateForward', '前进跳转位置' },
+}) do
+    map('n', binding[1], function()
+        for _ = 1, vim.v.count1 do
+            vscode.call(binding[2])
+        end
+    end, { desc = binding[3] })
+end
 
-map('n', 'k', function()
-    if vim.v.count == 0 then
-        vscode.call('cursorUp')
-    else
-        return 'k'
-    end
-end, {
-    expr = true,
-    silent = true,
-})
+for key, command in pairs({ j = 'cursorDown', k = 'cursorUp' }) do
+    map('n', key, function()
+        if vim.v.count == 0 then
+            vscode.call(command)
+        else
+            navigation.move(key, vim.v.count)
+        end
+    end, { silent = true })
+end
 
 -- LSP
 map('n', 'grn', function()

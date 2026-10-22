@@ -1,4 +1,75 @@
 local theme_file = vim.fn.stdpath('state') .. '/colorscheme'
+local common_highlights = {
+    LspInlayHint = { bg = 'NONE' },
+    BlinkCmpMenu = { link = 'NormalFloat' },
+    BlinkCmpMenuBorder = { link = 'FloatBorder' },
+    BlinkCmpMenuSelection = { link = 'Visual' },
+    NeoTreeIndentMarker = { link = 'BlinkIndent' },
+    GitAdded = {
+        fg = '#3fb950',
+        bg = 'NONE',
+    },
+    GitModified = {
+        fg = '#d29922',
+        bg = 'NONE',
+    },
+    GitDeleted = {
+        fg = '#f85149',
+        bg = 'NONE',
+    },
+    GitConflict = { fg = '#db6d28' },
+    GitIgnored = { fg = '#6e7681' },
+    GitSignsAdd = { link = 'GitAdded' },
+    GitSignsChange = { link = 'GitModified' },
+    GitSignsDelete = { link = 'GitDeleted' },
+    GitSignsTopdelete = {
+        link = 'GitSignsDelete',
+    },
+    GitSignsChangedelete = {
+        link = 'GitSignsChange',
+    },
+    GitSignsUntracked = { link = 'GitSignsAdd' },
+    GitSignsCurrentLineBlame = {
+        fg = '#585B70',
+        italic = true,
+    },
+    NeoTreeGitAdded = { link = 'GitAdded' },
+    NeoTreeGitModified = { link = 'GitModified' },
+    NeoTreeGitDeleted = { link = 'GitDeleted' },
+    NeoTreeGitRenamed = { link = 'GitModified' },
+    NeoTreeGitUntracked = { link = 'GitAdded' },
+    NeoTreeGitStaged = { link = 'GitAdded' },
+    NeoTreeGitUnstaged = { link = 'GitModified' },
+    NeoTreeGitConflict = { link = 'GitConflict' },
+    NeoTreeGitIgnored = { link = 'GitIgnored' },
+}
+
+local function apply_ui_highlights()
+    local normal = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
+    local foreground = string.format('#%06x', normal.fg)
+    local background = string.format('#%06x', normal.bg)
+    local blend = require('catppuccin.utils.colors').blend
+    local cursorline = blend(foreground, background, 0.05)
+    local cursorline_nr =
+        vim.api.nvim_get_hl(0, { name = 'CursorLineNr', link = false })
+    cursorline_nr.bg = cursorline
+    local palette = require('catppuccin.palettes').get_palette(
+        vim.o.background == 'light' and 'latte' or 'mocha'
+    )
+    local groups = {
+        NoiceSearchCount = { fg = palette.yellow },
+        BufferLineIndicatorSelected = { fg = '#f78166', bg = background },
+        CursorLine = { bg = cursorline },
+        CursorLineNr = cursorline_nr,
+        CursorLineSign = { link = 'CursorLine' },
+        CursorLineFold = { link = 'CursorLine' },
+        BlinkIndent = { fg = blend(foreground, background, 0.12) },
+        BlinkIndentScope = { fg = blend(foreground, background, 0.24) },
+    }
+    for name, highlight in pairs(groups) do
+        vim.api.nvim_set_hl(0, name, highlight)
+    end
+end
 
 return {
     {
@@ -7,17 +78,21 @@ return {
         lazy = false,
         priority = 1000,
         init = function()
+            local group =
+                vim.api.nvim_create_augroup('ThemeAppearance', { clear = true })
             vim.api.nvim_create_autocmd('ColorSchemePre', {
-                group = vim.api.nvim_create_augroup(
-                    'CatppuccinBackground',
-                    { clear = true }
-                ),
+                group = group,
                 pattern = 'catppuccin-*',
                 callback = function(event)
                     vim.o.background = event.match == 'catppuccin-latte'
                             and 'light'
                         or 'dark'
                 end,
+            })
+            vim.api.nvim_create_autocmd('ColorScheme', {
+                group = group,
+                pattern = { 'catppuccin*', 'github_*' },
+                callback = apply_ui_highlights,
             })
         end,
         keys = {
@@ -56,11 +131,7 @@ return {
                 transparent = true,
             },
             custom_highlights = function(colors)
-                return {
-                    NoiceSearchCount = { fg = colors.yellow },
-                    LspInlayHint = {
-                        bg = 'NONE', -- colors.base,
-                    },
+                return vim.tbl_extend('force', common_highlights, {
                     Visual = {
                         bg = colors.surface2,
                         style = {},
@@ -69,67 +140,11 @@ return {
                         fg = colors.text,
                         bg = colors.base,
                     },
-                    BlinkCmpMenu = {
-                        link = 'NormalFloat',
-                    },
-                    BlinkCmpMenuBorder = {
-                        link = 'FloatBorder',
-                    },
-                    BlinkCmpMenuSelection = {
-                        link = 'Visual',
-                    },
-                    NeoTreeIndentMarker = {
-                        link = 'BlinkIndent',
-                    },
                     NeoTreeWinSeparator = {
                         fg = colors.mantle,
                         bg = colors.mantle,
                     },
-                    -- 1. 新增
-                    GitSignsAdd = {
-                        fg = '#78A97A',
-                        bg = 'NONE',
-                    },
-                    -- 2. 修改
-                    GitSignsChange = {
-                        fg = '#B5A480',
-                        bg = 'NONE',
-                    },
-                    -- 3. 删除
-                    GitSignsDelete = {
-                        fg = '#AC7A7D',
-                        bg = 'NONE',
-                    },
-                    -- 4. 其它同步
-                    GitSignsTopdelete = {
-                        link = 'GitSignsDelete',
-                    },
-                    GitSignsChangedelete = {
-                        link = 'GitSignsChange',
-                    },
-                    -- 5. 未追踪 (Untracked):
-                    GitSignsUntracked = {
-                        fg = '#7F849C',
-                        bg = 'NONE',
-                    },
-                    NeoTreeGitAdded = { link = 'GitSignsAdd' },
-                    NeoTreeGitModified = { link = 'GitSignsChange' },
-                    NeoTreeGitDeleted = { link = 'GitSignsDelete' },
-                    NeoTreeGitRenamed = { link = 'GitSignsChange' },
-                    NeoTreeGitUntracked = { link = 'GitSignsUntracked' },
-                    -- 当前行 Git Blame
-                    GitSignsCurrentLineBlame = {
-                        fg = '#585B70',
-                        italic = true,
-                    },
                     StatusLine = {
-                        bg = colors.mantle,
-                    },
-                    BufferLineIndicatorSelected = {
-                        bg = colors.base,
-                        fg = '#45AFF5',
-                    },
-                    BufferLineFill = {
                         bg = colors.mantle,
                     },
                     DiagnosticUnderlineError = {
@@ -144,7 +159,7 @@ return {
                     DiagnosticUnderlineHint = {
                         undercurl = true,
                     },
-                }
+                })
             end,
             integrations = { blink_indent = true },
         },
@@ -163,19 +178,8 @@ return {
         name = 'github-theme',
         lazy = true,
         opts = {
-            specs = {
-                github_dark_default = {
-                    -- VS Code's translucent current-line color over #0d1117.
-                    bg3 = '#171b22',
-                },
-            },
             groups = {
-                all = {
-                    NoiceSearchCount = { link = 'WarningMsg' },
-                    LspInlayHint = { bg = 'NONE' },
-                    BlinkCmpMenu = { link = 'NormalFloat' },
-                    BlinkCmpMenuBorder = { link = 'FloatBorder' },
-                    BlinkCmpMenuSelection = { link = 'Visual' },
+                all = vim.tbl_extend('force', common_highlights, {
                     BlinkCmpDocBorder = { link = 'FloatBorder' },
                     BlinkCmpKind = { fg = 'fg1' },
                     BlinkCmpLabelDescription = { fg = 'fg2' },
@@ -185,22 +189,15 @@ return {
                         fg = 'fg2',
                         style = 'strikethrough',
                     },
-                    NeoTreeIndentMarker = { link = 'BlinkIndent' },
-                    NeoTreeWinSeparator = { fg = 'bg0', bg = 'bg0' },
-                    NeoTreeGitAdded = { link = 'GitSignsAdd' },
-                    NeoTreeGitModified = { link = 'GitSignsChange' },
-                    NeoTreeGitDeleted = { link = 'GitSignsDelete' },
-                    NeoTreeGitRenamed = { link = 'GitSignsChange' },
-                    NeoTreeGitUntracked = { link = 'GitSignsUntracked' },
-                },
-                github_dark_default = {
-                    NoiceSearchCount = { fg = '#e3b341' },
-                    CursorLineNr = { bg = 'bg3' },
-                    CursorLineSign = { link = 'CursorLine' },
-                    CursorLineFold = { link = 'CursorLine' },
-                    BlinkIndent = { fg = '#272c32' },
-                    BlinkIndentScope = { fg = '#41464c' },
-                },
+                    NeoTreeNormal = {
+                        fg = 'fg1',
+                        bg = 'palette.canvas.inset',
+                    },
+                    NeoTreeWinSeparator = {
+                        fg = 'palette.canvas.inset',
+                        bg = 'palette.canvas.inset',
+                    },
+                }),
             },
         },
     },
