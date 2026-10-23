@@ -16,7 +16,7 @@ return {
             completion = {
                 documentation = {
                     auto_show = true,
-                    auto_show_delay_ms = 0,
+                    auto_show_delay_ms = 150,
                     draw = function(opts)
                         opts.default_implementation()
                         if
@@ -54,6 +54,7 @@ return {
                 },
                 ghost_text = {
                     enabled = true,
+                    show_with_menu = false,
                 },
                 menu = {
                     auto_show_delay_ms = 0,

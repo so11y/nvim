@@ -267,17 +267,6 @@ return {
                 desc = '通知历史',
             },
             {
-                '<a-f>',
-                function()
-                    require('snacks').picker.lines({
-                        layout = {
-                            preset = 'dropdown',
-                        },
-                    })
-                end,
-                desc = '文件内搜索',
-            },
-            {
                 '<leader>ff',
                 function()
                     require('snacks').picker.files()

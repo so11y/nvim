@@ -38,7 +38,7 @@ map({ 'n', 'x' }, 's', '"_s')
 map({ 'n', 'x' }, 'c', '"_c')
 map({ 'n', 'x' }, 'C', '"_C')
 map({ 'n', 'x' }, 'd', '"_d')
-map({ 'n', 'x' }, 'D', '"_C')
+map({ 'n', 'x' }, 'D', '"_D')
 
 map('n', '<leader>qq', '<cmd>qa<cr>', {
     desc = '退出 Neovim',
@@ -100,10 +100,9 @@ map('n', '<Esc>', function()
         end
     end
     vim.cmd('nohlsearch')
-    vim.fn.setreg('/', '')
     vim.snippet.stop()
 end, {
-    desc = '关闭悬停提示或清除搜索',
+    desc = '关闭悬停提示或清除搜索高亮',
 })
 
 -- 全选
@@ -203,6 +202,7 @@ map('n', 'k', [[v:count > 1 ? "m'" . v:count . "k" : "k"]], {
 -- 6. 文件与窗口管理
 -- =======================================================
 -- 保存与搜索
+map('n', '<A-f>', '/', { desc = '当前文件搜索' })
 map({ 'n', 'i', 'v' }, '<A-s>', '<Esc>:w<CR>', {
     silent = true,
     desc = '保存文件',

@@ -7,12 +7,12 @@ export async function verifySearchCountUI(rpc) {
   ]);
   const state = () =>
     rpc('nvim_exec_lua', [
-      'local row=vim.fn.screenpos(0,vim.api.nvim_win_get_cursor(0)[1],1).row; local text={}; for col=1,vim.o.columns do text[#text+1]=vim.fn.screenstring(row,col) end; return {source=vim.api.nvim_get_current_line(),text=table.concat(text),hlsearch=vim.v.hlsearch,errmsg=vim.v.errmsg}',
+      'local row=vim.fn.screenpos(0,vim.api.nvim_win_get_cursor(0)[1],1).row; local text={}; for col=1,vim.o.columns do text[#text+1]=vim.fn.screenstring(row,col) end; return {source=vim.api.nvim_get_current_line(),text=table.concat(text),hlsearch=vim.v.hlsearch,pattern=vim.fn.getreg("/"),errmsg=vim.v.errmsg}',
       [],
     ]);
   const phases = [];
   for (const [keys, count] of [
-    ['/needle%value<CR>', '[2/3]'],
+    ['<A-f>needle%value<CR>', '[2/3]'],
     ['n', '[3/3]'],
     ['N', '[2/3]'],
   ]) {
@@ -34,12 +34,29 @@ export async function verifySearchCountUI(rpc) {
   const cleared = await state();
   if (
     cleared.hlsearch !== 0 ||
+    cleared.pattern !== 'needle%value' ||
     cleared.text.includes('[2/3]') ||
     cleared.errmsg
   )
     throw new Error(
       'Noice search count did not clear: ' + JSON.stringify(cleared),
     );
-  const result = { phases, cleared };
+  const resumed = [];
+  for (const [keys, source] of [
+    ['n', 'needle%value third'],
+    ['n', 'needle%value first'],
+    ['N', 'needle%value third'],
+    ['N', 'needle%value second'],
+  ]) {
+    await rpc('nvim_input', [keys]);
+    await delay(150);
+    const current = await state();
+    if (current.source !== source || current.errmsg)
+      throw new Error(
+        'Search did not resume after Esc: ' + JSON.stringify({ keys, current }),
+      );
+    resumed.push({ keys, ...current });
+  }
+  const result = { phases, cleared, resumed };
   return result;
 }

@@ -3,7 +3,6 @@ local common_highlights = {
     LspInlayHint = { bg = 'NONE' },
     BlinkCmpMenu = { link = 'NormalFloat' },
     BlinkCmpMenuBorder = { link = 'FloatBorder' },
-    BlinkCmpMenuSelection = { link = 'Visual' },
     NeoTreeIndentMarker = { link = 'BlinkIndent' },
     GitAdded = {
         fg = '#3fb950',
@@ -62,6 +61,7 @@ local function apply_ui_highlights()
         CursorLineNr = cursorline_nr,
         CursorLineSign = { link = 'CursorLine' },
         CursorLineFold = { link = 'CursorLine' },
+        BlinkCmpMenuSelection = { bg = blend(foreground, background, 0.12) },
         BlinkIndent = { fg = blend(foreground, background, 0.12) },
         BlinkIndentScope = { fg = blend(foreground, background, 0.24) },
     }

@@ -73,9 +73,9 @@ return {
         end
 
         local function highlight_borders()
-            -- Match each border row to the adjacent panel.
+            -- Use the title accent for visible borders, keeping each panel background.
             local fg =
-                require('catppuccin.palettes').get_palette('mocha').lavender
+                vim.api.nvim_get_hl(0, { name = 'Title', link = false }).fg
             for group, panel in pairs({
                 GlanceBorderTop = 'GlanceWinBarTitle',
                 GlancePreviewBorderBottom = 'GlancePreviewNormal',
