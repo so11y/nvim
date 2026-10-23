@@ -20,6 +20,8 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 默认运行列表中未标记 optional 的全部场景，包括编辑、格式化、语言服务、Node 调试和 UI 回归。可以一次指定多个场景；失败后继续运行其余场景，最终以非零状态退出。
 
+`unocss` 检查 HTML/Vue/TSX 原子类补全、项目主题与 shortcuts，并确认普通项目不启动该服务。
+
 `definitions` 检查定义跳转和引用预览，`emmet` 包含补全关闭后的片段跳转，`hover` 包含折叠预览的焦点和 Esc 关闭检查。
 
 `mason-commands` 使用已安装的本地注册表，检查原生命令和补全时关闭该测试进程的元数据刷新，避免顺带下载注册表。

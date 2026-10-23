@@ -56,6 +56,7 @@ const selfContained = new Set([
   'search-count',
   'tag-jsx',
   'treesitter-undo',
+  'unocss',
 ]);
 const optional = new Set([
   'performance',

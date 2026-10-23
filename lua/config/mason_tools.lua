@@ -11,6 +11,7 @@ local M = {
         'prettierd',
         'stylua',
         'tree-sitter-cli',
+        'unocss-language-server',
         'vtsls',
         'vue-language-server',
     },

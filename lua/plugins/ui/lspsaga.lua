@@ -32,6 +32,61 @@ return {
     },
     config = function(_, opts)
         require('lspsaga').setup(opts)
+
+        -- Keep the whole file in the preview; selecting a symbol only moves its cursor.
+        local outline = getmetatable(require('lspsaga.symbol.outline'))
+        function outline:float_preview()
+            local api = vim.api
+            api.nvim_buf_set_lines(
+                self.rbufnr,
+                0,
+                -1,
+                false,
+                api.nvim_buf_get_lines(self.main_buf, 0, -1, false)
+            )
+            vim.bo[self.rbufnr].modifiable = false
+            vim.wo[self.rwinid].number = true
+            vim.wo[self.rwinid].relativenumber = false
+            vim.wo[self.rwinid].cursorline = true
+            vim.wo[self.rwinid].foldenable = false
+
+            vim.keymap.set('n', '<C-l>', function()
+                api.nvim_set_current_win(self.rwinid)
+            end, { buffer = self.bufnr, desc = '进入代码预览' })
+            vim.keymap.set('n', '<C-h>', function()
+                api.nvim_set_current_win(self.winid)
+            end, {
+                buffer = self.rbufnr,
+                desc = '返回代码大纲',
+            })
+            for _, key in ipairs(opts.outline.keys.quit) do
+                vim.keymap.set('n', key, function()
+                    self:outline()
+                end, {
+                    buffer = self.rbufnr,
+                    desc = '关闭代码大纲',
+                })
+            end
+
+            api.nvim_create_autocmd('CursorMoved', {
+                group = 'outline',
+                buffer = self.bufnr,
+                callback = function()
+                    local node = require('lspsaga.slist').find_node(
+                        self.list,
+                        api.nvim_win_get_cursor(self.winid)[1]
+                    )
+                    if not node then
+                        return
+                    end
+                    local row = node.value.selectionRange.start.line + 1
+                    api.nvim_win_set_cursor(self.rwinid, { row, 0 })
+                    api.nvim_win_call(self.rwinid, function()
+                        vim.cmd('normal! zz')
+                    end)
+                end,
+            })
+        end
         vim.api.nvim_create_autocmd('FileType', {
             group = require('lspsaga').saga_augroup,
             pattern = 'sagarename',

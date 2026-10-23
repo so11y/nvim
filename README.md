@@ -70,6 +70,8 @@
 
 ## LSP 与诊断
 
+UnoCSS 项目中的 `class` / `className` 原子类由 UnoCSS 语言服务补全，通过 Blink 显示。项目根目录需有 `uno.config.ts`、`uno.config.js`、`unocss.config.ts` 或 `unocss.config.js`；补全读取项目主题和 shortcuts。输入 `bg-`、`hover:bg-` 等前缀后选择候选，按 `Tab` 或 `Enter` 确认。
+
 | 按键 | 功能 |
 | --- | --- |
 | `gd` | 转到定义：单个结果直接跳转，多个结果打开预览 |
@@ -84,7 +86,7 @@
 | 使用位置 | 操作 |
 | --- | --- |
 | 定义、引用、实现、类型定义的结果列表 | `j/k` 选择，`Enter` 跳转，`q/Esc` 关闭；`Ctrl+H` 查看代码，`Ctrl+L` 返回列表；`h/l` 折叠 / 展开文件组 |
-| 代码大纲 | 打开时定位当前符号；`j/k` 选择，`Enter` 跳转，`q/Esc` 关闭 |
+| 代码大纲 | 右侧显示全文并定位、高亮选中符号；`j/k` 选择，`Ctrl+L` 进入预览滚动，`Ctrl+H` 返回列表；`Enter` 跳转，`q/Esc` 关闭 |
 | 代码操作 | `j/k` 选择，`Enter/Tab` 执行，`q/Esc` 关闭 |
 
 HTML/Vue 的代码操作包含删除标签、移除外层标签、转换空标签和添加外层标签。

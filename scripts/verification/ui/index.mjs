@@ -11,6 +11,7 @@ import { verifySearchCountUI } from './search-count.mjs';
 import { verifyHoverUI } from './hover.mjs';
 import { verifyImportPathsUI } from './import-paths.mjs';
 import { verifyEmmetUI } from './emmet.mjs';
+import { verifyUnoCSSUI } from './unocss.mjs';
 import { verifyMulticursorUI } from './multicursor.mjs';
 import { verifyGitUI } from './git.mjs';
 
@@ -28,6 +29,7 @@ export const uiScenarios = {
   hover: verifyHoverUI,
   'import-paths': verifyImportPathsUI,
   emmet: verifyEmmetUI,
+  unocss: verifyUnoCSSUI,
   multicursor: verifyMulticursorUI,
   git: verifyGitUI,
 };

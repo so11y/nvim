@@ -7,6 +7,7 @@ local M = {
         'jsonls',
         'lua_ls',
         'tag_fix',
+        'unocss',
         'vtsls',
         'vue_ls',
     },
@@ -32,6 +33,7 @@ function M.setup()
     vim.lsp.config('*', { capabilities = M.capabilities })
     vim.lsp.config('vtsls', require('lsp.vtsls'))
     vim.lsp.config('vue_ls', require('lsp.vue_ls'))
+    vim.lsp.config('unocss', require('lsp.unocss'))
     vim.lsp.config(
         'emmet_language_server',
         require('lsp.emmet_language_server')
