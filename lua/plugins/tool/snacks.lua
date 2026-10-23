@@ -186,6 +186,13 @@ return {
 
         keys = {
             {
+                '<leader>?',
+                function()
+                    require('config.alt-help')()
+                end,
+                desc = 'Alt 快捷键速查',
+            },
+            {
                 '<leader>gt',
                 function()
                     Snacks.lazygit()
