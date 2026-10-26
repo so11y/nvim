@@ -10,7 +10,7 @@ export async function verifyTypescriptRefactorUI(rpc) {
     [],
   ]);
   await delay(150);
-  await rpc('nvim_input', ['sumValue<CR>']);
+  await rpc('nvim_input', ['<C-u>sumValue<CR>']);
   await delay(200);
   const applied = await rpc('nvim_exec_lua', [
     `local b=...

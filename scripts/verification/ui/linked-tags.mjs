@@ -2,6 +2,23 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 export async function verifyLinkedTagsUI(rpc) {
   const lua = (code) => rpc('nvim_exec_lua', [code, []]);
+  const renameDialog = (stage) =>
+    rpc('nvim_exec_lua', [
+      `local stage=...
+local input_win
+assert(vim.wait(5000,function()
+  for _,win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.bo[vim.api.nvim_win_get_buf(win)].filetype=='snacks_input' then
+      input_win=win
+      return true
+    end
+  end
+end,20),stage..': native rename input missing')
+local input_buf=vim.api.nvim_win_get_buf(input_win)
+assert(vim.b[input_buf].completion==false,'Rename input enabled completion')
+return {winid=input_win,initial=vim.api.nvim_buf_get_lines(input_buf,0,-1,false),mode=vim.fn.mode()}`,
+      [stage],
+    ]);
   await lua(
     "vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.vue'); local b=vim.api.nvim_get_current_buf(); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=b,name='vue_ls'})>0 and #vim.lsp.get_clients({bufnr=b,name='vtsls'})>0 end,50)); local c=vim.lsp.get_clients({bufnr=b,name='vue_ls'})[1]; assert(vim.wait(5000,function() return vim.api.nvim_get_namespaces()['modules.language.lsp.linked_tags:'..b] end,20))",
   );
@@ -105,26 +122,28 @@ export async function verifyLinkedTagsUI(rpc) {
   await lua('vim.api.nvim_win_set_cursor(0,{5,3})');
   await rpc('nvim_input', ['grn']);
   await delay(150);
-  const tagDialog = await lua(
-    "local r=require('lspsaga.rename'); assert(r.winid and vim.api.nvim_win_is_valid(r.winid)); assert(vim.bo[r.bufnr].filetype=='sagarename'); return {initial=vim.api.nvim_buf_get_lines(r.bufnr,0,-1,false),mode=vim.fn.mode()}",
-  );
-  await rpc('nvim_input', ['<Esc>']);
+  const tagDialog = await renameDialog('cancel tag');
+  await rpc('nvim_input', ['<C-c>']);
   await delay(100);
-  const cancelled = await lua(
-    "local r=require('lspsaga.rename'); local lines=vim.api.nvim_buf_get_lines(0,0,-1,false); return {closed=not vim.api.nvim_win_is_valid(r.winid),open=lines[5],close=lines[13],errmsg=vim.v.errmsg}",
-  );
+  const cancelled = await rpc('nvim_exec_lua', [
+    "local win=...; local lines=vim.api.nvim_buf_get_lines(0,0,-1,false); return {closed=not vim.api.nvim_win_is_valid(win),open=lines[5],close=lines[13],mode=vim.fn.mode(),errmsg=vim.v.errmsg}",
+    [tagDialog.winid],
+  ]);
   if (
     !cancelled.closed ||
+    cancelled.mode !== 'n' ||
     !cancelled.open.includes('<div ') ||
     !cancelled.close.includes('</div>') ||
     cancelled.errmsg
   )
     throw new Error(
-      'Saga rename cancellation failed: ' + JSON.stringify(cancelled),
+      'Native rename cancellation failed: ' + JSON.stringify({ tagDialog, cancelled }),
     );
+  await lua('vim.api.nvim_win_set_cursor(0,{5,3})');
   await rpc('nvim_input', ['grn']);
   await delay(150);
-  await rpc('nvim_input', ['article<CR>']);
+  const tagRenameDialog = await renameDialog('rename tag');
+  await rpc('nvim_input', ['<C-u>article<CR>']);
   await delay(500);
   const tagRename = await lua(
     'local lines=vim.api.nvim_buf_get_lines(0,0,-1,false); return {open=lines[5],close=lines[13],errmsg=vim.v.errmsg}',
@@ -134,7 +153,7 @@ export async function verifyLinkedTagsUI(rpc) {
     !tagRename.close.includes('</article>') ||
     tagRename.errmsg
   )
-    throw new Error('Vue tag LSP rename failed: ' + JSON.stringify(tagRename));
+    throw new Error('Vue tag LSP rename failed: ' + JSON.stringify({ tagRenameDialog, tagRename }));
   await lua(
     "vim.api.nvim_buf_set_lines(0,12,12,false,{'    <LiveTag'}); vim.api.nvim_win_set_cursor(0,{13,0})",
   );
@@ -154,10 +173,8 @@ export async function verifyLinkedTagsUI(rpc) {
   );
   await rpc('nvim_input', ['grn']);
   await delay(150);
-  const codeDialog = await lua(
-    "local r=require('lspsaga.rename'); assert(r.winid and vim.api.nvim_win_is_valid(r.winid)); return vim.api.nvim_buf_get_lines(r.bufnr,0,-1,false)",
-  );
-  await rpc('nvim_input', ['renamedCount<CR>']);
+  const codeDialog = await renameDialog('rename variable');
+  await rpc('nvim_input', ['<C-u>renamedCount<CR>']);
   await delay(500);
   const codeRename = await lua(
     'local lines=vim.api.nvim_buf_get_lines(0,0,-1,false); return {declaration=lines[3],body=lines[5],template=lines[7],errmsg=vim.v.errmsg}',
@@ -235,6 +252,7 @@ export async function verifyLinkedTagsUI(rpc) {
     cawFull,
     closingEdit,
     tagDialog,
+    tagRenameDialog,
     cancelled,
     tagRename,
     autoClose,

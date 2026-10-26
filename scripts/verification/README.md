@@ -7,7 +7,7 @@ npm --prefix scripts/verification ci
 npm --prefix scripts/verification test
 ```
 
-需要 PATH 中的 Neovim 0.12+、Node.js、npm、Git 和 LazyGit，以及已通过 Lazy 安装的插件、Mason 工具和 Tree-sitter 解析器。普通回归不会安装或更新这些组件；使用公共样例的场景会按锁文件执行 `npm ci`，需要能访问 npm 或已有 npm 缓存。Node 调试检查使用 Mason 的 js-debug-adapter。Git UI 检查需要 LazyGit 已完成首次启动提示。
+需要 PATH 中的 Neovim 0.12+、Node.js、npm、Git 和 LazyGit，以及已通过 Lazy 安装的插件、Mason 工具和 Tree-sitter 解析器。普通回归不会安装或更新这些组件；使用公共样例的场景会按锁文件执行 `npm ci`，需要能访问 npm 或已有 npm 缓存。Node 调试检查使用 Mason 的 js-debug-adapter。Git UI 使用独立的临时 LazyGit 配置，关闭首次启动提示。
 
 统一入口从仓库根目录启动 Neovim，并按配置目录名设置 `NVIM_APPNAME`。可用 `NEOVIM_BIN` 指定 Neovim 可执行文件。
 
@@ -22,9 +22,13 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 `module-loading` 检查原生功能和插件声明的自动发现、功能目录的辅助文件边界、延迟初始化，以及 Lazy 重载后保留折叠状态并重新读取插件声明。
 
+`brackets` 检查当前包围括号高亮，包括最近的嵌套括号、字符串和注释、Lua 函数内部、Vue script 注入、模板字符串及窗口切换后的清理。
+
 `unocss` 检查 HTML/Vue/TSX 原子类补全、项目主题与 shortcuts，并确认普通项目不启动该服务。
 
 `definitions` 检查定义跳转和引用预览，`emmet` 包含补全关闭后的片段跳转，`hover` 检查悬停文档显示、原生窗口切换和 Esc 关闭；`vue-folding` 与 `fold-colors` 检查原生折叠范围和语法颜色。
+
+`config-audit` 检查诊断跳转与原生半页滚动计数；`linked-tags` 和 `typescript-refactor` 检查原生重命名的取消、标签/变量修改和提取函数后的重命名。
 
 `mason-commands` 使用已安装的本地注册表，检查原生命令和补全时关闭该测试进程的元数据刷新，避免顺带下载注册表。
 

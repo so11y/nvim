@@ -3,10 +3,6 @@
     "branch": "main",
     "commit": "78336bc89ee5365633bcf754d93df01678b5c08f"
   },
-  "blink.indent": {
-    "branch": "main",
-    "commit": "2e9c9768affeaf3a48b2dc329eb59763012f79f6"
-  },
   "buffer-reopen.nvim": {
     "branch": "main",
     "commit": "e08dfc4bfea21bbb771f24e1dd032b437a0f8401"
@@ -14,10 +10,6 @@
   "bufferline.nvim": {
     "branch": "main",
     "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3"
-  },
-  "catppuccin": {
-    "branch": "main",
-    "commit": "edefef779ab08ce1a4a404713e3012b0d202bd35"
   },
   "codediff.nvim": {
     "branch": "main",
@@ -34,10 +26,6 @@
   "friendly-snippets": {
     "branch": "main",
     "commit": "b4d01b0fdf3c9a549961c2f9ffe8dc09be166219"
-  },
-  "github-theme": {
-    "branch": "main",
-    "commit": "c106c9472154d6b2c74b74565616b877ae8ed31d"
   },
   "glance.nvim": {
     "branch": "master",
@@ -63,10 +51,6 @@
     "branch": "main",
     "commit": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d"
   },
-  "lspsaga.nvim": {
-    "branch": "main",
-    "commit": "cf6fc9473bba1d332eda9887855ea29ed9b37701"
-  },
   "mason.nvim": {
     "branch": "main",
     "commit": "2a6940af80375532e5e9e7c1f2fc6319a1b7a69d"
@@ -78,14 +62,6 @@
   "neo-tree.nvim": {
     "branch": "v3.x",
     "commit": "1a14083046d96e88e361d1da00761c40d45012f3"
-  },
-  "neogit": {
-    "branch": "master",
-    "commit": "70708be9664b7fcdd010eb07bdc3ebc9311c2027"
-  },
-  "neoscroll.nvim": {
-    "branch": "master",
-    "commit": "c8d29979cb0cb3a2437a8e0ae683fd82f340d3b8"
   },
   "noice.nvim": {
     "branch": "main",
@@ -151,10 +127,6 @@
     "branch": "master",
     "commit": "58447c1fca354bbf184425e4a8d01deecbd6f3c4"
   },
-  "opencode.nvim": {
-    "branch": "main",
-    "commit": "06770e2e3618b82703e3e7af1f2d5dc67bde0002"
-  },
   "persistence.nvim": {
     "branch": "main",
     "commit": "b20b2a7887bd39c1a356980b45e03250f3dce49c"
@@ -162,10 +134,6 @@
   "plenary.nvim": {
     "branch": "master",
     "commit": "74b06c6c75e4eeb3108ec01852001636d85a932b"
-  },
-  "rainbow-delimiters.nvim": {
-    "branch": "master",
-    "commit": "3a0fc08dd39e8bf034a4cfef3f2845bd5f565a2e"
   },
   "rustaceanvim": {
     "branch": "master",
@@ -186,6 +154,10 @@
   "vscode-multi-cursor.nvim": {
     "branch": "main",
     "commit": "210d64a6d190383a81b8dcdf8779d357006f3a69"
+  },
+  "vscode.nvim": {
+    "branch": "main",
+    "commit": "6439ed89d0e10193f07e92268a321d7c6f6e93ee"
   },
   "which-key.nvim": {
     "branch": "main",

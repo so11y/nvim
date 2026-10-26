@@ -10,7 +10,7 @@ vim.opt.list = true -- 显示不可见字符（如空格、Tab）
 vim.o.signcolumn = 'yes:1' -- 左侧“符号栏”始终显示，宽度固定为1。防止 Git 符号或错误提示出现时屏幕抖动。
 vim.wo.wrap = false -- 关闭自动换行（长行会超出屏幕，需水平滚动）
 vim.opt.conceallevel = 0 -- 开启隐藏模式（主要用于 Markdown/JSON）。例如 `**bold**` 会直接显示为加粗的 **bold**，而不显示星号。
-vim.o.winborder = 'rounded' -- 设置浮动窗口的边框默认为圆角。
+vim.o.winborder = 'rounded' -- 浮动窗口默认使用圆角边框。
 
 vim.opt.undofile = true
 vim.opt.ignorecase = true -- 搜索时忽略大小写

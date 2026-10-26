@@ -11,5 +11,4 @@ return {
     components.RightPadding(components.LSPActive, 1),
     components.RightPadding(components.Formatters, 1),
     components.RightPadding(components.FileType, 1),
-    components.ScrollBar,
 }

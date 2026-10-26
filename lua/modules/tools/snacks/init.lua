@@ -83,6 +83,24 @@ return {
             picker = {
                 ui_select = true,
                 focus = 'list',
+                kinds = {
+                    codeaction = {
+                        config = function(opts)
+                            local height = #opts.finder()
+                            opts.layout.config = function(layout)
+                                layout.layout.height = height + 2
+                                for i = #layout.layout, 1, -1 do
+                                    local box = layout.layout[i]
+                                    if box.win == 'input' then
+                                        table.remove(layout.layout, i)
+                                    elseif box.win == 'list' then
+                                        box.height = height
+                                    end
+                                end
+                            end
+                        end,
+                    },
+                },
                 win = {
                     input = {
                         keys = {
@@ -137,6 +155,14 @@ return {
                     },
                 },
                 sources = {
+                    lsp_symbols = {
+                        filter = { default = true },
+                        win = {
+                            preview = {
+                                keys = { ['<C-h>'] = 'focus_list' },
+                            },
+                        },
+                    },
                     files = {
                         hidden = true,
                         exclude = { '.git', 'node_modules', '.DS_Store' },
@@ -185,6 +211,13 @@ return {
         },
 
         keys = {
+            {
+                '<leader>co',
+                function()
+                    Snacks.picker.lsp_symbols()
+                end,
+                desc = '代码大纲',
+            },
             {
                 '<leader>?',
                 function()

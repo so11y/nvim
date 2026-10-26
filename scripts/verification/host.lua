@@ -5,12 +5,9 @@ for _, name in ipairs({
     'mason.nvim',
     'rustaceanvim',
     'blink.cmp',
-    'blink.indent',
     'nvim-dap',
     'snacks.nvim',
     'glance.nvim',
-    'neoscroll.nvim',
-    'neogit',
     'codediff.nvim',
     'vim-visual-multi',
 }) do

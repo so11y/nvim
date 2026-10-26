@@ -189,24 +189,25 @@ assert(contents(html_buf):find('你好😀', 1, true))
 
 local pos = position(2, '<span>')
 vim.api.nvim_win_set_cursor(0, { pos.line + 1, pos.character })
-vim.cmd.Lspsaga('code_action')
-local saga = require('lspsaga.codeaction')
+vim.cmd.normal('gra')
 assert(
     vim.wait(5000, function()
-        return saga.action_winid
-            and vim.api.nvim_win_is_valid(saga.action_winid)
+        local picker = Snacks.picker.get({ source = 'select' })[1]
+        return picker and picker:count() > 0
     end, 20),
-    'Lspsaga Code Action menu did not open'
+    'Code action menu did not open'
 )
-local win = saga.action_winid
-local cfg = vim.api.nvim_win_get_config(win)
-local lines = vim.api.nvim_buf_get_lines(saga.action_bufnr, 0, -1, false)
+local picker = Snacks.picker.get({ source = 'select' })[1]
+local win = picker.list.win.win
+local lines = vim.api.nvim_buf_get_lines(picker.list.win.buf, 0, -1, false)
 assert(#lines > 0)
-assert(vim.api.nvim_win_get_height(win) <= #lines)
-assert(vim.wo[win].winhighlight:find('SagaNormal', 1, true))
-assert(vim.fn.maparg('<CR>', 'n', false, true).buffer == 1)
-assert(vim.fn.maparg('<Tab>', 'n', false, true).buffer == 1)
-results.menu = { config = cfg, lines = lines, count = #lines }
-saga:close_action_window()
+assert(vim.api.nvim_get_current_win() == win)
+assert(vim.fn.mode() == 'n')
+results.menu = {
+    config = vim.api.nvim_win_get_config(win),
+    lines = lines,
+    count = picker:count(),
+}
+picker:close()
 
 return results

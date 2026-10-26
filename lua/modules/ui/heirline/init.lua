@@ -5,13 +5,26 @@ return {
     config = function()
         local utils = require('heirline.utils')
         local function colors()
-            local palette = require('catppuccin.palettes').get_palette('mocha')
-            palette.dim = palette.surface1
-            palette.filetype = palette.yellow
-            palette.diag_warn = palette.yellow
-            palette.diag_error = palette.red
-            palette.diag_hint = palette.teal
-            palette.diag_info = palette.sky
+            local c = require('vscode.colors').get_colors()
+            local palette = {
+                base = c.vscBack,
+                mantle = c.vscTabOutside,
+                text = c.vscFront,
+                dim = c.vscLineNumber,
+                blue = c.vscBlue,
+                lavender = c.vscBlue,
+                mauve = c.vscPink,
+                pink = c.vscPink,
+                peach = c.vscOrange,
+                green = c.vscLightGreen,
+                red = c.vscRed,
+                maroon = c.vscLightRed,
+                filetype = c.vscYellow,
+                diag_warn = c.vscYellow,
+                diag_error = c.vscRed,
+                diag_hint = c.vscBlueGreen,
+                diag_info = c.vscLightBlue,
+            }
             vim.api.nvim_set_hl(0, 'StatusLine', {
                 fg = palette.text,
                 bg = palette.mantle,

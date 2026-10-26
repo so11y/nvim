@@ -180,7 +180,7 @@ function M.setup()
     })
     vim.api.nvim_create_autocmd('User', {
         group = group,
-        pattern = { 'GitSignsChanged', 'NeogitStatusRefreshed' },
+        pattern = 'GitSignsChanged',
         callback = refresh,
     })
     vim.api.nvim_create_autocmd('User', {

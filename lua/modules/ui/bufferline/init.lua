@@ -31,6 +31,7 @@ return {
                 },
             },
             highlights = function(defaults)
+                local colors = require('vscode.colors').get_colors()
                 local highlights = defaults.highlights
                 highlights.error = {
                     fg = {
@@ -43,12 +44,10 @@ return {
                     },
                 }
                 for name, highlight in pairs(highlights) do
-                    highlight.bg = {
-                        attribute = 'bg',
-                        highlight = name:match('_selected$') and 'Normal'
-                            or 'NeoTreeNormal',
-                    }
-                    highlight.bold = false
+                    highlight.bg = name == 'fill' and colors.vscTabOutside
+                        or name:match('_selected$') and colors.vscTabCurrent
+                        or colors.vscTabOther
+                    highlight.bold = name:match('_selected$') ~= nil
                     highlight.italic = false
                 end
                 return highlights

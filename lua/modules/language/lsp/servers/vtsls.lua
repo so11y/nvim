@@ -30,7 +30,7 @@ return {
                     { focus = true }
                 )
             then
-                vim.cmd('Lspsaga rename')
+                vim.lsp.buf.rename()
             end
         end,
     },

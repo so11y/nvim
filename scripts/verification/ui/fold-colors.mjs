@@ -1,6 +1,6 @@
 export async function verifyFoldColorsUI(rpc) {
   const result = await rpc('nvim_exec_lua', [
-    `vim.cmd.colorscheme('catppuccin-mocha')
+    `vim.cmd.colorscheme('vscode')
  local cases={
    {file='TagActions.html',insert=6,lines={'','<ul class="top">','  <li>上方</li>','</ul>','','<ul class="bottom">','  <li>下方</li>','</ul>'},first=8,second=12,col=1},
    {file='TagActions.vue',insert=13,lines={'  <ul v-if="visible">','    <li>上方</li>','  </ul>','','  <ul v-for="item in items">','    <li>下方</li>','  </ul>'},first=14,second=18,col=3},

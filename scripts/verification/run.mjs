@@ -20,6 +20,7 @@ const ui = new Map(
   Object.keys(uiScenarios).map((name) => [name.replace(/\.lua$/, ''), name]),
 );
 for (const name of [
+  'brackets',
   'config-audit',
   'definitions',
   'editing-regressions',
@@ -45,6 +46,7 @@ for (const name of [
 ui.set('workflows', 'workflows');
 ui.set('host', 'host');
 const selfContained = new Set([
+  'brackets',
   'emmet',
   'emmet-context',
   'emmet-vue',

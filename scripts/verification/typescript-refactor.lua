@@ -30,27 +30,33 @@ for _, a in ipairs(r.result) do
     end
 end
 assert(action, 'Extract function action missing')
-local resolved = c:request_sync('codeAction/resolve', action, 15000, 0)
-assert(
-    resolved
-        and resolved.result
-        and resolved.result.command.command == 'editor.action.rename',
-    'Extract action did not resolve'
-)
-vim.lsp.util.apply_workspace_edit(resolved.result.edit, c.offset_encoding)
-c:exec_cmd(resolved.result.command, { bufnr = 0 })
-local rename = require('lspsaga.rename')
+vim.lsp.buf.code_action({
+    range = { start = { 2, 17 }, ['end'] = { 2, 21 } },
+    filter = function(candidate, client_id)
+        return client_id == c.id and candidate.title == action.title
+    end,
+    apply = true,
+})
+local rename_win
 assert(
     vim.wait(5000, function()
-        return rename.winid and vim.api.nvim_win_is_valid(rename.winid)
+        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+            if
+                vim.bo[vim.api.nvim_win_get_buf(win)].filetype == 'snacks_input'
+            then
+                rename_win = win
+                return true
+            end
+        end
     end, 20),
-    'Refactor did not open Lspsaga rename'
+    'Refactor did not open the native rename input'
 )
-assert(vim.bo[rename.bufnr].filetype == 'sagarename')
+local rename_buf = vim.api.nvim_win_get_buf(rename_win)
+assert(vim.b[rename_buf].completion == false)
 return {
     refactor_applied = true,
     rename_prompted = true,
-    initial_name = vim.api.nvim_buf_get_lines(rename.bufnr, 0, -1, false)[1],
+    initial_name = vim.api.nvim_buf_get_lines(rename_buf, 0, -1, false)[1],
     bufnr = vim.fn.bufnr(file),
     errmsg = vim.v.errmsg,
 }

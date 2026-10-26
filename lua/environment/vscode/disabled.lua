@@ -9,16 +9,12 @@ return {
     'stevearc/conform.nvim',
     'mrcjkb/rustaceanvim',
     -- ui
-    'saghen/blink.indent',
-    'nvimdev/lspsaga.nvim',
     'DNLHC/glance.nvim',
-    'karb94/neoscroll.nvim',
     'akinsho/bufferline.nvim',
     'nvim-neo-tree/neo-tree.nvim',
     'folke/noice.nvim',
     'rebelot/heirline.nvim',
     'NvChad/nvim-colorizer.lua',
-    'HiPhish/rainbow-delimiters.nvim',
     'rachartier/tiny-inline-diagnostic.nvim',
     'petertriho/nvim-scrollbar',
     -- tool
@@ -26,7 +22,6 @@ return {
     'folke/snacks.nvim',
     'folke/persistence.nvim',
     'lewis6991/gitsigns.nvim',
-    'NeogitOrg/neogit',
     'esmuellert/codediff.nvim',
     'folke/which-key.nvim',
     'MagicDuck/grug-far.nvim',
@@ -36,6 +31,5 @@ return {
     'mfussenegger/nvim-dap',
     'windwp/nvim-autopairs',
     'windwp/nvim-ts-autotag',
-    'catppuccin/nvim',
-    'projekt0n/github-nvim-theme',
+    'Mofiqul/vscode.nvim',
 }
