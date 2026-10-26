@@ -167,6 +167,8 @@ Vue 模板中，`al/ad` 选择整个带 `v-for` 或 `v-if/v-else-if/v-else` 的�
 
 ![差异视图](docs/images/nvim-codediff.png)
 
+![Git 终端界面](docs/images/nvim-lazygit.png)
+
 ## 补全与调试
 
 | 按键 | 模式 | 功能 |
