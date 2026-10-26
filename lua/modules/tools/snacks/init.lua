@@ -157,6 +157,25 @@ return {
                 sources = {
                     lsp_symbols = {
                         filter = { default = true },
+                        preview = function(ctx)
+                            ctx.preview:reset()
+                            ctx.preview:set_title(
+                                vim.fn.fnamemodify(
+                                    vim.api.nvim_buf_get_name(ctx.item.buf),
+                                    ':t'
+                                )
+                            )
+                            ctx.preview:set_lines(
+                                vim.api.nvim_buf_get_lines(
+                                    ctx.item.buf,
+                                    0,
+                                    -1,
+                                    false
+                                )
+                            )
+                            ctx.preview:highlight({ buf = ctx.item.buf })
+                            ctx.preview:loc()
+                        end,
                         win = {
                             preview = {
                                 keys = { ['<C-h>'] = 'focus_list' },

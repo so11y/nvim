@@ -45,6 +45,18 @@ local ok, err = xpcall(function()
             end, 25),
             'Outline preview missing'
         )
+        vim.api.nvim_feedkeys(vim.keycode('<C-l>'), 'xt', false)
+        assert(
+            vim.api.nvim_get_current_win() == picker.preview.win.win,
+            'Ctrl+L did not enter the outline preview'
+        )
+        vim.api.nvim_feedkeys(vim.keycode('<C-h>'), 'xt', false)
+        assert(
+            not picker.closed
+                and vim.api.nvim_get_current_win() == picker.list.win.win,
+            'Ctrl+H did not return to the outline list'
+        )
+        report.window_switch = true
         return picker
     end
     vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/outline.ts')
