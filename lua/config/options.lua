@@ -27,6 +27,17 @@ vim.opt.shiftwidth = 2 -- 自动缩进（>> 或 <<）的宽度为 2 个空格
 vim.opt.expandtab = true -- 将 Tab 键转换为空格
 vim.opt.smartindent = true -- 开启智能缩进（换行时自动对齐）
 
+-- 文件类型插件可能启用 r/o，Enter 和 o/O 换行均不自动续写注释前缀。
+vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup(
+        'config.formatoptions',
+        { clear = true }
+    ),
+    callback = function()
+        vim.opt_local.formatoptions:remove({ 'r', 'o' })
+    end,
+})
+
 vim.opt.splitbelow = true -- 水平分屏时，新窗口在下方（默认在上方）
 vim.opt.splitright = true -- 垂直分屏时，新窗口在右方（默认在左方）
 

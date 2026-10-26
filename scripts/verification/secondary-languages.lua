@@ -38,7 +38,7 @@ for _, fixture in ipairs({
                 vim.lsp.get_clients({ bufnr = 0, name = fixture.server })[1]
             return client
                 and client.initialized
-                and require('config.format').info().available
+                and require('modules.language.formatting.format').info().available
         end, 50),
         fixture.server .. ' did not initialize'
     )
@@ -52,7 +52,7 @@ for _, fixture in ipairs({
         symbols and not symbols.err and symbols.result and #symbols.result > 0,
         'No native symbols: ' .. vim.inspect(err or symbols)
     )
-    require('config.format').format()
+    require('modules.language.formatting.format').format()
     local text = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n')
     assert(
         text:find('你好😀', 1, true) or fixture.name == 'css',
@@ -68,7 +68,7 @@ for _, fixture in ipairs({
     report.languages[fixture.name] = {
         server = client.name,
         symbols = #symbols.result,
-        formatter = require('config.format').info().name,
+        formatter = require('modules.language.formatting.format').info().name,
         text = text,
     }
 end

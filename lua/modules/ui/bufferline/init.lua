@@ -57,7 +57,7 @@ return {
     end,
     config = function(_, opts)
         require('bufferline').setup(opts)
-        require('config.bufferline_git').setup()
+        require('modules.ui.bufferline.git').setup()
     end,
 
     keys = { -- 切换标签，使用相同的快捷键

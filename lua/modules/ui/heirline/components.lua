@@ -159,11 +159,12 @@ M.MacroRecording = {
 
 M.Formatters = {
     condition = function()
-        return require('config.format').formatters[vim.bo.filetype] ~= nil
+        return require('modules.language.formatting.format').formatters[vim.bo.filetype]
+            ~= nil
     end,
     update = { 'BufEnter', 'FileType', 'LspAttach', 'LspDetach' },
     provider = function()
-        local formatter = require('config.format').info()
+        local formatter = require('modules.language.formatting.format').info()
         return formatter.name .. (formatter.available and '' or '?')
     end,
     hl = { fg = 'dim', bold = false },

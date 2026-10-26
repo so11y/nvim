@@ -2,9 +2,9 @@ local filename = vim.env.NVIM_TEST_ROOT .. '/alpha/invalid.js'
 vim.fn.writefile({ 'const = ;' }, filename)
 vim.cmd.edit(filename)
 assert(vim.wait(15000, function()
-    return require('config.format').info().available
+    return require('modules.language.formatting.format').info().available
 end, 50))
-require('config.format').format()
+require('modules.language.formatting.format').format()
 vim.wait(300)
 local notices = {}
 for _, n in ipairs(Snacks.notifier.get_history()) do
@@ -78,18 +78,18 @@ assert(
 filename = project .. '/local.js'
 vim.fn.writefile({ 'const value={message:"你好😀"};' }, filename)
 vim.cmd.edit(filename)
-local formatter = require('config.format').info()
+local formatter = require('modules.language.formatting.format').info()
 assert(
     formatter.available and formatter.command:find(project, 1, true),
     'Project formatter was not resolved: ' .. vim.inspect(formatter)
 )
-local component = require('custom.heirline.components').Formatters
+local component = require('modules.ui.heirline.components').Formatters
 local status = {}
 assert(
     component.condition(status) and component.provider(status) == 'prettierd',
     'Status line disagrees with Conform'
 )
-require('config.format').format()
+require('modules.language.formatting.format').format()
 local formatted =
     table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n')
 assert(
@@ -100,7 +100,7 @@ vim.env.PATH = original_path
 
 local heirline = require('heirline')
 heirline.eval_statusline()
-local format = require('config.format')
+local format = require('modules.language.formatting.format')
 local info = format.info
 local queries = 0
 format.info = function(...)

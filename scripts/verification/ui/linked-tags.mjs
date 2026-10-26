@@ -3,16 +3,16 @@ import { setTimeout as delay } from 'node:timers/promises';
 export async function verifyLinkedTagsUI(rpc) {
   const lua = (code) => rpc('nvim_exec_lua', [code, []]);
   await lua(
-    "vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.vue'); local b=vim.api.nvim_get_current_buf(); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=b,name='vue_ls'})>0 and #vim.lsp.get_clients({bufnr=b,name='vtsls'})>0 end,50)); local c=vim.lsp.get_clients({bufnr=b,name='vue_ls'})[1]; assert(vim.wait(5000,function() return vim.api.nvim_get_namespaces()['editing.linked_tags:'..b] end,20))",
+    "vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.vue'); local b=vim.api.nvim_get_current_buf(); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=b,name='vue_ls'})>0 and #vim.lsp.get_clients({bufnr=b,name='vtsls'})>0 end,50)); local c=vim.lsp.get_clients({bufnr=b,name='vue_ls'})[1]; assert(vim.wait(5000,function() return vim.api.nvim_get_namespaces()['modules.language.lsp.linked_tags:'..b] end,20))",
   );
   await delay(200);
   const vue = await lua(
-    "local b=vim.api.nvim_get_current_buf(); local c=vim.lsp.get_clients({bufnr=b,name='vue_ls'})[1]; vim.api.nvim_win_set_cursor(0,{5,3}); local params={textDocument={uri=vim.uri_from_bufnr(b)},position={line=4,character=3}}; local reply=c:request_sync('textDocument/linkedEditingRange',params,3000,b); assert(reply and reply.result and #reply.result.ranges==2,'Vue LSP linked response missing'); vim.api.nvim_exec_autocmds('CursorMoved',{buffer=b}); local ns=vim.api.nvim_get_namespaces()['editing.linked_tags:'..b]; assert(vim.wait(5000,function() return ns and #vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true})==2 end,20),'Vue linked ranges missing'); return {client=c.name,extmarks=#vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true}),inc=vim.fn.exists(':IncRename'),gra_mapped=vim.fn.maparg('gra','n')~='',old_lsp_keys=vim.fn.maparg('<leader>ca','n')~='' or vim.fn.maparg('<leader>cr','n')~=''}",
+    "local b=vim.api.nvim_get_current_buf(); local c=vim.lsp.get_clients({bufnr=b,name='vue_ls'})[1]; vim.api.nvim_win_set_cursor(0,{5,3}); local params={textDocument={uri=vim.uri_from_bufnr(b)},position={line=4,character=3}}; local reply=c:request_sync('textDocument/linkedEditingRange',params,3000,b); assert(reply and reply.result and #reply.result.ranges==2,'Vue LSP linked response missing'); vim.api.nvim_exec_autocmds('CursorMoved',{buffer=b}); local ns=vim.api.nvim_get_namespaces()['modules.language.lsp.linked_tags:'..b]; assert(vim.wait(5000,function() return ns and #vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true})==2 end,20),'Vue linked ranges missing'); return {client=c.name,extmarks=#vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true}),inc=vim.fn.exists(':IncRename'),gra_mapped=vim.fn.maparg('gra','n')~='',old_lsp_keys=vim.fn.maparg('<leader>ca','n')~='' or vim.fn.maparg('<leader>cr','n')~=''}",
   );
   await rpc('nvim_input', ['ciw']);
   await delay(120);
   const empty = await lua(
-    "local b=vim.api.nvim_get_current_buf(); local ns=vim.api.nvim_get_namespaces()['editing.linked_tags:'..b]; return {mode=vim.fn.mode(),open=vim.api.nvim_buf_get_lines(0,4,5,false)[1],close=vim.api.nvim_buf_get_lines(0,12,13,false)[1],extmarks=#vim.api.nvim_buf_get_extmarks(0,ns,0,-1,{details=true}),errmsg=vim.v.errmsg}",
+    "local b=vim.api.nvim_get_current_buf(); local ns=vim.api.nvim_get_namespaces()['modules.language.lsp.linked_tags:'..b]; return {mode=vim.fn.mode(),open=vim.api.nvim_buf_get_lines(0,4,5,false)[1],close=vim.api.nvim_buf_get_lines(0,12,13,false)[1],extmarks=#vim.api.nvim_buf_get_extmarks(0,ns,0,-1,{details=true}),errmsg=vim.v.errmsg}",
   );
   await rpc('nvim_input', ['s']);
   await delay(120);
@@ -172,11 +172,11 @@ export async function verifyLinkedTagsUI(rpc) {
       'Vue script LSP rename failed: ' + JSON.stringify(codeRename),
     );
   await lua(
-    "vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.html'); local b=vim.api.nvim_get_current_buf(); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=b,name='html'})>0 end,50)); assert(vim.wait(5000,function() return vim.api.nvim_get_namespaces()['editing.linked_tags:'..b] end,20))",
+    "vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/TagActions.html'); local b=vim.api.nvim_get_current_buf(); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=b,name='html'})>0 end,50)); assert(vim.wait(5000,function() return vim.api.nvim_get_namespaces()['modules.language.lsp.linked_tags:'..b] end,20))",
   );
   await delay(200);
   const html = await lua(
-    "local b=vim.api.nvim_get_current_buf(); local c=vim.lsp.get_clients({bufnr=b,name='html'})[1]; vim.api.nvim_win_set_cursor(0,{1,1}); local params={textDocument={uri=vim.uri_from_bufnr(b)},position={line=0,character=1}}; local reply=c:request_sync('textDocument/linkedEditingRange',params,3000,b); assert(reply and reply.result and #reply.result.ranges==2,'HTML LSP linked response missing'); vim.api.nvim_exec_autocmds('CursorMoved',{buffer=b}); local ns=vim.api.nvim_get_namespaces()['editing.linked_tags:'..b]; assert(vim.wait(5000,function() return ns and #vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true})==2 end,20),'HTML linked ranges missing'); return {client=c.name,extmarks=#vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true})}",
+    "local b=vim.api.nvim_get_current_buf(); local c=vim.lsp.get_clients({bufnr=b,name='html'})[1]; vim.api.nvim_win_set_cursor(0,{1,1}); local params={textDocument={uri=vim.uri_from_bufnr(b)},position={line=0,character=1}}; local reply=c:request_sync('textDocument/linkedEditingRange',params,3000,b); assert(reply and reply.result and #reply.result.ranges==2,'HTML LSP linked response missing'); vim.api.nvim_exec_autocmds('CursorMoved',{buffer=b}); local ns=vim.api.nvim_get_namespaces()['modules.language.lsp.linked_tags:'..b]; assert(vim.wait(5000,function() return ns and #vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true})==2 end,20),'HTML linked ranges missing'); return {client=c.name,extmarks=#vim.api.nvim_buf_get_extmarks(b,ns,0,-1,{details=true})}",
   );
   await rpc('nvim_input', ['ciws']);
   await delay(120);

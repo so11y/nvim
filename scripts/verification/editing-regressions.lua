@@ -40,6 +40,10 @@ local vue = {
     '.button { color: red; }',
     '</style>',
 }
+assert(
+    not require('lazy.core.config').plugins['Comment.nvim'],
+    'Comment.nvim is still configured'
+)
 local comments = {
     { 'typescript', { 'const value = 1;' }, 1, '// const value = 1;' },
     { 'lua', { 'local value = 1' }, 1, '-- local value = 1' },
@@ -55,12 +59,12 @@ for _, case in ipairs(comments) do
     vim.api.nvim_feedkeys(vim.keycode('<A-/>'), 'xt', false)
     assert(
         vim.api.nvim_get_current_line() == case[4],
-        'Comment.nvim comment failed for ' .. case[1] .. ' row ' .. case[3]
+        'Native comment failed for ' .. case[1] .. ' row ' .. case[3]
     )
     vim.api.nvim_feedkeys(vim.keycode('<A-/>'), 'xt', false)
     assert(
         vim.deep_equal(vim.api.nvim_buf_get_lines(0, 0, -1, false), case[2]),
-        'Comment.nvim uncomment did not restore ' .. case[1]
+        'Native uncomment did not restore ' .. case[1]
     )
 end
 scratch({ 'const first = 1;', 'const second = 2;' }, 'typescript')
@@ -71,7 +75,7 @@ assert(
         '// const first = 1;',
         '// const second = 2;',
     }),
-    'Comment.nvim Visual comment did not cover the selected lines'
+    'Native Visual comment did not cover the selected lines'
 )
 vim.api.nvim_feedkeys(vim.keycode('gv<A-/>'), 'xt', false)
 assert(
@@ -79,9 +83,34 @@ assert(
         'const first = 1;',
         'const second = 2;',
     }),
-    'Comment.nvim Visual uncomment did not restore the selected lines'
+    'Native Visual uncomment did not restore the selected lines'
 )
-report.comment_plugin = { contexts = #comments, visual_round_trip = true }
+report.native_comments = { contexts = #comments, visual_round_trip = true }
+
+for _, case in ipairs(comments) do
+    for _, action in ipairs({ 'A<CR><Esc>', 'o<Esc>', 'O<Esc>' }) do
+        local lines = vim.deepcopy(case[2])
+        lines[case[3]] = case[4]
+        scratch(lines, case[1])
+        vim.api.nvim_win_set_cursor(0, { case[3], 0 })
+        vim.api.nvim_feedkeys(vim.keycode(action), 'xt', false)
+        local row = action == 'O<Esc>' and case[3] - 1 or case[3]
+        local newline = vim.api.nvim_buf_get_lines(0, row, row + 1, false)[1]
+        assert(
+            newline and newline:match('^%s*$'),
+            action
+                .. ' continued a comment for '
+                .. case[1]
+                .. ': '
+                .. vim.inspect(newline)
+        )
+    end
+end
+report.comment_newlines = {
+    contexts = #comments,
+    keys = { 'Enter', 'o', 'O' },
+    continues_comments = false,
+}
 
 local rust = scratch({
     'fn f(a: i32, b: i32) -> i32 { a + b }',
@@ -170,7 +199,7 @@ for _, force in ipairs({ true, false }) do
     vim.api.nvim_del_autocmd(autocmd)
 end
 local exits = 0
-local rpc = require('lsp.tag_fix').cmd({
+local rpc = require('modules.language.lsp.tag_actions').cmd({
     on_exit = function()
         exits = exits + 1
     end,

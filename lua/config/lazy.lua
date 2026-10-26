@@ -33,12 +33,7 @@ end
 
 require('lazy').setup({
     install = { missing = false },
-    spec = vim.list_extend({
-        { import = 'plugins.completion' },
-        { import = 'plugins.editor' },
-        { import = 'plugins.tool' },
-        { import = 'plugins.ui' },
-    }, env.specs),
+    spec = vim.list_extend(require('config.modules')(), env.specs),
     defaults = {
         cond = function(plugin)
             return not disabled[plugin[1]]

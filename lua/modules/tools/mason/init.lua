@@ -3,11 +3,11 @@ return {
         'mason-org/mason.nvim',
         version = '^2',
         lazy = false,
-        build = ":lua require('config.mason_tools').install()",
+        build = ":lua require('modules.tools.mason.tools').install()",
         opts = {},
         config = function(_, opts)
             require('mason').setup(opts)
-            require('config.mason_tools').setup()
+            require('modules.tools.mason.tools').setup()
         end,
     },
 }

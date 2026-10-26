@@ -24,7 +24,7 @@ return {
         end
 
         require('heirline').setup({
-            statusline = require('custom.heirline.statusline'),
+            statusline = require('modules.ui.heirline.statusline'),
             opts = { colors = colors },
         })
         vim.api.nvim_create_autocmd('ColorScheme', {

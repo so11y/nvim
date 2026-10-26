@@ -59,7 +59,7 @@ check('javascript_and_eslint', function()
     a = open('alpha/test.js')
     local vts, eslint = client(a, 'vtsls'), client(a, 'eslint')
     assert(
-        require('config.format').info(a).available,
+        require('modules.language.formatting.format').info(a).available,
         'JavaScript formatter unavailable'
     )
     assert(
@@ -99,7 +99,7 @@ check('javascript_and_eslint', function()
         type(actions) == 'table' and #actions > 0,
         'No fixable ESLint code action'
     )
-    require('config.format').format(a)
+    require('modules.language.formatting.format').format(a)
     local text = table.concat(vim.api.nvim_buf_get_lines(a, 0, -1, false), '\n')
     assert(
         text:find('你好😀', 1, true)
@@ -116,7 +116,7 @@ check('javascript_and_eslint', function()
 end)
 check('multiple_roots_and_highlights', function()
     local hooks = #vim.api.nvim_get_autocmds({
-        group = 'config.lsp.highlights',
+        group = 'modules.language.lsp.highlights',
         buffer = a,
     })
     b = open('beta/test.js')
@@ -127,10 +127,10 @@ check('multiple_roots_and_highlights', function()
         'Project clients were reused across roots'
     )
     assert(hooks > 0 and #vim.api.nvim_get_autocmds({
-        group = 'config.lsp.highlights',
+        group = 'modules.language.lsp.highlights',
         buffer = a,
     }) == hooks, 'First-buffer highlights were cleared')
-    require('config.format').format(b)
+    require('modules.language.formatting.format').format(b)
     local text = table.concat(vim.api.nvim_buf_get_lines(b, 0, -1, false), '\n')
     assert(
         text:find("b: '你好😀'", 1, true) and not text:find(';', 1, true),
@@ -147,7 +147,7 @@ check('typescript_navigation_and_rename', function()
     ts = open('alpha/test.ts')
     local c = client(ts, 'vtsls')
     assert(
-        require('config.format').info(ts).available,
+        require('modules.language.formatting.format').info(ts).available,
         'TypeScript formatter unavailable'
     )
     local p = position(ts, 2, 'add', c)
@@ -184,7 +184,7 @@ check('vue_hybrid_and_unicode', function()
     vue = open('alpha/App.vue')
     local vts, vls = client(vue, 'vtsls'), client(vue, 'vue_ls')
     assert(
-        require('config.format').info(vue).available,
+        require('modules.language.formatting.format').info(vue).available,
         'Vue formatter unavailable'
     )
     assert(
@@ -203,7 +203,7 @@ check('vue_hybrid_and_unicode', function()
         vue
     )
     assert(type(symbols) == 'table' and #symbols > 0, 'Vue symbols missing')
-    require('config.format').format(vue)
+    require('modules.language.formatting.format').format(vue)
     local text =
         table.concat(vim.api.nvim_buf_get_lines(vue, 0, -1, false), '\n')
     assert(
@@ -219,10 +219,10 @@ end)
 check('windows_space_and_unicode_filename', function()
     local buf = open("alpha/文 件's.js")
     assert(
-        require('config.format').info(buf).available,
+        require('modules.language.formatting.format').info(buf).available,
         'Formatter unavailable'
     )
-    require('config.format').format(buf)
+    require('modules.language.formatting.format').format(buf)
     local text =
         table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), '\n')
     assert(

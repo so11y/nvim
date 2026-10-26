@@ -31,15 +31,15 @@ end
 function M.setup()
     M.capabilities = require('blink.cmp').get_lsp_capabilities()
     vim.lsp.config('*', { capabilities = M.capabilities })
-    vim.lsp.config('vtsls', require('lsp.vtsls'))
-    vim.lsp.config('vue_ls', require('lsp.vue_ls'))
-    vim.lsp.config('unocss', require('lsp.unocss'))
+    vim.lsp.config('vtsls', require('modules.language.lsp.servers.vtsls'))
+    vim.lsp.config('vue_ls', require('modules.language.lsp.servers.vue_ls'))
+    vim.lsp.config('unocss', require('modules.language.lsp.servers.unocss'))
     vim.lsp.config(
         'emmet_language_server',
-        require('lsp.emmet_language_server')
+        require('modules.language.lsp.servers.emmet_language_server')
     )
     vim.lsp.config('tag_fix', {
-        cmd = require('lsp.tag_fix').cmd,
+        cmd = require('modules.language.lsp.tag_actions').cmd,
         filetypes = { 'html', 'vue', 'javascriptreact', 'typescriptreact' },
         offset_encoding = 'utf-8',
     })
@@ -63,18 +63,14 @@ function M.setup()
         update_in_insert = false,
     })
 
-    local group = vim.api.nvim_create_augroup('config.lsp', { clear = true })
-    local highlights =
-        vim.api.nvim_create_augroup('config.lsp.highlights', { clear = true })
-    vim.api.nvim_create_autocmd('WinEnter', {
-        group = group,
-        callback = function()
-            local win = vim.api.nvim_get_current_win()
-            if vim.w[win]['textDocument/hover'] then
-                vim.wo[win].concealcursor = 'n'
-            end
-        end,
-    })
+    local group = vim.api.nvim_create_augroup(
+        'modules.language.lsp.setup',
+        { clear = true }
+    )
+    local highlights = vim.api.nvim_create_augroup(
+        'modules.language.lsp.highlights',
+        { clear = true }
+    )
     vim.api.nvim_create_autocmd('LspAttach', {
         group = group,
         callback = function(ev)
@@ -84,7 +80,10 @@ function M.setup()
                 and client:supports_method('textDocument/linkedEditingRange')
             then
                 vim.schedule(function()
-                    require('editing.linked_tags').attach(client, ev.buf)
+                    require('modules.language.lsp.linked_tags').attach(
+                        client,
+                        ev.buf
+                    )
                 end)
             end
             if

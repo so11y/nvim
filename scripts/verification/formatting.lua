@@ -6,7 +6,7 @@ vim.env.PATH = vim.fn.stdpath('data')
     .. (vim.fn.has('win32') == 1 and ';' or ':')
     .. vim.env.PATH
 vim.opt.undofile = false
-local spec = require('plugins.completion.format')
+local spec = require('modules.language.formatting')
 require('conform').setup(spec.opts())
 local filename = vim.fn.tempname() .. '.lua'
 vim.fn.writefile({ 'local value={answer=42}' }, filename)
@@ -43,7 +43,7 @@ assert(
 vim.bo[other].filetype = 'text'
 vim.api.nvim_buf_set_lines(other, 0, -1, false, { 'leave this = raw' })
 vim.api.nvim_exec_autocmds('BufWritePre', { buffer = other, modeline = false })
-require('config.format').format(other)
+require('modules.language.formatting.format').format(other)
 assert(
     vim.api.nvim_buf_get_lines(other, 0, 1, false)[1] == 'leave this = raw',
     'An unconfigured filetype was formatted'
@@ -51,7 +51,7 @@ assert(
 vim.api.nvim_buf_delete(other, { force = true })
 vim.fn.delete(other_filename)
 assert(
-    not package.loaded['config.lsp'],
+    not package.loaded['modules.language.lsp.setup'],
     'Formatting loaded the LSP configuration'
 )
 assert(vim.v.errmsg == '', vim.v.errmsg)

@@ -6,7 +6,7 @@ end
 vim.o.hidden = true
 vim.g.mapleader = ' '
 require('config.keymaps')
-local plugin = require('plugins.tool.buffer-reopen')
+local plugin = require('modules.tools.buffer-reopen')
 plugin.config()
 local mapping = plugin.keys[1]
 vim.keymap.set('n', mapping[1], mapping[2], { desc = mapping.desc })
@@ -14,12 +14,12 @@ local function reopen()
     vim.api.nvim_feedkeys(' wr', 'xt', false)
 end
 local close
-for _, key in ipairs(require('plugins.tool.snacks')[1].keys) do
+for _, key in ipairs(require('modules.tools.snacks')[1].keys) do
     if key[1] == '<A-w>' then
         close = key[2]
     end
 end
-local options = require('plugins.ui.bufferline').opts().options
+local options = require('modules.ui.bufferline').opts().options
 local history = require('buffer-reopen.store').closed_buffers
 assert(vim.fn.maparg('<leader>bt', 'n') == '')
 assert(vim.fn.maparg('<C-S-t>', 'n') == '')

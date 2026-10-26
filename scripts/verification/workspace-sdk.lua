@@ -24,7 +24,8 @@ local ok, err = xpcall(function()
         vim.inspect(reply or request_err)
     )
     local body = assert(reply.result.body, vim.inspect(reply))
-    local sdk = require('lsp.vtsls').settings.vtsls.typescript.globalTsdk
+    local sdk =
+        require('modules.language.lsp.servers.vtsls').settings.vtsls.typescript.globalTsdk
     local normalized_sdk =
         vim.fs.normalize(assert(vim.uv.fs_realpath(sdk))):lower()
     local libs = {}
@@ -47,7 +48,8 @@ local ok, err = xpcall(function()
         )
     ).version
     assert(
-        report.version == require('config.mason_tools').versions.typescript_sdk
+        report.version
+            == require('modules.tools.mason.tools').versions.typescript_sdk
     )
 end, debug.traceback)
 report.error = not ok and err or nil

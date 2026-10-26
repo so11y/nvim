@@ -9,9 +9,9 @@ local ok, err = xpcall(function()
     report.plugins = vim.tbl_count(plugins)
 
     local registry = require('mason-registry')
-    local tools = require('config.mason_tools')
+    local tools = require('modules.tools.mason.tools')
     local versions = tools.versions
-    local parsers = require('config.treesitter').parsers
+    local parsers = require('modules.editor.treesitter.setup').parsers
     for _, name in ipairs(tools.tools) do
         local version = versions.mason[name]
         local package = registry.get_package(name)

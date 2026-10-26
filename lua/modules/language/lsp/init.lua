@@ -5,11 +5,11 @@ return {
         event = { 'BufReadPre', 'BufNewFile', 'FileType' },
         init = function()
             if not vim.g.vscode then
-                require('config.lsp').setup_keymaps()
+                require('modules.language.lsp.setup').setup_keymaps()
             end
         end,
         config = function()
-            require('config.lsp').setup()
+            require('modules.language.lsp.setup').setup()
         end,
     },
     {
@@ -22,7 +22,7 @@ return {
                 return {
                     dap = { autoload_configurations = false },
                     server = {
-                        capabilities = require('config.lsp').capabilities,
+                        capabilities = require('modules.language.lsp.setup').capabilities,
                         on_attach = function(_, bufnr)
                             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
                         end,

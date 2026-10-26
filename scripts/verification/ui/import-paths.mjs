@@ -92,7 +92,7 @@ local reply, err = client:request_sync('workspace/executeCommand', {
   arguments={'projectInfo', {file=file, needFileNameList=true}},
 }, 10000, 0)
 assert(reply and not err and not reply.err, vim.inspect(reply or err))
-local path = require('lsp.vtsls').settings.vtsls.typescript.globalTsdk
+local path = require('modules.language.lsp.servers.vtsls').settings.vtsls.typescript.globalTsdk
 local normalized = vim.fs.normalize(assert(vim.uv.fs_realpath(path))):lower()
 local used = false
 for _, name in ipairs(reply.result.body.fileNames) do
@@ -100,7 +100,7 @@ for _, name in ipairs(reply.result.body.fileNames) do
 end
 assert(used, 'vtsls did not use the pinned SDK')
 local version = vim.json.decode(table.concat(vim.fn.readfile(vim.fs.dirname(path)..'/package.json'), '\n')).version
-assert(version == require('config.mason_tools').versions.typescript_sdk)
+assert(version == require('modules.tools.mason.tools').versions.typescript_sdk)
 return {path=path, version=version}`,
         file,
       );

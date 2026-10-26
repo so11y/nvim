@@ -1,4 +1,4 @@
-local components = require('custom.heirline.components')
+local components = require('modules.ui.heirline.components')
 
 return {
     components.RightPadding(components.Mode, 2),

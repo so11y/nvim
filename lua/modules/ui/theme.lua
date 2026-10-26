@@ -58,6 +58,7 @@ local function apply_ui_highlights()
     local groups = {
         NoiceSearchCount = { fg = palette.yellow },
         CursorLine = { bg = cursorline },
+        Folded = { link = 'CursorLine' },
         CursorLineNr = cursorline_nr,
         CursorLineSign = { link = 'CursorLine' },
         CursorLineFold = { link = 'CursorLine' },
@@ -134,10 +135,6 @@ return {
                     Visual = {
                         bg = colors.surface2,
                         style = {},
-                    },
-                    Folded = {
-                        fg = colors.text,
-                        bg = colors.base,
                     },
                     NeoTreeWinSeparator = {
                         fg = colors.mantle,

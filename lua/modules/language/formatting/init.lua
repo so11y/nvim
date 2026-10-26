@@ -7,14 +7,14 @@ return {
         {
             '<A-F>',
             function()
-                require('config.format').format()
+                require('modules.language.formatting.format').format()
             end,
             mode = { 'n', 'i' },
             desc = '格式化代码',
         },
     },
     opts = function()
-        local format = require('config.format')
+        local format = require('modules.language.formatting.format')
         return {
             formatters_by_ft = format.formatters,
             format_on_save = format.format_options,

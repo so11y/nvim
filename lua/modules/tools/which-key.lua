@@ -64,12 +64,12 @@ return {
                     group = '窗口',
                 },
                 {
-                    '<leader>x',
-                    group = '诊断',
-                },
-                {
                     '<leader>q',
                     group = '退出',
+                },
+                {
+                    '<leader>x',
+                    group = '诊断',
                 },
                 {
                     'g',

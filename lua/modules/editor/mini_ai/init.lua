@@ -30,9 +30,9 @@ end
 
 for id, desc in pairs({ b = '括号', q = '引号' }) do
     local jump = require('utils.repeatable').jump_pair(function()
-        require('editing.pair_move').move(true, id)
+        require('modules.editor.mini_ai.pair_move').move(true, id)
     end, function()
-        require('editing.pair_move').move(false, id)
+        require('modules.editor.mini_ai.pair_move').move(false, id)
     end)
     for prefix, forward in pairs({ [']'] = true, ['['] = false }) do
         keys[#keys + 1] = {

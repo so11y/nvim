@@ -23,10 +23,6 @@
     "branch": "main",
     "commit": "7608f3b436ce1f84a4888f75e53079caa981a2e9"
   },
-  "Comment.nvim": {
-    "branch": "master",
-    "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb"
-  },
   "conform.nvim": {
     "branch": "master",
     "commit": "3543d000dafbc41cc7761d860cfdb24e82154f75"
@@ -151,10 +147,6 @@
     "branch": "main",
     "commit": "88c1453db4ba7dd24131086fe51fdf74e587d275"
   },
-  "nvim-ufo": {
-    "branch": "main",
-    "commit": "ab3eb124062422d276fae49e0dd63b3ad1062cfc"
-  },
   "nvim-web-devicons": {
     "branch": "master",
     "commit": "58447c1fca354bbf184425e4a8d01deecbd6f3c4"
@@ -170,10 +162,6 @@
   "plenary.nvim": {
     "branch": "master",
     "commit": "74b06c6c75e4eeb3108ec01852001636d85a932b"
-  },
-  "promise-async": {
-    "branch": "main",
-    "commit": "119e8961014c9bfaf1487bf3c2a393d254f337e2"
   },
   "rainbow-delimiters.nvim": {
     "branch": "master",

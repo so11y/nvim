@@ -139,15 +139,11 @@ local ok, err = xpcall(function()
         end, 25),
         'Fold provider failed'
     )
-    require('ufo').closeAllFolds()
-    vim.api.nvim_win_set_cursor(0, { 1, 0 })
-    local preview = require('ufo').peekFoldedLinesUnderCursor()
-    assert(
-        preview and vim.api.nvim_win_is_valid(preview),
-        'Fold preview failed'
-    )
-    report.fold_preview = true
-    vim.api.nvim_win_close(preview, true)
+    vim.cmd.normal({ args = { 'zM' }, bang = true })
+    assert(vim.fn.foldclosed(1) == 1, 'Native close-all folding failed')
+    vim.cmd.normal({ args = { 'zR' }, bang = true })
+    assert(vim.fn.foldclosed(1) == -1, 'Native open-all folding failed')
+    report.native_folding = true
     vim.cmd.cd((vim.env.NVIM_TEST_ROOT .. '/alpha'))
     local persistence = require('persistence')
     persistence.save()

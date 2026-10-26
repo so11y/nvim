@@ -7,7 +7,7 @@ for _, plugin in ipairs({
     vim.opt.rtp:append(data .. '/lazy/' .. plugin)
 end
 require('nvim-treesitter').setup()
-local specs = dofile(root .. '/lua/plugins/editor/treesitter.lua')
+local specs = dofile(root .. '/lua/modules/editor/treesitter/init.lua')
 specs[2].config(nil, specs[2].opts)
 local report = { queries = {}, moves = {}, checks = {} }
 local function bench(fn)
@@ -232,7 +232,7 @@ local ok, err = xpcall(function()
             callback(tree, language)
         end)
     end
-    local move = require('editing.ast_move').move
+    local move = require('modules.editor.treesitter.ast_move').move
     local function edited_jump(capture)
         revision = revision + 1
         vim.api.nvim_buf_set_lines(sparse_buf, 1, 2, false, {

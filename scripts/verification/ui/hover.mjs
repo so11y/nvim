@@ -5,9 +5,13 @@ export async function verifyHoverUI(rpc) {
     "vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/refactor.ts'); assert(vim.wait(15000,function() return #vim.lsp.get_clients({bufnr=0,name='vtsls',method='textDocument/hover'})>0 end,50)); vim.api.nvim_win_set_cursor(0,{1,16})",
     [],
   ]);
+  const sourceWin = await rpc('nvim_exec_lua', [
+    'return vim.api.nvim_get_current_win()',
+    [],
+  ]);
   const hoverState = () =>
     rpc('nvim_exec_lua', [
-      "local wins,details,hover={},{},nil; for _,win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do local ok,source=pcall(vim.api.nvim_win_get_var,win,'textDocument/hover'); local buf=vim.api.nvim_win_get_buf(win); details[#details+1]={win=win,relative=vim.api.nvim_win_get_config(win).relative,source=ok and source or nil,ft=vim.bo[buf].filetype}; if ok then wins[#wins+1]=win; hover={first=vim.api.nvim_buf_get_lines(buf,0,1,false)[1],conceallevel=vim.wo[win].conceallevel,concealcursor=vim.wo[win].concealcursor} end end; return {wins=wins,details=details,hover=hover,current=vim.api.nvim_get_current_win(),errmsg=vim.v.errmsg}",
+      "local wins,details,hover={},{},nil; for _,win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do local ok,source=pcall(vim.api.nvim_win_get_var,win,'textDocument/hover'); local buf=vim.api.nvim_win_get_buf(win); details[#details+1]={win=win,relative=vim.api.nvim_win_get_config(win).relative,source=ok and source or nil,ft=vim.bo[buf].filetype}; if ok then wins[#wins+1]=win; hover={first=vim.api.nvim_buf_get_lines(buf,0,1,false)[1],conceallevel=vim.wo[win].conceallevel,focusable=vim.api.nvim_win_get_config(win).focusable} end end; return {wins=wins,details=details,hover=hover,current=vim.api.nvim_get_current_win(),errmsg=vim.v.errmsg}",
       [],
     ]);
   const waitForHover = async () => {
@@ -21,23 +25,11 @@ export async function verifyHoverUI(rpc) {
   const phases = [];
   await rpc('nvim_input', ['<Space>ch']);
   phases.push(await waitForHover());
-  const foldState = await rpc('nvim_exec_lua', [
-    `local win=assert(vim.tbl_filter(function(w) return vim.w[w]['textDocument/hover']~=nil end,vim.api.nvim_tabpage_list_wins(0))[1])
-local buf=vim.api.nvim_win_get_buf(win)
-assert(vim.wait(1000,function() return require('ufo').hasAttached(buf) end,20),'UFO did not attach to Hover buffer')
-require('ufo').enableFold(buf)
-vim.wait(2000)
-return {buftype=vim.bo[buf].buftype,filetype=vim.bo[buf].filetype,errmsg=vim.v.errmsg,messages=vim.api.nvim_exec2('messages',{output=true}).output}`,
-    [],
-  ]);
   await rpc('nvim_input', ['<Esc>']);
   await delay(100);
   phases.push(await hoverState());
-  await rpc('nvim_exec_lua', ['vim.lsp.buf.hover()', []]);
+  await rpc('nvim_input', ['<Space>ch']);
   phases.push(await waitForHover());
-  await rpc('nvim_exec_lua', ['vim.lsp.buf.hover()', []]);
-  await delay(100);
-  phases.push(await hoverState());
   const rendered = await rpc('nvim_exec_lua', [
     `local win=assert(vim.tbl_filter(function(w) return vim.w[w]['textDocument/hover']~=nil end,vim.api.nvim_tabpage_list_wins(0))[1])
 local pos=vim.api.nvim_win_get_position(win)
@@ -51,78 +43,46 @@ end
 return {rows=rows,errmsg=vim.v.errmsg}`,
     [],
   ]);
+  await rpc('nvim_input', ['<Space>ch']);
+  await delay(100);
+  phases.push(await hoverState());
+  await rpc('nvim_input', ['<Esc>']);
+  await delay(100);
+  phases.push(await hoverState());
+  await rpc('nvim_input', ['<Space>ch']);
+  phases.push(await waitForHover());
+  await rpc('nvim_input', ['<C-w>w']);
+  await delay(100);
+  phases.push(await hoverState());
   await rpc('nvim_input', ['<Esc>']);
   await delay(100);
   phases.push(await hoverState());
   const screen = rendered.rows.join('\n');
   if (
-    foldState.buftype !== 'nofile' ||
-    foldState.filetype !== 'markdown' ||
-    foldState.errmsg ||
-    foldState.messages.includes('UnhandledPromiseRejection') ||
     phases[0].wins.length !== 1 ||
     !phases[0].hover?.first.startsWith('```') ||
     phases[1].wins.length ||
     phases[2].wins.length !== 1 ||
-    phases[3].current !== phases[3].wins[0] ||
+    phases[3].wins.length !== 1 ||
     phases[3].hover?.conceallevel !== 2 ||
-    !phases[3].hover?.concealcursor.includes('n') ||
+    [phases[0], phases[2], phases[3], phases[5], phases[6]].some(
+      (phase) => phase.hover?.focusable !== true,
+    ) ||
+    [phases[0], phases[2], phases[4], phases[5], phases[7]].some(
+      (phase) => phase.current !== sourceWin,
+    ) ||
+    phases[3].current !== phases[3].wins[0] ||
+    phases[6].current !== phases[6].wins[0] ||
     screen.includes('```') ||
     !screen.includes('function demo') ||
     rendered.errmsg ||
     phases[4].wins.length ||
+    phases[7].wins.length ||
     phases.some((p) => p.errmsg)
   )
     throw new Error(
-      'Hover folding, Markdown conceal or Esc behavior failed: ' +
-        JSON.stringify({ foldState, phases, rendered }),
+      'Hover focus, Markdown conceal or Esc behavior failed: ' +
+        JSON.stringify({ phases, rendered }),
     );
-  const source = await rpc('nvim_exec_lua', [
-    `vim.cmd.edit(vim.env.NVIM_TEST_ROOT..'/alpha/fold.ts')
-assert(vim.wait(10000,function() return vim.fn.foldlevel(1)>0 end,25),'Fold provider did not initialize')
-require('ufo').closeAllFolds()
-vim.api.nvim_win_set_cursor(0,{1,0})
-assert(vim.fn.foldclosed(1)==1,'Fixture did not fold')
-return vim.api.nvim_get_current_win()`,
-    [],
-  ]);
-  const previewState = () =>
-    rpc('nvim_exec_lua', [
-      `local source=...
-local wins={}
-for _,win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
- local buf=vim.api.nvim_win_get_buf(win)
- if vim.api.nvim_win_get_config(win).relative~='' and vim.api.nvim_buf_get_lines(buf,0,-1,false)[1]=='export function sum(a: number, b: number) {' then
-  wins[#wins+1]=win
- end
-end
-return {wins=wins,current=vim.api.nvim_get_current_win(),source=source,escape_buffer=vim.fn.maparg('<Esc>','n',false,true).buffer,errmsg=vim.v.errmsg}`,
-      [source],
-    ]);
-  const previews = [];
-  await rpc('nvim_input', ['<Space>ch']);
-  await delay(100);
-  previews.push(await previewState());
-  await rpc('nvim_input', ['<Space>ch']);
-  await delay(100);
-  previews.push(await previewState());
-  await rpc('nvim_input', ['<Esc>']);
-  await delay(100);
-  previews.push(await previewState());
-  if (
-    previews[0].wins.length !== 1 ||
-    previews[1].wins.length !== 1 ||
-    previews[0].current !== source ||
-    previews[1].current !== source ||
-    previews[2].wins.length ||
-    previews[2].current !== source ||
-    previews[2].escape_buffer !== 0 ||
-    previews.some((p) => p.errmsg)
-  )
-    throw new Error(
-      'Fold preview focus, Esc close or mapping restoration failed: ' +
-        JSON.stringify(previews),
-    );
-  const result = { foldState, phases, rendered, fold_preview: previews };
-  return result;
+  return { phases, rendered };
 }

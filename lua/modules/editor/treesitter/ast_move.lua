@@ -14,7 +14,10 @@ for _, capture in pairs(M.captures) do
     wanted[capture] = true
 end
 vim.api.nvim_create_autocmd('BufWipeout', {
-    group = vim.api.nvim_create_augroup('editing.ast_move', { clear = true }),
+    group = vim.api.nvim_create_augroup(
+        'modules.editor.treesitter.ast_move',
+        { clear = true }
+    ),
     callback = function(ev)
         cache[ev.buf] = nil
     end,

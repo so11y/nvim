@@ -18,7 +18,7 @@ local M = {
 }
 
 function M.install()
-    require('config.mason_tools').ensure_cli()
+    require('modules.tools.mason.tools').ensure_cli()
     if
         vim.fn.has('win32') == 1
         and not vim.env.CC
@@ -39,8 +39,10 @@ end
 
 function M.setup()
     require('nvim-treesitter').setup()
-    local group =
-        vim.api.nvim_create_augroup('config.treesitter', { clear = true })
+    local group = vim.api.nvim_create_augroup(
+        'modules.editor.treesitter.setup',
+        { clear = true }
+    )
     vim.api.nvim_create_autocmd('FileType', {
         group = group,
         callback = function(ev)
@@ -56,6 +58,20 @@ function M.setup()
     if vim.g.vscode then
         return
     end
+    -- 插件可能清空注入树；重建时同时刷新依赖主树的折叠缓存。
+    vim.api.nvim_create_autocmd('BufWinEnter', {
+        group = group,
+        callback = function(ev)
+            local ft = vim.bo[ev.buf].filetype
+            if ft == 'vue' or ft == 'html' then
+                local parser = vim.treesitter.get_parser(ev.buf)
+                if not parser:is_valid() then
+                    parser:invalidate(true)
+                    parser:parse(true)
+                end
+            end
+        end,
+    })
     vim.keymap.set('x', '<CR>', 'an', {
         remap = true,
         desc = '扩展语法选区',

@@ -218,13 +218,18 @@ function M.attach(client, bufnr)
     if states[bufnr] or not vim.lsp.buf_is_attached(bufnr, client.id) then
         return
     end
-    local group = vim.api.nvim_create_augroup('editing.linked_tags:' .. bufnr, {
-        clear = true,
-    })
+    local group = vim.api.nvim_create_augroup(
+        'modules.language.lsp.linked_tags:' .. bufnr,
+        {
+            clear = true,
+        }
+    )
     local state = {
         bufnr = bufnr,
         client = client,
-        ns = vim.api.nvim_create_namespace('editing.linked_tags:' .. bufnr),
+        ns = vim.api.nvim_create_namespace(
+            'modules.language.lsp.linked_tags:' .. bufnr
+        ),
     }
     states[bufnr] = state
     vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {

@@ -33,7 +33,6 @@ return {
     'folke/lazydev.nvim',
     -- editor
     'mg979/vim-visual-multi',
-    'kevinhwang91/nvim-ufo',
     'mfussenegger/nvim-dap',
     'windwp/nvim-autopairs',
     'windwp/nvim-ts-autotag',

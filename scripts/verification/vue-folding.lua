@@ -16,7 +16,7 @@ local function wait_client(name)
     )
 end
 local function check_fold(line, finish)
-    require('ufo').openAllFolds()
+    vim.cmd.normal({ args = { 'zR' }, bang = true })
     vim.api.nvim_win_set_cursor(0, { line, 0 })
     vim.cmd.normal({ args = { 'zc' }, bang = true })
     assert(
@@ -96,15 +96,40 @@ local ok, err = xpcall(function()
         end
         check_fold(4, 8)
         vim.cmd.redraw()
-        local preview = require('ufo').peekFoldedLinesUnderCursor()
         assert(
-            preview and vim.api.nvim_win_is_valid(preview),
-            'Vue fold preview missing'
+            vim.wo.foldmethod == 'expr'
+                and vim.wo.foldexpr == 'v:lua.vim.treesitter.foldexpr()',
+            'Vue did not use native Tree-sitter folding'
         )
-        vim.api.nvim_win_close(preview, true)
         vim.cmd.normal({ args = { 'zo' }, bang = true })
         assert(vim.fn.foldclosed(4) == -1, 'Vue fold did not reopen')
-        case.preview = true
+        case.native = true
+        -- 新增、删除注入脚本内的嵌套块后，折叠范围也应刷新。
+        vim.cmd.normal({ args = { 'zR' }, bang = true })
+        local original = vim.api.nvim_buf_get_lines(0, 5, 6, false)
+        vim.api.nvim_buf_set_lines(0, 5, 6, false, {
+            '    if (count.value === 1) {',
+            '      count.value += 2;',
+            '    }',
+        })
+        vim.cmd.redraw()
+        assert(
+            vim.wait(5000, function()
+                return vim.fn.foldlevel(6) > vim.fn.foldlevel(5)
+            end, 25),
+            'Edited Vue script fold did not refresh'
+        )
+        check_fold(6, 8)
+        vim.api.nvim_buf_set_lines(0, 5, 8, false, original)
+        vim.cmd.redraw()
+        assert(
+            vim.wait(5000, function()
+                return vim.fn.foldlevel(6) == vim.fn.foldlevel(5)
+            end, 25),
+            'Removed Vue script fold remained cached'
+        )
+        vim.bo.modified = false
+        case.incremental = true
         report.cases[filename] = case
     end
     -- Folding stays independent of the Vue server.
@@ -115,7 +140,6 @@ local ok, err = xpcall(function()
         #vim.lsp.get_clients({ bufnr = bufnr, name = 'vue_ls' }) == 0,
         'Vue client did not detach'
     )
-    require('ufo').enableFold(bufnr)
     assert(
         vim.wait(10000, function()
             return vim.fn.foldlevel(9) > 0
@@ -137,6 +161,11 @@ local ok, err = xpcall(function()
         end, 25),
         'TypeScript folding regressed'
     )
+    assert(
+        vim.wo.foldexpr == 'v:lua.vim.treesitter.foldexpr()',
+        'TypeScript did not keep native Tree-sitter folding after LSP attach'
+    )
+    check_fold(1, 5)
     report.typescript = true
 end, debug.traceback)
 report.error = not ok and err or nil
@@ -151,7 +180,6 @@ if not ok then
             finish = vim.fn.foldclosedend(line),
         }
     end
-    report.inspect =
-        require('ufo.main').inspectBuf(vim.api.nvim_get_current_buf())
+    report.provider = { method = vim.wo.foldmethod, expr = vim.wo.foldexpr }
 end
 return report

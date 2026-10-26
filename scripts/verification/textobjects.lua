@@ -6,7 +6,7 @@ vim.opt.rtp:append(data .. '/site')
 for _, name in ipairs({ 'nvim-treesitter-textobjects', 'nvim-treesitter' }) do
     vim.opt.rtp:append(data .. '/lazy/' .. name)
 end
-local spec = dofile(root .. '/lua/plugins/editor/treesitter.lua')[2]
+local spec = dofile(root .. '/lua/modules/editor/treesitter/init.lua')[2]
 spec.config(nil, spec.opts)
 vim.opt.swapfile = false
 vim.opt.undofile = false

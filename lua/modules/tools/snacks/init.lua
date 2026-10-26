@@ -62,9 +62,9 @@ return {
             statuscolumn = {
                 enabled = true,
                 left = { 'git', 'mark', 'sign' }, -- 显示书签和诊断图标
-                right = { 'fold' }, -- 显示折叠箭头和 Git 状态
+                right = { 'fold' }, -- 折叠图标
                 folds = {
-                    open = true, -- 显示展开图标
+                    open = false, -- 展开时留空，仅显示已折叠的箭头
                 },
             },
             indent = { enabled = false },
@@ -188,7 +188,7 @@ return {
             {
                 '<leader>?',
                 function()
-                    require('config.alt-help')()
+                    require('modules.tools.snacks.alt_help')()
                 end,
                 desc = 'Alt 快捷键速查',
             },

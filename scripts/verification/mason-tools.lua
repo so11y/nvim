@@ -1,7 +1,7 @@
 vim.opt.rtp:prepend(vim.fn.stdpath('data') .. '/lazy/mason.nvim')
 local compiler = require('mason-core.installer.compiler')
 local Result = require('mason-core.result')
-local versions = require('config.mason_tools').versions
+local versions = require('modules.tools.mason.tools').versions
 local compiled = {}
 compiler.compile_installer = function(spec, opts)
     compiled[#compiled + 1] =
@@ -10,7 +10,7 @@ compiler.compile_installer = function(spec, opts)
         return Result.success()
     end)
 end
-require('config.mason_tools').setup()
+require('modules.tools.mason.tools').setup()
 
 local vue_spec = {
     name = 'vue-language-server',

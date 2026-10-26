@@ -9,6 +9,7 @@ import { uiScenarios } from './ui/index.mjs';
 const directory = dirname(fileURLToPath(import.meta.url));
 const root = resolve(directory, '../..');
 const standalone = new Map([
+  ['module-loading', 'module-loading.lua'],
   ['textobjects', 'textobjects.lua'],
   ['linked-tag-requests', 'linked-tag-requests.lua'],
   ['closed-file', 'closed-file.lua'],
