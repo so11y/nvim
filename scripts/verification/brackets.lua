@@ -128,11 +128,17 @@ for _, case in ipairs(cases) do
     for _, point in ipairs(expected) do
         point[3] = 1
     end
+    local match_id
     for _, cursor in ipairs({ position(case.cursor), expected[1], expected[2] }) do
         api.nvim_win_set_cursor(0, { cursor[1], cursor[2] - 1 })
         api.nvim_exec_autocmds('CursorMoved', { buffer = buf })
         local matches = current_matches()
         assert(#matches == 1, case.name .. ': expected one bracket pair')
+        assert(
+            not match_id or matches[1].id == match_id,
+            case.name .. ': unchanged bracket pair was recreated'
+        )
+        match_id = matches[1].id
         assert(
             vim.deep_equal({ matches[1].pos1, matches[1].pos2 }, expected),
             case.name .. ': wrong pair: ' .. vim.inspect(matches)
@@ -149,10 +155,42 @@ assert(
 )
 vim.cmd.close()
 
+local edited = api.nvim_get_current_buf()
+local original = current_matches()[1]
+api.nvim_win_set_cursor(0, { 3, 4 })
+api.nvim_buf_set_lines(edited, 2, 3, false, { '    10' })
+api.nvim_exec_autocmds('TextChanged', { buffer = edited })
+assert(
+    current_matches()[1].id == original.id,
+    'Unchanged pair was recreated after edit'
+)
+
+api.nvim_buf_set_lines(edited, 3, 3, false, { '' })
+api.nvim_exec_autocmds('TextChanged', { buffer = edited })
+local shifted = current_matches()
+local expected = { original.pos1, original.pos2 }
+expected[2][1] = expected[2][1] + 1
+assert(#shifted == 1, 'Editing bracket positions lost the highlight')
+assert(
+    vim.deep_equal({ shifted[1].pos1, shifted[1].pos2 }, expected),
+    'Editing bracket positions kept stale highlights'
+)
+
+api.nvim_buf_set_lines(edited, 0, -1, false, { '1' })
+api.nvim_win_set_cursor(0, { 1, 0 })
+api.nvim_exec_autocmds('TextChanged', { buffer = edited })
+assert(#current_matches() == 0, 'Removing brackets kept old highlights')
+
 local plain = api.nvim_create_buf(false, true)
 api.nvim_set_current_buf(plain)
 api.nvim_buf_set_lines(plain, 0, -1, false, { 'plain text without a parser' })
 api.nvim_exec_autocmds('CursorMoved', { buffer = plain })
 assert(#current_matches() == 0, 'Plain text kept old bracket marks')
 
-return { cases = results, window_cleanup = true, errmsg = vim.v.errmsg }
+return {
+    cases = results,
+    pair_reused = true,
+    updates_after_edit = true,
+    window_cleanup = true,
+    errmsg = vim.v.errmsg,
+}

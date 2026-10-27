@@ -9,15 +9,15 @@ local group = vim.api.nvim_create_augroup('CurrentBrackets', { clear = true })
 
 local function clear()
     if vim.w.current_brackets then
-        vim.fn.matchdelete(vim.w.current_brackets)
+        vim.fn.matchdelete(vim.w.current_brackets.id)
         vim.w.current_brackets = nil
     end
 end
 
 local function highlight()
-    clear()
     local parser = vim.treesitter.get_parser(0, nil, { error = false })
     if not parser then
+        clear()
         return
     end
     local cursor = vim.api.nvim_win_get_cursor(0)
@@ -25,6 +25,7 @@ local function highlight()
     parser:parse(range)
     local node =
         parser:named_node_for_range(range, { ignore_injections = false })
+    local positions
     while node do
         local first = node:child(0)
         local closing = first and closing_brackets[first:type()]
@@ -33,14 +34,25 @@ local function highlight()
             if last:type() == closing and not last:missing() then
                 local row, col = first:range()
                 local end_row, end_col = last:range()
-                vim.w.current_brackets = vim.fn.matchaddpos('MatchParen', {
+                positions = {
                     { row + 1, col + #first:type(), 1 },
                     { end_row + 1, end_col + 1, 1 },
-                })
-                return
+                }
+                break
             end
         end
         node = node:parent()
+    end
+    local current = vim.w.current_brackets
+    if current and vim.deep_equal(current.positions, positions) then
+        return
+    end
+    clear()
+    if positions then
+        vim.w.current_brackets = {
+            id = vim.fn.matchaddpos('MatchParen', positions),
+            positions = positions,
+        }
     end
 end
 
