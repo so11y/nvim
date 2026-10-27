@@ -30,6 +30,9 @@ export async function verifyHoverUI(rpc) {
   phases.push(await hoverState());
   await rpc('nvim_input', ['<Space>ch']);
   phases.push(await waitForHover());
+  await rpc('nvim_input', ['<Space>ch']);
+  await delay(100);
+  phases.push(await hoverState());
   const rendered = await rpc('nvim_exec_lua', [
     `local win=assert(vim.tbl_filter(function(w) return vim.w[w]['textDocument/hover']~=nil end,vim.api.nvim_tabpage_list_wins(0))[1])
 local pos=vim.api.nvim_win_get_position(win)
@@ -43,9 +46,6 @@ end
 return {rows=rows,errmsg=vim.v.errmsg}`,
     [],
   ]);
-  await rpc('nvim_input', ['<Space>ch']);
-  await delay(100);
-  phases.push(await hoverState());
   await rpc('nvim_input', ['<Esc>']);
   await delay(100);
   phases.push(await hoverState());

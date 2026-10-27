@@ -71,6 +71,15 @@ map('n', '<A-i>', '<C-i>', {
 map('n', '<leader>ch', function()
     vim.lsp.buf.hover({ silent = true })
 end, { desc = '显示悬停文档' })
+
+vim.api.nvim_create_autocmd('WinEnter', {
+    group = vim.api.nvim_create_augroup('HoverConceal', { clear = true }),
+    callback = function()
+        if vim.w['textDocument/hover'] then
+            vim.wo.concealcursor = 'n'
+        end
+    end,
+})
 map({ 'n', 'x' }, 'gra', vim.lsp.buf.code_action, { desc = '代码操作' })
 
 -- =======================================================
