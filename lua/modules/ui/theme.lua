@@ -1,6 +1,4 @@
 local common_highlights = {
-    LspInlayHint = { bg = 'NONE' },
-    BlinkCmpMenu = { link = 'NormalFloat' },
     GitAdded = {
         fg = '#3fb950',
         bg = 'NONE',
@@ -59,7 +57,6 @@ local function apply_ui_highlights()
         vim.api.nvim_get_hl(0, { name = 'CursorLineNr', link = false })
     cursorline_nr.bg = cursorline
     local groups = {
-        PmenuSel = { fg = foreground, bg = palette.vscSelection },
         MatchParen = { fg = foreground, bg = palette.vscSelection, bold = true },
         SnacksPickerPreviewCursorLine = { bg = palette.vscSelection },
         BufferLineIndicatorSelected = {
