@@ -51,12 +51,9 @@ function M.setup()
     vim.diagnostic.config({
         virtual_text = false,
         signs = {
-            text = {
-                [vim.diagnostic.severity.ERROR] = '󰧞',
-                [vim.diagnostic.severity.WARN] = '󰧞',
-                [vim.diagnostic.severity.INFO] = '󰧞',
-                [vim.diagnostic.severity.HINT] = '󱐋',
-            },
+            severity = vim.diagnostic.severity.ERROR,
+            text = { [vim.diagnostic.severity.ERROR] = '' },
+            linehl = { [vim.diagnostic.severity.ERROR] = 'DiagnosticLineError' },
         },
         underline = true,
         severity_sort = true,

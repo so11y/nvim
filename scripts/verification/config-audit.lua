@@ -44,63 +44,10 @@ local ok, err = xpcall(function()
         },
     })
     assert(
-        vim.wait(1000, function()
-            local text = heirline.eval_statusline()
-            return text:find(' 1', 1, true) and text:find(' 1', 1, true)
-        end, 10),
-        'Diagnostic counts did not appear after an empty initial render'
+        heirline.eval_statusline() == empty,
+        'Diagnostics should not change the statusline output'
     )
-    local rendered = vim.api.nvim_eval_statusline(vim.o.statusline, {
-        winid = win,
-        maxwidth = 160,
-        highlights = true,
-    })
-    local status_fg =
-        vim.api.nvim_get_hl(0, { name = 'StatusLine', link = false }).fg
-    local diagnostic_colors = {}
-    for _, icon in ipairs({ '', '' }) do
-        local column = assert(rendered.str:find(icon, 1, true)) - 1
-        for index = #rendered.highlights, 1, -1 do
-            local segment = rendered.highlights[index]
-            if segment.start <= column then
-                local color = vim.api.nvim_get_hl(0, {
-                    name = segment.groups[#segment.groups],
-                    link = false,
-                }).fg
-                assert(
-                    color and color ~= status_fg,
-                    'Diagnostic status lost its severity color'
-                )
-                diagnostic_colors[#diagnostic_colors + 1] = color
-                break
-            end
-        end
-    end
-    assert(
-        diagnostic_colors[1] ~= diagnostic_colors[2],
-        'Error and hint status have the same color'
-    )
-    report.status_diagnostic_colors = diagnostic_colors
-    local get, count = vim.diagnostic.get, vim.diagnostic.count
-    local get_calls, count_calls = 0, 0
-    vim.diagnostic.get = function(...)
-        get_calls = get_calls + 1
-        return get(...)
-    end
-    vim.diagnostic.count = function(...)
-        count_calls = count_calls + 1
-        return count(...)
-    end
-    for _ = 1, 200 do
-        heirline.eval_statusline()
-    end
-    vim.diagnostic.get, vim.diagnostic.count = get, count
-    assert(
-        get_calls == 0 and count_calls <= 1,
-        'Diagnostic lists were rescanned during redraw'
-    )
-    report.status_cache =
-        { evaluations = 200, get_calls = get_calls, count_calls = count_calls }
+    report.status_diagnostics_hidden = true
     local open_float = vim.diagnostic.open_float
     local floats = {}
     vim.diagnostic.open_float = function(opts)

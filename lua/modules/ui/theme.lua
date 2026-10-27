@@ -52,6 +52,7 @@ local function apply_ui_highlights()
     local foreground = palette.vscFront
     local background = palette.vscBack
     local cursorline = blend(foreground, background, 0.05)
+    local error_background = blend(palette.vscRed, background, 0.12)
     local git_mark_alpha = 0.6
     local cursorline_nr =
         vim.api.nvim_get_hl(0, { name = 'CursorLineNr', link = false })
@@ -64,6 +65,11 @@ local function apply_ui_highlights()
             bg = palette.vscTabCurrent,
         },
         NoiceSearchCount = { fg = palette.vscYellow },
+        DiagnosticLineError = { bg = error_background },
+        DiagnosticVirtualTextError = {
+            fg = palette.vscRed,
+            bg = error_background,
+        },
         CursorLine = { bg = cursorline },
         Folded = { link = 'CursorLine' },
         CursorLineNr = cursorline_nr,
@@ -102,6 +108,10 @@ return {
     lazy = false,
     priority = 1000,
     init = function()
+        vim.opt.winhighlight:append({
+            TinyInlineDiagnosticVirtualTextError = 'DiagnosticVirtualTextError',
+            TinyInlineDiagnosticVirtualTextErrorCursorLine = 'DiagnosticVirtualTextError',
+        })
         vim.api.nvim_create_autocmd('ColorScheme', {
             group = vim.api.nvim_create_augroup(
                 'ThemeAppearance',

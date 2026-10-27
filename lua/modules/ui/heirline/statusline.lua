@@ -4,7 +4,6 @@ return {
     hl = { fg = 'status_fg', bg = 'status_bg', bold = false },
     components.RightPadding(components.Mode, 2),
     components.RightPadding(components.Git, 2),
-    components.Diagnostics,
     components.Fill,
     components.MacroRecording,
     components.Fill,

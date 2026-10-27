@@ -7,10 +7,6 @@ return {
             local palette = {
                 status_fg = '#FFFFFF',
                 status_bg = '#007ACC',
-                diag_error = '#FFB4AB',
-                diag_warn = '#F4D58D',
-                diag_info = '#B7DCFF',
-                diag_hint = '#A9DCCB',
             }
             vim.api.nvim_set_hl(0, 'StatusLine', {
                 fg = palette.status_fg,

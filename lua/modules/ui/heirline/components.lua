@@ -1,13 +1,5 @@
 local conditions = require('heirline.conditions')
 
-local icons = {}
-icons.diagnostics = {
-    Error = '',
-    Warn = '',
-    Info = '',
-    Hint = '',
-}
-
 local M = {}
 M.Spacer = {
     provider = ' ',
@@ -148,55 +140,6 @@ M.Git = {
         local head = self.status_dict.head:gsub('%%', '%%%%')
         return '󰘬 ' .. head .. (self.has_changes and '*' or '')
     end,
-}
-
-M.Diagnostics = {
-    static = {
-        error_icon = icons.diagnostics.Error .. ' ',
-        warn_icon = icons.diagnostics.Warn .. ' ',
-        info_icon = icons.diagnostics.Info .. ' ',
-        hint_icon = icons.diagnostics.Hint .. ' ',
-    },
-    init = function(self)
-        local count = vim.diagnostic.count(0)
-        self.errors = count[vim.diagnostic.severity.ERROR] or 0
-        self.warnings = count[vim.diagnostic.severity.WARN] or 0
-        self.hints = count[vim.diagnostic.severity.HINT] or 0
-        self.info = count[vim.diagnostic.severity.INFO] or 0
-    end,
-    update = { 'DiagnosticChanged', 'BufEnter' },
-    {
-        condition = function(self)
-            return self.errors + self.warnings + self.info + self.hints > 0
-        end,
-        {
-            provider = function(self)
-                return self.errors > 0
-                    and (self.error_icon .. self.errors .. ' ')
-            end,
-            hl = { fg = 'diag_error' },
-        },
-        {
-            provider = function(self)
-                return self.warnings > 0
-                    and (self.warn_icon .. self.warnings .. ' ')
-            end,
-            hl = { fg = 'diag_warn' },
-        },
-        {
-            provider = function(self)
-                return self.info > 0 and (self.info_icon .. self.info .. ' ')
-            end,
-            hl = { fg = 'diag_info' },
-        },
-        {
-            provider = function(self)
-                return self.hints > 0 and (self.hint_icon .. self.hints)
-            end,
-            hl = { fg = 'diag_hint' },
-        },
-        M.Spacer,
-    },
 }
 
 M.Ruler = {

@@ -12,7 +12,7 @@ return {
         },
         handlers = {
             cursor = false,
-            gitsigns = true,
+            gitsigns = false,
         },
     },
 }
