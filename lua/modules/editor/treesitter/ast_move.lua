@@ -8,135 +8,37 @@ local M = {
         s = 'statement.outer',
     },
 }
-local cache, wanted = {}, {}
-local chunk_lines = 256
-for _, capture in pairs(M.captures) do
-    wanted[capture] = true
-end
-vim.api.nvim_create_autocmd('BufWipeout', {
-    group = vim.api.nvim_create_augroup(
-        'modules.editor.treesitter.ast_move',
-        { clear = true }
-    ),
-    callback = function(ev)
-        cache[ev.buf] = nil
-    end,
-})
-
-local function positions(bufnr, chunk)
-    local tick, ft =
-        vim.api.nvim_buf_get_changedtick(bufnr), vim.bo[bufnr].filetype
-    local entry = cache[bufnr]
-    if not entry or entry.tick ~= tick or entry.ft ~= ft then
-        local parser = vim.treesitter.get_parser(bufnr, nil, { error = false })
-        if not parser then
-            return {}
-        end
-        parser:parse(true)
-        entry = { tick = tick, ft = ft, chunks = {}, trees = {} }
-        local last_row = vim.api.nvim_buf_line_count(bufnr) - 1
-        -- Index trees once per edit; captures are still queried on demand.
-        parser:for_each_tree(function(tree, language)
-            local query =
-                vim.treesitter.query.get(language:lang(), 'textobjects')
-            if not query then
-                return
-            end
-            local root = tree:root()
-            local first, _, last = root:range()
-            local item = { root = root, query = query }
-            local first_chunk = math.floor(first / chunk_lines)
-            local last_chunk =
-                math.floor(math.min(last, last_row) / chunk_lines)
-            for index = first_chunk, last_chunk do
-                entry.trees[index] = entry.trees[index] or {}
-                table.insert(entry.trees[index], item)
-            end
-        end)
-        cache[bufnr] = entry
-    end
-    if entry.chunks[chunk] then
-        return entry.chunks[chunk]
-    end
-    local first_row = chunk * chunk_lines
-    local last_row =
-        math.min(first_row + chunk_lines, vim.api.nvim_buf_line_count(bufnr))
-    local found = {}
-    for _, item in ipairs(entry.trees[chunk] or {}) do
-        local query = item.query
-        for id, node, metadata in
-            query:iter_captures(item.root, bufnr, first_row, last_row)
-        do
-            local capture = query.captures[id]
-            if wanted[capture] then
-                local row, col, byte = node:start()
-                if metadata[id] and metadata[id].range then
-                    row, col = unpack(metadata[id].range)
-                    byte = vim.api.nvim_buf_get_offset(bufnr, row) + col
-                end
-                -- Queries can repeat a long parent in later windows.
-                if row >= first_row and row < last_row then
-                    found[capture] = found[capture] or {}
-                    found[capture][#found[capture] + 1] = {
-                        row + 1,
-                        col,
-                        byte,
-                    }
-                end
-            end
-        end
-    end
-    for name, ranges in pairs(found) do
-        table.sort(ranges, function(a, b)
-            return a[3] < b[3]
-        end)
-        local unique = {}
-        for _, range in ipairs(ranges) do
-            if #unique == 0 or unique[#unique][3] ~= range[3] then
-                unique[#unique + 1] = range
-            end
-        end
-        found[name] = unique
-    end
-    entry.chunks[chunk] = found
-    return found
-end
 
 M.move = require('nvim-treesitter-textobjects.repeatable_move').make_repeatable_move(
     function(opts, capture)
-        local buf = vim.api.nvim_get_current_buf()
-        local last_chunk =
-            math.floor((vim.api.nvim_buf_line_count(buf) - 1) / chunk_lines)
-        for _ = 1, vim.v.count1 do
+        local buf, count = vim.api.nvim_get_current_buf(), vim.v.count1
+        local index = require('modules.editor.treesitter.snapshot').get(buf)
+        if not index then
+            return
+        end
+        local ranges = index.captures[capture] or {}
+        for _ = 1, count do
             local cursor = vim.api.nvim_win_get_cursor(0)
             local byte = vim.api.nvim_buf_get_offset(buf, cursor[1] - 1)
                 + cursor[2]
-            local start_chunk = math.floor((cursor[1] - 1) / chunk_lines)
-            local target
-            for chunk = start_chunk, opts.forward and last_chunk or 0, opts.forward and 1 or -1 do
-                local ranges = positions(buf, chunk)[capture] or {}
-                local left, right = 1, #ranges
-                while left <= right do
-                    local mid = math.floor((left + right) / 2)
-                    if
-                        ranges[mid][3] < byte
-                        or opts.forward and ranges[mid][3] == byte
-                    then
-                        left = mid + 1
-                    else
-                        right = mid - 1
-                    end
-                end
-                target = ranges[opts.forward and left or right]
-                if target then
-                    break
+            local left, right = 1, #ranges
+            while left <= right do
+                local mid = math.floor((left + right) / 2)
+                if
+                    ranges[mid][3] < byte
+                    or opts.forward and ranges[mid][3] == byte
+                then
+                    left = mid + 1
+                else
+                    right = mid - 1
                 end
             end
+            local target = ranges[opts.forward and left or right]
             if not target then
                 return
             end
             vim.cmd("normal! m'")
-            vim.api.nvim_win_set_cursor(0, { target[1], target[2] })
+            vim.api.nvim_win_set_cursor(0, { target[1] + 1, target[2] })
         end
     end
 )

@@ -38,6 +38,10 @@ return {
             -- 路由设置：过滤掉多余的消息
             routes = {
                 {
+                    filter = { event = 'treesitter', kind = 'progress' },
+                    view = 'mini',
+                },
+                {
                     filter = {
                         event = 'msg_show',
                         find = 'written',

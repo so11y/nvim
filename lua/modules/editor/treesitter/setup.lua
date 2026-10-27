@@ -16,6 +16,49 @@ local M = {
         'rust',
     },
 }
+local fold_parsers = setmetatable({}, { __mode = 'k' })
+
+local function attach_injected_folds(parser, buf)
+    if fold_parsers[parser] then
+        return
+    end
+    fold_parsers[parser] = true
+    local pending
+    local function changed(changes, tree)
+        if #changes == 0 then
+            changes = { { tree:root():range() } }
+        end
+        for _, range in ipairs(changes) do
+            local first, _, last, col = vim.treesitter._range.unpack4(range)
+            last = last + (col > 0 and 1 or 0)
+            if pending then
+                pending[1] = math.min(pending[1], first)
+                pending[3] = math.max(pending[3], last)
+            else
+                pending = { first, 0, last, 0 }
+                vim.schedule(function()
+                    local range = pending
+                    pending = nil
+                    if vim.api.nvim_buf_is_loaded(buf) then
+                        -- Native folding listens to the root, not injected trees.
+                        parser:_do_callback(
+                            'changedtree',
+                            { range },
+                            parser:trees()[1]
+                        )
+                    end
+                end)
+            end
+        end
+    end
+    local function child_added(child)
+        child:register_cbs({ on_changedtree = changed }, true)
+    end
+    parser:register_cbs({ on_child_added = child_added })
+    for _, child in pairs(parser:children()) do
+        child_added(child)
+    end
+end
 
 function M.install()
     require('modules.tools.mason.tools').ensure_cli()
@@ -50,6 +93,12 @@ function M.setup()
                 vim.treesitter.language.get_lang(vim.bo[ev.buf].filetype)
             if lang and vim.list_contains(M.parsers, lang) then
                 vim.treesitter.start(ev.buf, lang)
+                if not vim.g.vscode and (lang == 'vue' or lang == 'html') then
+                    attach_injected_folds(
+                        vim.treesitter.get_parser(ev.buf),
+                        ev.buf
+                    )
+                end
                 vim.bo[ev.buf].indentexpr =
                     "v:lua.require'nvim-treesitter'.indentexpr()"
             end
@@ -58,16 +107,16 @@ function M.setup()
     if vim.g.vscode then
         return
     end
-    -- 插件可能清空注入树；重建时同时刷新依赖主树的折叠缓存。
+    -- Repair only the visible region; off-screen injections need not be valid.
     vim.api.nvim_create_autocmd('BufWinEnter', {
         group = group,
         callback = function(ev)
             local ft = vim.bo[ev.buf].filetype
             if ft == 'vue' or ft == 'html' then
                 local parser = vim.treesitter.get_parser(ev.buf)
-                if not parser:is_valid() then
-                    parser:invalidate(true)
-                    parser:parse(true)
+                local range = { vim.fn.line('w0') - 1, 0, vim.fn.line('w$'), 0 }
+                if not parser:is_valid(false, range) then
+                    parser:parse(range)
                 end
             end
         end,

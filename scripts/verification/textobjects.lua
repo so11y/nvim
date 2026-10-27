@@ -255,6 +255,31 @@ scratch('javascript', 'let value = f();\nnext();')
 equal(act('Vis').mode, 'V', 'linewise Visual preserved')
 scratch('javascript', 'let value = f();\nnext();')
 equal(act('dVis').text, 'next();', 'forced linewise operator preserved')
+scratch('javascript', 'function f() {\n  return 1;\n}\nnext();')
+equal(
+    act('d<C-v>af').text,
+    'unction f() {\n return 1;\n\nnext();',
+    'cold forced blockwise operator preserved'
+)
+scratch(
+    'javascript',
+    'function first() { return 1; }\nfunction second() { return 2; }'
+)
+act('"ayaf')
+equal(
+    vim.fn.getreg('a'),
+    'function first() { return 1; }',
+    'cold named register'
+)
+scratch(
+    'javascript',
+    'function first() {}\nfunction second() {}\nfunction third() {}'
+)
+equal(
+    act('d]f').text,
+    'function second() {}\nfunction third() {}',
+    'cold operator motion'
+)
 equal(vim.v.errmsg, '', 'no editor errors')
 vim.api.nvim_del_user_command('TextobjectsTestObserve')
 print(vim.json.encode(report))

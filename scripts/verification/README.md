@@ -22,6 +22,8 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 `module-loading` 检查原生功能和插件声明的自动发现、功能目录的辅助文件边界、延迟初始化，以及 Lazy 重载后保留折叠状态并重新读取插件声明。
 
+`structural-isolation` 检查结构操作使用独立快照、底部进度动画、按需坐标缓存，并确认输入、导航和文件进入不会留下全量解析状态。
+
 `brackets` 检查当前包围括号高亮，包括最近的嵌套括号、字符串和注释、Lua 函数内部、Vue script 注入、模板字符串及窗口切换后的清理。
 
 `unocss` 检查 HTML/Vue/TSX 原子类补全、项目主题与 shortcuts，并确认普通项目不启动该服务。

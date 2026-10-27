@@ -1,4 +1,3 @@
-local shared = require('nvim-treesitter-textobjects.shared')
 local select = require('nvim-treesitter-textobjects.select')
 local ts_range = vim.treesitter._range
 local M = {}
@@ -15,26 +14,117 @@ vim.treesitter.query.add_directive(
     end
 )
 
-function M.select(capture)
-    if not vim.treesitter.get_parser(0, nil, { error = false }) then
-        return '<Esc>'
+local function best_range(ranges, byte, opts)
+    local inside, ahead, behind
+    for _, range in ipairs(ranges) do
+        local start, finish = range[3], range[6]
+        local length = finish - start
+        if start <= byte and byte < finish then
+            if
+                not inside
+                or length < inside[6] - inside[3]
+                or length == inside[6] - inside[3] and start < inside[3]
+            then
+                inside = range
+            end
+        elseif opts.lookahead then
+            if
+                start > byte
+                and (
+                    not ahead
+                    or start < ahead[3]
+                    or start == ahead[3] and finish > ahead[6]
+                )
+            then
+                ahead = range
+            end
+        elseif opts.lookbehind then
+            if
+                start < byte
+                and (
+                    not behind
+                    or start > behind[3]
+                    or start == behind[3] and finish < behind[6]
+                )
+            then
+                behind = range
+            end
+        end
     end
+    return inside or ahead or behind
+end
 
+local function range_at_point(captures, name, byte, opts)
+    local ranges = captures[name] or {}
+    if name:sub(-5) == 'outer' then
+        return best_range(ranges, byte, opts)
+    end
+    local outer =
+        best_range(captures[name:gsub('inner$', 'outer')] or {}, byte, {})
+    if not outer then
+        return best_range(ranges, byte, opts)
+    end
+    local within = {}
+    for _, range in ipairs(ranges) do
+        if ts_range.contains(outer, range) then
+            within[#within + 1] = range
+        end
+    end
+    if #within == 0 then
+        return best_range(ranges, byte, opts)
+    end
+    return best_range(within, byte, opts)
+        or best_range(within, outer[3], { lookahead = true })
+end
+
+function M.load_and_replay(buf, keys)
+    if require('modules.editor.treesitter.snapshot').get(buf) then
+        vim.api.nvim_feedkeys(keys, 'mi', false)
+    end
+end
+
+function M.select(capture, key)
+    local buf = vim.api.nvim_get_current_buf()
+    local snapshot = require('modules.editor.treesitter.snapshot')
+    local index = snapshot.cached(buf)
+    if not index then
+        if not vim.treesitter.get_parser(buf, nil, { error = false }) then
+            return '<Esc>'
+        end
+        local mode = vim.fn.mode(1)
+        local prefix = 'gv'
+        if mode:sub(1, 2) == 'no' then
+            prefix = '"'
+                .. vim.v.register
+                .. vim.v.count1
+                .. vim.v.operator
+                .. mode:sub(3)
+        end
+        -- Load outside expression textlock, then let Vim execute the original
+        -- operator/Visual mapping with the ready coordinates.
+        return string.format(
+            '<Esc><Cmd>lua require("modules.editor.treesitter.textobjects").load_and_replay(%d,%q)<CR>',
+            buf,
+            prefix .. key
+        )
+    end
+    local captures = index.captures
     local config = require('nvim-treesitter-textobjects.config').select
     local opts =
         { lookahead = config.lookahead, lookbehind = config.lookbehind }
     local query = capture == '@statement.inner' and '@statement.outer'
         or capture
-    local range = shared.textobject_at_point(query, 'textobjects', 0, nil, opts)
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    local byte = vim.api.nvim_buf_get_offset(buf, cursor[1] - 1) + cursor[2]
+    local range = range_at_point(captures, query:sub(2), byte, opts)
 
     if
         range and (capture == '@loop.inner' or capture == '@conditional.inner')
     then
-        local outer = shared.textobject_at_point(
-            capture:gsub('inner$', 'outer'),
-            'textobjects',
-            0,
-            nil,
+        local outer = range_at_point(
+            captures,
+            capture:sub(2):gsub('inner$', 'outer'),
+            byte,
             opts
         )
         if outer and not ts_range.contains(outer, range) then
@@ -47,15 +137,10 @@ function M.select(capture)
     end
 
     local start_row, start_col, end_row, end_col = ts_range.unpack4(range)
-    if capture == '@statement.inner' and end_col > 0 then
-        local last = vim.treesitter.get_node({
-            pos = { end_row, end_col - 1 },
-            include_anonymous = true,
-            ignore_injections = false,
-        })
-        if last and last:type() == ';' then
-            end_col = end_col - 1
-        end
+    if
+        capture == '@statement.inner' and index.terminators[tostring(range[6])]
+    then
+        end_col = end_col - 1
     end
 
     if start_row == end_row and start_col == end_col then
@@ -63,8 +148,6 @@ function M.select(capture)
     end
 
     local mode = select.detect_selection_mode(capture)
-    -- Resolve during the expression mapping so an absent/empty object cancels
-    -- the operator. Apply after textlock ends; c must never reach Insert here.
     return string.format(
         '<Cmd>lua require("modules.editor.treesitter.textobjects").apply({%d,%d,%d,%d},%q)<CR>',
         start_row,

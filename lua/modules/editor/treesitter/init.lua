@@ -66,7 +66,7 @@ return {
             }) do
                 local capture, description = object[1], object[2]
                 vim.keymap.set({ 'x', 'o' }, key, function()
-                    return textobjects.select('@' .. capture)
+                    return textobjects.select('@' .. capture, key)
                 end, { expr = true, desc = description })
             end
         end,

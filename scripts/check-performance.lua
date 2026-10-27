@@ -220,6 +220,7 @@ local ok, err = xpcall(function()
     vim.api.nvim_buf_set_lines(sparse_buf, 0, -1, false, sparse_lines)
     vim.bo[sparse_buf].filetype = 'vue'
     local parser = vim.treesitter.get_parser(sparse_buf)
+    parser:parse({ 0, 0, 40, 0 })
     local parse, for_each_tree = parser.parse, parser.for_each_tree
     local calls, visits, revision = 0, 0, 0
     parser.parse = function(self, ...)
@@ -266,7 +267,8 @@ local ok, err = xpcall(function()
         absent_parse_calls = calls,
         absent_tree_visits = visits,
     }
-    assert(calls == 1 and visits == total_trees, 'Repeated full tree scan')
+    assert(calls == 0 and visits == 0, 'Motion touched the shared parser')
+    assert(total_trees < 50, 'Motion retained off-screen injected trees')
     calls, visits = 0, 0
     move({ forward = true }, 'loop.outer')
     assert(calls == 0 and visits == 0, 'Empty result was not cached')
