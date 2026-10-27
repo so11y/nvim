@@ -17,7 +17,11 @@ return {
         },
         opts = {
             keymaps = {
-                view = { toggle_explorer = '<A-b>' },
+                view = {
+                    toggle_explorer = '<A-b>',
+                    focus_explorer = '<A-e>',
+                    toggle_stage = '<Tab>',
+                },
                 explorer = { restore = 'd' },
             },
         },

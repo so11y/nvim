@@ -3,7 +3,8 @@ return {
     event = 'BufReadPost',
     opts = {
         handle = {
-            blend = 20,
+            highlight = 'PmenuThumb',
+            blend = 80,
         },
         marks = {
             GitAdd = { highlight = 'ScrollbarGitAddMuted' },
