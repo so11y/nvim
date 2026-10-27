@@ -15,6 +15,11 @@ return {
                 desc = '查看 Git 历史',
             },
         },
-        opts = {},
+        opts = {
+            keymaps = {
+                view = { toggle_explorer = '<A-b>' },
+                explorer = { restore = 'd' },
+            },
+        },
     },
 }

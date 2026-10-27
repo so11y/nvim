@@ -163,7 +163,7 @@ Vue 模板中，`al/ad` 选择整个带 `v-for` 或 `v-if/v-else-if/v-else` 的�
 
 `<leader>gt` 打开 LazyGit，`<leader>gd` / `<leader>gh` 查看差异与历史。
 
-差异视图中，`]c` / `[c` 切换差异块，`]f` / `[f` 切换文件，`q` 或 `<A-w>` 退出。
+差异视图中，`<A-b>` 显示 / 隐藏左侧文件列表；列表中按 `d` 放弃所选文件的修改。`]c` / `[c` 切换差异块，`]f` / `[f` 切换文件，`q` 或 `<A-w>` 退出。
 
 ![差异视图](docs/images/nvim-codediff.png)
 
