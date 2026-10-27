@@ -1,37 +1,24 @@
 return {
     'rebelot/heirline.nvim',
     event = 'VeryLazy',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
         local utils = require('heirline.utils')
         local function colors()
-            local c = require('vscode.colors').get_colors()
             local palette = {
-                base = c.vscBack,
-                mantle = c.vscTabOutside,
-                text = c.vscFront,
-                dim = c.vscLineNumber,
-                blue = c.vscBlue,
-                lavender = c.vscBlue,
-                mauve = c.vscPink,
-                pink = c.vscPink,
-                peach = c.vscOrange,
-                green = c.vscLightGreen,
-                red = c.vscRed,
-                maroon = c.vscLightRed,
-                filetype = c.vscYellow,
-                diag_warn = c.vscYellow,
-                diag_error = c.vscRed,
-                diag_hint = c.vscBlueGreen,
-                diag_info = c.vscLightBlue,
+                status_fg = '#FFFFFF',
+                status_bg = '#007ACC',
+                diag_error = '#FFB4AB',
+                diag_warn = '#F4D58D',
+                diag_info = '#B7DCFF',
+                diag_hint = '#A9DCCB',
             }
             vim.api.nvim_set_hl(0, 'StatusLine', {
-                fg = palette.text,
-                bg = palette.mantle,
+                fg = palette.status_fg,
+                bg = palette.status_bg,
             })
             vim.api.nvim_set_hl(0, 'StatusLineNC', {
-                fg = palette.dim,
-                bg = palette.mantle,
+                fg = palette.status_fg,
+                bg = palette.status_bg,
             })
             return palette
         end

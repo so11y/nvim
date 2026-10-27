@@ -53,6 +53,7 @@ return {
     },
     config = function()
         local dap, ui = require('dap'), require('dapui')
+        local node = vim.fn.exepath('node')
         ui.setup()
         require('nvim-dap-virtual-text').setup()
         local adapter = {
@@ -60,7 +61,7 @@ return {
             host = '127.0.0.1',
             port = '${port}',
             executable = {
-                command = 'node',
+                command = node,
                 args = {
                     vim.fn.stdpath('data')
                         .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
@@ -77,6 +78,7 @@ return {
                 type = 'pwa-node',
                 request = 'launch',
                 program = '${file}',
+                runtimeExecutable = node,
                 cwd = project_root,
                 sourceMaps = true,
                 skipFiles = { '<node_internals>/**' },
@@ -85,7 +87,7 @@ return {
                 name = 'Debug Vite Plugin (Dev)',
                 type = 'pwa-node',
                 request = 'launch',
-                runtimeExecutable = 'node',
+                runtimeExecutable = node,
                 runtimeArgs = { './node_modules/vite/bin/vite.js' },
                 cwd = project_root,
                 sourceMaps = true,

@@ -1,6 +1,88 @@
+import assert from 'node:assert/strict';
 import { setTimeout as delay } from 'node:timers/promises';
 
+async function verifyCursorline(rpc) {
+  const lua = (code) => rpc('nvim_exec_lua', [code, []]);
+  const input = async (keys) => {
+    await rpc('nvim_input', [keys]);
+    await delay(50);
+  };
+  const buf = await lua(`require('persistence').stop()
+local buf=vim.api.nvim_create_buf(true,false)
+vim.api.nvim_set_current_buf(buf)
+vim.api.nvim_buf_set_lines(buf,0,-1,false,{'first plain line','second plain line','third plain line'})
+vim.bo.filetype='text'
+vim.api.nvim_win_set_cursor(0,{2,0})
+return buf`);
+  // The first screen inspection rebuilds Neovim's highlight table.
+  await lua('vim.api.nvim__inspect_cell(1,0,0)');
+  await delay(50);
+  const snapshot = () => lua(`vim.cmd('redraw!')
+local win=vim.api.nvim_get_current_win()
+local row=vim.api.nvim_win_get_cursor(win)[1]
+local point=vim.fn.screenpos(win,row,1)
+local other=vim.fn.screenpos(win,row==2 and 3 or 2,1)
+local start=vim.fn.win_screenpos(win)[2]
+local normal=vim.api.nvim_get_hl(0,{name='Normal',link=false}).bg
+local function background(row,col)
+ local cell=vim.api.nvim__inspect_cell(1,row-1,col-1)
+ return cell[2].background or normal
+end
+local result={mode=vim.fn.mode(),text=background(point.row,point.col+10),
+ tail=background(point.row,point.col+25),selected=background(point.row,point.col),
+ gutter=background(point.row,start),other=background(other.row,other.col+10),errmsg=vim.v.errmsg}
+for _,inactive in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+ if inactive~=win and vim.api.nvim_win_get_buf(inactive)==vim.api.nvim_get_current_buf() then
+  local p=vim.fn.screenpos(inactive,2,1)
+  result.inactive=background(p.row,p.col+10)
+ end
+end
+local ns=vim.api.nvim_get_namespaces().CursorLineSelection
+result.marks=#vim.api.nvim_buf_get_extmarks(0,ns,0,-1,{})
+return result`);
+  const continuous = (state) => {
+    assert.notEqual(state.text, state.other, 'Cursor line disappeared from editor text');
+    assert.equal(state.text, state.tail, 'Cursor line stops at the end of the text');
+    assert.equal(state.text, state.gutter, 'Gutter and editor text have different cursor line backgrounds');
+    assert.equal(state.marks, 0, 'Cursor line left persistent buffer decorations');
+    assert.equal(state.errmsg, '');
+  };
+  const normal = await snapshot();
+  continuous(normal);
+  const selections = [];
+  for (const [keys, mode] of [['v2l', 'v'], ['<C-v>2l', '\u0016'], ['v2l<C-g>', 's']]) {
+    await lua('vim.api.nvim_win_set_cursor(0,{2,0})');
+    await input(keys);
+    const state = await snapshot();
+    assert.equal(state.mode, mode);
+    continuous(state);
+    assert.notEqual(state.selected, state.text, 'Selection color was hidden by the cursor line');
+    selections.push(state);
+    await input('<Esc>');
+  }
+  await lua('vim.api.nvim_win_set_cursor(0,{3,0})');
+  await input('v2l');
+  const lastLine = await snapshot();
+  continuous(lastLine);
+  await lua('vim.wo.cursorline=false');
+  const disabled = await snapshot();
+  assert.equal(disabled.text, disabled.other, 'Disabled cursor line is still visible');
+  await lua('vim.wo.cursorline=true');
+  await input('<Esc>');
+  const moved = await snapshot();
+  continuous(moved);
+  await lua("vim.cmd.vsplit();vim.api.nvim_win_set_cursor(0,{2,0})");
+  await input('v2l');
+  const split = await snapshot();
+  continuous(split);
+  assert.equal(split.inactive, split.other, 'Selection cursor line leaked into the other window');
+  await input('<Esc>');
+  await lua(`vim.cmd.close();vim.bo.modified=false;vim.cmd.enew();vim.api.nvim_buf_delete(${buf},{force=true})`);
+  return { normal, selections, lastLine, disabled, moved, split };
+}
+
 export async function verifySelectionUI(rpc) {
+  const cursorline = await verifyCursorline(rpc);
   const cases = [
     { name: 'typescript', file: 'refactor.ts', row: 2, needle: 'a + b' },
     { name: 'vue-script', file: 'App.vue', row: 3, needle: 'ref' },
@@ -96,6 +178,6 @@ export async function verifySelectionUI(rpc) {
     await rpc('nvim_input', ['<Esc>']);
     await delay(50);
   }
-  const result = { results };
+  const result = { results, cursorline };
   return result;
 }

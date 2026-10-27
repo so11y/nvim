@@ -15,6 +15,20 @@ local ok, err = xpcall(function()
     local ns = vim.api.nvim_create_namespace('config-audit')
     local heirline = require('heirline')
     local empty = heirline.eval_statusline()
+    vim.cmd.redraw()
+    local win = vim.api.nvim_get_current_win()
+    local current = vim.fn.screenpos(win, 1, 1)
+    local next_line = vim.fn.screenpos(win, 2, 1)
+    assert(
+        vim.fn.screenattr(current.row, current.col)
+            ~= vim.fn.screenattr(next_line.row, next_line.col),
+        'Current line background is missing from the editor text'
+    )
+    assert(
+        vim.fn.screenattr(current.row, 1) ~= vim.fn.screenattr(next_line.row, 1),
+        'Current line background is missing from the sign column'
+    )
+    report.cursorline_continuous = true
     vim.diagnostic.set(ns, buf, {
         {
             lnum = 2,
@@ -32,10 +46,41 @@ local ok, err = xpcall(function()
     assert(
         vim.wait(1000, function()
             local text = heirline.eval_statusline()
-            return text:find('● 1', 1, true) and text:find(' 1', 1, true)
+            return text:find(' 1', 1, true) and text:find(' 1', 1, true)
         end, 10),
         'Diagnostic counts did not appear after an empty initial render'
     )
+    local rendered = vim.api.nvim_eval_statusline(vim.o.statusline, {
+        winid = win,
+        maxwidth = 160,
+        highlights = true,
+    })
+    local status_fg =
+        vim.api.nvim_get_hl(0, { name = 'StatusLine', link = false }).fg
+    local diagnostic_colors = {}
+    for _, icon in ipairs({ '', '' }) do
+        local column = assert(rendered.str:find(icon, 1, true)) - 1
+        for index = #rendered.highlights, 1, -1 do
+            local segment = rendered.highlights[index]
+            if segment.start <= column then
+                local color = vim.api.nvim_get_hl(0, {
+                    name = segment.groups[#segment.groups],
+                    link = false,
+                }).fg
+                assert(
+                    color and color ~= status_fg,
+                    'Diagnostic status lost its severity color'
+                )
+                diagnostic_colors[#diagnostic_colors + 1] = color
+                break
+            end
+        end
+    end
+    assert(
+        diagnostic_colors[1] ~= diagnostic_colors[2],
+        'Error and hint status have the same color'
+    )
+    report.status_diagnostic_colors = diagnostic_colors
     local get, count = vim.diagnostic.get, vim.diagnostic.count
     local get_calls, count_calls = 0, 0
     vim.diagnostic.get = function(...)

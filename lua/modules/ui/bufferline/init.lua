@@ -7,9 +7,10 @@ return {
     event = 'VeryLazy',
     opts = function()
         local bufdelete = require('snacks.bufdelete').delete
+        local presets = require('bufferline').style_preset
         return {
             options = {
-                separator_style = { '', '' },
+                style_preset = { presets.no_bold, presets.no_italic },
                 indicator = { icon = '▎', style = 'icon' },
                 diagnostics = 'nvim_lsp',
                 modified_icon = '●',
@@ -31,25 +32,13 @@ return {
                 },
             },
             highlights = function(defaults)
-                local colors = require('vscode.colors').get_colors()
                 local highlights = defaults.highlights
-                highlights.error = {
-                    fg = {
-                        attribute = 'fg',
-                        highlight = 'DiagnosticError',
-                    },
-                    bg = {
-                        attribute = 'bg',
-                        highlight = 'BufferLineBackground',
-                    },
-                }
-                for name, highlight in pairs(highlights) do
-                    highlight.bg = name == 'fill' and colors.vscTabOutside
-                        or name:match('_selected$') and colors.vscTabCurrent
-                        or colors.vscTabOther
-                    highlight.bold = name:match('_selected$') ~= nil
-                    highlight.italic = false
-                end
+                local gray = require('vscode.colors').get_colors().vscGray
+                highlights.background.fg = gray
+                highlights.buffer_visible.fg = gray
+                highlights.close_button.fg = highlights.buffer_selected.fg
+                highlights.close_button_visible.fg =
+                    highlights.buffer_selected.fg
                 return highlights
             end,
         }

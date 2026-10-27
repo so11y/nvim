@@ -5,7 +5,10 @@ local ok, err = xpcall(function()
     dap.listeners.after.event_stopped.upgrade_check = function(_, body)
         stopped[#stopped + 1] = body
     end
-    vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/debug.js')
+    -- Node resolves Windows short paths before matching breakpoints.
+    vim.cmd.edit(
+        assert(vim.uv.fs_realpath(vim.env.NVIM_TEST_ROOT .. '/alpha/debug.js'))
+    )
     vim.api.nvim_win_set_cursor(0, { 4, 0 })
     dap.toggle_breakpoint()
     dap.run(

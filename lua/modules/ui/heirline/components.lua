@@ -1,12 +1,11 @@
 local conditions = require('heirline.conditions')
-local devicons = require('nvim-web-devicons')
 
 local icons = {}
 icons.diagnostics = {
-    Error = '●',
-    Warn = '●',
-    Info = '●',
-    Hint = '',
+    Error = '',
+    Warn = '',
+    Info = '',
+    Hint = '',
 }
 
 local M = {}
@@ -56,7 +55,7 @@ M.Mode = {
             i = 'INSERT',
             ic = 'Ic',
             ix = 'Ix',
-            R = 'RPLACE',
+            R = 'REPLACE',
             Rc = 'Rc',
             Rx = 'Rx',
             Rv = 'Rv',
@@ -70,35 +69,12 @@ M.Mode = {
             ['!'] = '!',
             t = 'TERM',
         },
-        mode_colors = {
-            n = 'lavender',
-            nt = 'dim',
-            i = 'blue',
-            v = 'mauve',
-            V = 'mauve',
-            ['\22'] = 'mauve',
-            c = 'red',
-            s = 'pink',
-            S = 'pink',
-            ['\19'] = 'pink',
-            R = 'peach',
-            r = 'peach',
-            ['!'] = 'red',
-            t = 'green',
-        },
     },
     provider = function(self)
         local name = self.mode_names[self.mode] or self.mode:upper()
-        return ' ' .. name .. ' '
+        return string.format(' %-7s ', name)
     end,
-    hl = function(self)
-        local mode = self.mode:sub(1, 1)
-        return {
-            fg = 'base',
-            bg = self.mode_colors[mode],
-            bold = true,
-        }
-    end,
+    hl = { bold = false },
     update = {
         'ModeChanged',
         pattern = '*:*',
@@ -119,23 +95,11 @@ M.MacroRecording = {
         end,
         {
             provider = '󰻃 ',
-            hl = {
-                fg = 'maroon',
-            },
         },
         {
             provider = function(self)
                 return self.reg_recording
             end,
-            hl = {
-                fg = 'maroon',
-                italic = false,
-                bold = true,
-            },
-        },
-        hl = {
-            fg = 'text',
-            bg = 'base',
         },
     },
     update = { 'RecordingEnter', 'RecordingLeave' },
@@ -151,17 +115,12 @@ M.Formatters = {
         local formatter = require('modules.language.formatting.format').info()
         return formatter.name .. (formatter.available and '' or '?')
     end,
-    hl = { fg = 'dim', bold = false },
 }
 
 M.LSPActive = {
     condition = conditions.lsp_attached,
     update = { 'BufEnter', 'LspAttach', 'LspDetach' },
-    provider = '  LSP',
-    hl = {
-        fg = 'dim',
-        bold = false,
-    },
+    provider = 'LSP',
     on_click = {
         name = 'heirline_lsp',
         callback = function()
@@ -174,10 +133,6 @@ M.FileType = {
     provider = function()
         return vim.bo.filetype
     end,
-    hl = {
-        fg = 'filetype',
-        bold = false,
-    },
 }
 
 -- Git
@@ -188,9 +143,6 @@ M.Git = {
         self.has_changes = self.status_dict.added ~= 0
             or self.status_dict.removed ~= 0
             or self.status_dict.changed ~= 0
-    end,
-    hl = function(self)
-        return self.has_changes and 'GitSignsChange' or { fg = 'dim' }
     end,
     provider = function(self)
         local head = self.status_dict.head:gsub('%%', '%%%%')
@@ -247,50 +199,8 @@ M.Diagnostics = {
     },
 }
 
-M.FileIcon = {
-    condition = function(self)
-        return self.filename ~= ''
-    end,
-    provider = function(self)
-        return self.icon .. ' '
-    end,
-    hl = function(self)
-        return {
-            fg = self.is_modified and not self.is_terminal and self.icon_color
-                or 'dim',
-        }
-    end,
-}
-
-M.FileName = {
-    provider = function(self)
-        local name = self.filename == '' and vim.bo.filetype
-            or vim.fn.fnamemodify(self.filename, ':t')
-        return (name:gsub('%%', '%%%%'))
-    end,
-    hl = function(self)
-        return { fg = self.is_modified and self.icon_color or 'dim' }
-    end,
-}
-
-M.FileNameBlock = {
-    init = function(self)
-        local bufnr = self.bufnr or 0
-        self.filename = vim.api.nvim_buf_get_name(bufnr)
-        self.is_modified = vim.bo[bufnr].modified
-        self.is_terminal = vim.bo[bufnr].buftype == 'terminal'
-        local icon, icon_hl = devicons.get_icon(
-            self.filename,
-            vim.fn.fnamemodify(self.filename, ':e'),
-            { default = true }
-        )
-        self.icon = self.is_terminal and '' or icon
-        local fg = icon_hl and vim.api.nvim_get_hl(0, { name = icon_hl }).fg
-        self.icon_color = fg and string.format('#%06x', fg) or 'dim'
-    end,
-    hl = { fg = 'text' },
-    M.FileIcon,
-    M.FileName,
+M.Ruler = {
+    provider = '%l:%v',
 }
 
 return M
