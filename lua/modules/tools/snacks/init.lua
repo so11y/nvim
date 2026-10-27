@@ -192,6 +192,11 @@ return {
                     },
                 },
             },
+            lazygit = {
+                win = {
+                    keys = { term_normal = false },
+                },
+            },
             terminal = {
                 enabled = true,
                 shell = vim.fn.has('win32') == 1 and {

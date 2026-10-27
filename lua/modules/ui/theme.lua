@@ -1,7 +1,6 @@
 local common_highlights = {
     LspInlayHint = { bg = 'NONE' },
     BlinkCmpMenu = { link = 'NormalFloat' },
-    BlinkCmpMenuBorder = { link = 'FloatBorder' },
     GitAdded = {
         fg = '#3fb950',
         bg = 'NONE',

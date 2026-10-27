@@ -53,7 +53,7 @@ export async function verifyGitUI(rpc) {
     repo,
   );
   await lua(
-    "local dir=...; vim.env.LG_CONFIG_FILE=dir..'/config.yml'; Snacks.config.lazygit={args={'--use-config-dir',dir},theme_path=dir..'/theme.yml'}",
+    "local dir=...; vim.env.LG_CONFIG_FILE=dir..'/config.yml'; Snacks.config.lazygit.args={'--use-config-dir',dir}; Snacks.config.lazygit.theme_path=dir..'/theme.yml'",
     lazygitConfig,
   );
   const setup = await lua(`
@@ -93,6 +93,31 @@ export async function verifyGitUI(rpc) {
     "return {name=vim.api.nvim_buf_get_name(0),ft=vim.bo.filetype,mode=vim.fn.mode(),floating=vim.api.nvim_win_get_config(0).relative ~= ''}",
   );
   await input('2');
+  await input('/');
+  const filter = 'verify-escape-filter';
+  await input(filter);
+  await waitFor(
+    () =>
+      lua(
+        "return table.concat(vim.api.nvim_buf_get_lines(0,0,-1,false),'\\n'):find(...,1,true) ~= nil",
+        filter,
+      ),
+    'Open LazyGit file filter',
+  );
+  await input('<Esc>');
+  await waitFor(
+    () =>
+      lua(
+        "return vim.fn.mode() == 't' and not table.concat(vim.api.nvim_buf_get_lines(0,0,-1,false),'\\n'):find(...,1,true)",
+        filter,
+      ),
+    'Cancel LazyGit filter with Esc while retaining terminal input',
+  );
+  const escape = await lua(
+    "return {mode=vim.fn.mode(),mapping=vim.fn.maparg('<Esc>','t')}",
+  );
+  if (escape.mapping !== '')
+    throw new Error('LazyGit Esc is intercepted by a terminal mapping');
   await input('<Space>');
   await waitFor(
     () => git('diff', '--cached', '--name-only') === 'sample.txt',
@@ -155,6 +180,7 @@ export async function verifyGitUI(rpc) {
     setup,
     diff,
     terminal,
+    escape,
     stage: true,
     commit: subject,
     history: true,

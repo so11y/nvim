@@ -9,9 +9,6 @@ vim.opt.shortmess:append('sS')
 -- 扩展按 cmdheight 判断是否自动展开多行消息，保留当前输出面板行为。
 vim.o.cmdheight = 50
 
-map('n', 'J', '<C-d>', { desc = '向下滚动半页' })
-map('n', 'K', '<C-u>', { desc = '向上滚动半页' })
-
 -- 直接使用宿主历史，避免 Ctrl-i / Tab 的键码重合。
 for _, binding in ipairs({
     { '<A-u>', 'workbench.action.navigateBack', '后退跳转位置' },

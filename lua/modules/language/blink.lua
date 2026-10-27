@@ -59,7 +59,6 @@ return {
                 },
                 menu = {
                     auto_show_delay_ms = 0,
-                    border = 'rounded',
                     draw = {
                         treesitter = { 'lsp' },
                         columns = {
