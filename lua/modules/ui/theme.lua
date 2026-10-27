@@ -59,6 +59,11 @@ local function apply_ui_highlights()
     cursorline_nr.bg = cursorline
     local groups = {
         MatchParen = { fg = foreground, bg = palette.vscSelection, bold = true },
+        FlashCurrent = {
+            fg = '#FFFFFF',
+            bg = '#007ACC',
+            bold = true,
+        },
         SnacksPickerPreviewCursorLine = { bg = palette.vscSelection },
         BufferLineIndicatorSelected = {
             fg = palette.vscAccentBlue,
