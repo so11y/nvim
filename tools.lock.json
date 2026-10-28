@@ -1,7 +1,8 @@
 {
   "mason": {
     "vtsls": "0.3.0",
-    "vue-language-server": "3.3.11"
+    "vue-language-server": "3.3.11",
+    "oxfmt": "0.74.0"
   },
   "typescript_sdk": "6.0.3"
 }

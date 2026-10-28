@@ -219,7 +219,9 @@ end)
 check('windows_space_and_unicode_filename', function()
     local buf = open("alpha/文 件's.js")
     assert(
-        require('modules.language.formatting.format').info(buf).available,
+        vim.wait(10000, function()
+            return require('modules.language.formatting.format').info(buf).available
+        end, 20),
         'Formatter unavailable'
     )
     require('modules.language.formatting.format').format(buf)

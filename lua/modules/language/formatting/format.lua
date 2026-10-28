@@ -18,7 +18,7 @@ for _, ft in ipairs({
     'jsonc',
     'markdown',
 }) do
-    M.formatters[ft] = { 'prettierd' }
+    M.formatters[ft] = { lsp_format = 'prefer', name = 'oxfmt' }
 end
 
 function M.info(bufnr)
@@ -29,9 +29,12 @@ function M.info(bufnr)
         return
     end
     local conform = require('conform')
-    if ft == 'rust' then
+    if formatters.lsp_format then
         local _, lsp = conform.list_formatters_to_run(bufnr)
-        return { name = 'rustfmt', available = lsp }
+        return {
+            name = ft == 'rust' and 'rustfmt' or formatters.name,
+            available = lsp,
+        }
     end
     return conform.get_formatter_info(formatters[1], bufnr)
 end
@@ -43,10 +46,8 @@ function M.format_options(bufnr)
     if not formatters then
         return
     end
-    local name = ft == 'rust' and 'rustfmt' or formatters[1]
-    return {
-        bufnr = bufnr,
-    }, function(err)
+    local name = ft == 'rust' and 'rustfmt' or formatters.name or formatters[1]
+    local function callback(err)
         if err then
             vim.notify(
                 'Formatting (' .. name .. '): ' .. err:gsub('\27%[[0-9;]*m', ''),
@@ -54,6 +55,20 @@ function M.format_options(bufnr)
             )
         end
     end
+    if
+        formatters.name == 'oxfmt'
+        and not vim.wait(
+            require('conform').default_format_opts.timeout_ms,
+            function()
+                return M.info(bufnr).available
+            end,
+            10
+        )
+    then
+        callback('Oxfmt language server is not ready')
+        return
+    end
+    return { bufnr = bufnr }, callback
 end
 
 function M.format(bufnr)

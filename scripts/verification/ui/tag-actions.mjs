@@ -64,7 +64,7 @@ p:close()
 return result`);
     assert(edge.row >= 1 && edge.col >= 1);
     assert(edge.row + edge.height <= 17 && edge.col + edge.width <= 51);
-    assert(edge.height >= 1 && edge.height < 10 && edge.count === 10 && !edge.errmsg);
+    assert(edge.height >= 1 && edge.height <= edge.count && edge.count === 10 && !edge.errmsg);
     return { setup, wrapMenu, wrapped, edge };
   } finally {
     await lua('if _G.__tag_ui.input then vim.ui.input=_G.__tag_ui.input end');

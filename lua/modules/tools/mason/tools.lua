@@ -8,7 +8,7 @@ local M = {
         'js-debug-adapter',
         'json-lsp',
         'lua-language-server',
-        'prettierd',
+        'oxfmt',
         'stylua',
         'tree-sitter-cli',
         'unocss-language-server',

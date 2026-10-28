@@ -12,7 +12,7 @@ local ok, err = xpcall(function()
     require('mason.settings').set({ registry_cache = { refresh = false } })
     report.before = {
         mason = true,
-        formatter = vim.fn.exepath('prettierd'),
+        formatter = vim.fn.exepath('oxfmt'),
     }
     local command = vim.env.NVIM_TEST_MASON_COMMAND or 'Mason'
     if command == 'Mason' then

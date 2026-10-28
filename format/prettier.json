@@ -6,5 +6,6 @@
   "singleAttributePerLine": true,
   "bracketSameLine": true,
   "vueIndentScriptAndStyle": false,
-  "htmlWhitespaceSensitivity": "ignore"
+  "htmlWhitespaceSensitivity": "ignore",
+  "sortPackageJson": false
 }

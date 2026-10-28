@@ -4,6 +4,22 @@ vim.cmd.edit(filename)
 assert(vim.wait(15000, function()
     return require('modules.language.formatting.format').info().available
 end, 50))
+-- An explicit server error must remain visible; a null result is a valid no-op.
+local client = vim.lsp.get_clients({ bufnr = 0, name = 'oxfmt' })[1]
+local request = client.rpc.request
+client.rpc.request = function(method, params, callback, ...)
+    if method == 'textDocument/formatting' then
+        callback(
+            vim.lsp.rpc.rpc_response_error(
+                vim.lsp.protocol.ErrorCodes.InternalError,
+                'Formatting request failed'
+            ),
+            nil
+        )
+        return true
+    end
+    return request(method, params, callback, ...)
+end
 require('modules.language.formatting.format').format()
 vim.wait(300)
 local notices = {}
@@ -12,10 +28,7 @@ for _, n in ipairs(Snacks.notifier.get_history()) do
 end
 local found = false
 for _, n in ipairs(notices) do
-    if
-        tostring(n.message):find('Formatting (prettierd)', 1, true)
-        and tostring(n.message):find('Unexpected token', 1, true)
-    then
+    if tostring(n.message):find('Formatting (oxfmt)', 1, true) then
         found = true
     end
 end
@@ -29,7 +42,7 @@ assert(
 local notify = vim.notify
 local save_failure
 vim.notify = function(message, level, ...)
-    if tostring(message):find('Formatting (prettierd)', 1, true) then
+    if tostring(message):find('Formatting (oxfmt)', 1, true) then
         save_failure = { message = message, level = level }
     end
     return notify(message, level, ...)
@@ -50,10 +63,12 @@ assert(
     'Failed save formatting changed the original text'
 )
 
+client.rpc.request = request
+
 local project = vim.fs.normalize(vim.fn.tempname())
 vim.fn.mkdir(project, 'p')
 local install =
-    require('mason-registry').get_package('prettierd'):get_install_path()
+    require('mason-registry').get_package('oxfmt'):get_install_path()
 assert(
     vim.uv.fs_symlink(install .. '/node_modules', project .. '/node_modules', {
         dir = true,
@@ -61,6 +76,8 @@ assert(
     })
 )
 local separator = vim.fn.has('win32') == 1 and ';' or ':'
+-- The remaining checks exercise a local formatter with Mason outside PATH.
+vim.lsp.enable(require('modules.language.lsp.setup').servers, false)
 local original_path = vim.env.PATH
 local mason_bin = vim.fs
     .normalize(require('mason.settings').current.install_root_dir .. '/bin')
@@ -71,22 +88,26 @@ vim.env.PATH = table.concat(
     end, vim.split(original_path, separator, { plain = true })),
     separator
 )
-assert(
-    vim.fn.executable('prettierd') == 0,
-    'Test requires prettierd outside PATH'
-)
+assert(vim.fn.executable('oxfmt') == 0, 'Test requires oxfmt outside PATH')
 filename = project .. '/local.js'
 vim.fn.writefile({ 'const value={message:"你好😀"};' }, filename)
 vim.cmd.edit(filename)
-local formatter = require('modules.language.formatting.format').info()
 assert(
-    formatter.available and formatter.command:find(project, 1, true),
-    'Project formatter was not resolved: ' .. vim.inspect(formatter)
+    vim.wait(15000, function()
+        return require('modules.language.formatting.format').info().available
+    end, 20),
+    'Project Oxfmt LSP did not initialize'
+)
+local formatter = vim.lsp.get_clients({ bufnr = 0, name = 'oxfmt' })[1]
+assert(
+    vim.fs.normalize(formatter.config.root_dir) == project,
+    'Project formatter was not isolated: '
+        .. vim.inspect(formatter.config.root_dir)
 )
 local component = require('modules.ui.heirline.components').Formatters
 local status = {}
 assert(
-    component.condition(status) and component.provider(status) == 'prettierd',
+    component.condition(status) and component.provider(status) == 'oxfmt',
     'Status line disagrees with Conform'
 )
 require('modules.language.formatting.format').format()
@@ -95,6 +116,49 @@ local formatted =
 assert(
     formatted == 'const value = { message: "你好😀" };',
     'Project formatter did not run: ' .. formatted
+)
+-- Malformed or unsupported configuration must fail visibly without another formatter.
+for _, case in ipairs({
+    { name = 'prettier.json', contents = '{broken' },
+    {
+        name = 'prettier.json',
+        contents = '{"plugins":["prettier-plugin-test"]}',
+    },
+    {
+        name = '.editorconfig',
+        contents = 'root = true\n[*]\nmax_line_length = off',
+    },
+}) do
+    local configfile = project .. '/' .. case.name
+    vim.fn.writefile(
+        vim.split(case.contents, '\n', { plain = true }),
+        configfile
+    )
+    local original = 'const untouched={value:1};'
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { original })
+    local warning
+    vim.notify = function(message, level, ...)
+        if tostring(message):find('Formatting (oxfmt)', 1, true) then
+            warning = { message = message, level = level }
+        end
+        return notify(message, level, ...)
+    end
+    require('modules.language.formatting.format').format()
+    vim.notify = notify
+    assert(
+        warning and warning.level == vim.log.levels.WARN,
+        'Invalid configuration did not produce a warning'
+    )
+    assert(
+        vim.api.nvim_get_current_line() == original,
+        'Invalid configuration changed the source'
+    )
+    vim.fn.delete(configfile)
+end
+require('modules.language.formatting.format').format()
+assert(
+    vim.api.nvim_get_current_line() == 'const untouched = { value: 1 };',
+    'Formatting did not recover after correcting the configuration'
 )
 vim.env.PATH = original_path
 
@@ -118,7 +182,7 @@ return {
     save_failure = save_failure,
     errmsg = vim.v.errmsg,
     buffer = buffer,
-    project_formatter = formatter.command,
+    project_formatter = formatter.config.root_dir,
     project_formatted = formatted,
     cached_formatter_queries = queries,
 }

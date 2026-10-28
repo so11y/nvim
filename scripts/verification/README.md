@@ -22,6 +22,8 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 `module-loading` 检查原生功能和插件声明的自动发现、功能目录的辅助文件边界、延迟初始化，以及 Lazy 重载后保留折叠状态并重新读取插件声明。
 
+`formatting` 检查旧 Prettier 配置格式、缺省值、覆盖规则、嵌套 EditorConfig、配置即时更新，以及保存、撤销和 CRLF 稳定性；`format-failure` 检查配置错误、插件限制、原文保留和项目本地工具。格式化始终调用 Oxfmt；项目已有的 Prettier 或 Oxfmt 随包的 Prettier 只负责解析配置，不调用其格式化 API，也不依赖 prettierd。Oxfmt 版本锁定在 `tools.lock.json`，升级时须验证随包配置解析器和这些回归。
+
 `structural-isolation` 检查结构操作使用独立快照、底部进度动画、按需坐标缓存，并确认输入、导航和文件进入不会留下全量解析状态。
 
 `brackets` 检查当前包围括号高亮，包括最近的嵌套括号、字符串和注释、Lua 函数内部、Vue script 注入、模板字符串及窗口切换后的清理。
