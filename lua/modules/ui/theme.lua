@@ -58,7 +58,7 @@ local function apply_ui_highlights()
         vim.api.nvim_get_hl(0, { name = 'CursorLineNr', link = false })
     cursorline_nr.bg = cursorline
     local groups = {
-        MatchParen = { fg = foreground, bg = palette.vscSelection, bold = true },
+        MatchParen = { fg = foreground, bg = palette.vscSelection },
         FlashCurrent = {
             fg = '#FFFFFF',
             bg = '#007ACC',
@@ -76,6 +76,7 @@ local function apply_ui_highlights()
             bg = error_background,
         },
         CursorLine = { bg = cursorline },
+        NeoTreeCursorLine = { link = 'CursorLine' },
         Folded = { link = 'CursorLine' },
         CursorLineNr = cursorline_nr,
         CursorLineSign = { link = 'CursorLine' },
@@ -101,6 +102,7 @@ local function apply_ui_highlights()
                 git_mark_alpha
             ),
         },
+        NeoTreeDimText = { fg = foreground },
         NeoTreeIndentMarker = { fg = blend(foreground, background, 0.12) },
     }
     for name, highlight in pairs(groups) do

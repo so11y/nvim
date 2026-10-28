@@ -24,6 +24,8 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 `formatting` 检查旧 Prettier 配置格式、缺省值、覆盖规则、嵌套 EditorConfig、配置即时更新，以及保存、撤销和 CRLF 稳定性；`format-failure` 检查配置错误、插件限制、原文保留和项目本地工具。格式化始终调用 Oxfmt；项目已有的 Prettier 或 Oxfmt 随包的 Prettier 只负责解析配置，不调用其格式化 API，也不依赖 prettierd。Oxfmt 版本锁定在 `tools.lock.json`，升级时须验证随包配置解析器和这些回归。
 
+存在项目 Prettier/Oxfmt 配置时使用项目规则，未指定的对应字段由 EditorConfig 补充；没有项目格式化配置时，使用 `format/prettier.json`，再由 EditorConfig 覆盖对应字段。`.editorconfig` 单独存在不会禁用个人默认排版。
+
 `structural-isolation` 检查结构操作使用独立快照、底部进度动画、按需坐标缓存，并确认输入、导航和文件进入不会留下全量解析状态。
 
 `brackets` 检查当前包围括号高亮，包括最近的嵌套括号、字符串和注释、Lua 函数内部、Vue script 注入、模板字符串及窗口切换后的清理。

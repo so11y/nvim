@@ -23,6 +23,7 @@ return {
         require('neo-tree').setup({
             auto_clean_after_session_restore = true,
             log_level = 'fatal',
+            popup_border_style = '', -- 跟随全局 winborder
             window = {
                 position = 'left',
                 width = 30,
@@ -31,6 +32,13 @@ return {
                     ['<cr>'] = 'open',
                     ['<tab>'] = 'set_root',
                     ['<bs>'] = 'navigate_up',
+                    ['i'] = {
+                        'show_file_details',
+                        config = {
+                            created_format = '%Y-%m-%d %H:%M',
+                            modified_format = '%Y-%m-%d %H:%M',
+                        },
+                    },
                     ['O'] = function(state)
                         local node = state.tree:get_node()
                         local path = node:get_id()

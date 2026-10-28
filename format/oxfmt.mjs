@@ -105,19 +105,21 @@ async function formatDocument({ filename, source, fileformat }) {
       dirname(customConfig).length >= dirname(standardConfig).length)
       ? customConfig
       : standardConfig;
-  let options = await prettier.resolveConfig(filename, {
-    config,
-    editorconfig: true,
-    useCache: false
-  });
-  if (options === null) {
-    options = await prettier.resolveConfig(filename, {
-      config: join(directory, "prettier.json"),
+  // Only a project formatter config replaces personal defaults.
+  const [resolvedOptions, personalOptions] = await Promise.all([
+    prettier.resolveConfig(filename, {
+      config,
       editorconfig: true,
       useCache: false
-    });
-  }
-  options = { ...defaults, ...options };
+    }),
+    config
+      ? null
+      : prettier.resolveConfig(filename, {
+          config: join(directory, "prettier.json"),
+          useCache: false
+        })
+  ]);
+  let options = { ...defaults, ...personalOptions, ...resolvedOptions };
   let formatFilename = filename;
   if (options.parser) {
     const extension = parsers[options.parser];

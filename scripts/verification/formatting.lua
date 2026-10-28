@@ -71,8 +71,26 @@ for _, case in ipairs({
     {
         filetype = 'vue',
         extension = 'vue',
-        source = '<template><div id="app" class="main">你好😀</div></template>',
-        expected = '<template>\n  <div\n    id="app"\n    class="main">\n    你好😀\n  </div>\n</template>',
+        source = '<template><PropertyControlCell property-key="fontWeight"><PropertySelectControl :model-value="weight.state.value" :mixed="weight.state.mixed" :options="fontWeightOptions" placeholder="请选择是否加粗" @change="weight.commit($event)" /></PropertyControlCell></template>',
+        expected = [[<template>
+    <PropertyControlCell property-key="fontWeight">
+        <PropertySelectControl
+            :model-value="weight.state.value"
+            :mixed="weight.state.mixed"
+            :options="fontWeightOptions"
+            placeholder="请选择是否加粗"
+            @change="weight.commit($event)" />
+    </PropertyControlCell>
+</template>]],
+        configs = {
+            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 4\nend_of_line = lf',
+        },
+    },
+    {
+        filetype = 'vue',
+        extension = 'vue',
+        source = '<template>\n  <div\n    id="app"\n    class="main">\n    你好😀\n  </div>\n</template>',
+        expected = '<template>\n  <div id="app" class="main">你好😀</div>\n</template>',
     },
     {
         filetype = 'json',
@@ -85,7 +103,7 @@ for _, case in ipairs({
         filetype = 'javascript',
         extension = 'js',
         source = 'const result=someFunction(firstArgument,secondArgument,thirdArgument,fourthArgument,fifthArgument);',
-        expected = 'const result = someFunction(\n  firstArgument,\n  secondArgument,\n  thirdArgument,\n  fourthArgument,\n  fifthArgument,\n);',
+        expected = 'const result = someFunction(\n  firstArgument,\n  secondArgument,\n  thirdArgument,\n  fourthArgument,\n  fifthArgument\n);',
         configs = {
             ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2\nend_of_line = lf',
         },
@@ -94,7 +112,7 @@ for _, case in ipairs({
         filetype = 'vue',
         extension = 'vue',
         source = '<template><MyComponent first="one" second="two" third="three" fourth="four" fifth="five" sixth="six" /></template>',
-        expected = '<template>\n  <MyComponent\n    first="one"\n    second="two"\n    third="three"\n    fourth="four"\n    fifth="five"\n    sixth="six"\n  />\n</template>',
+        expected = '<template>\n  <MyComponent\n    first="one"\n    second="two"\n    third="three"\n    fourth="four"\n    fifth="five"\n    sixth="six" />\n</template>',
         configs = {
             ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2',
         },
@@ -134,6 +152,21 @@ for _, case in ipairs({
         configs = {
             ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2\nmax_line_length = 120',
         },
+        change = {
+            file = '.editorconfig',
+            contents = 'root = true\n[*]\nindent_style = space\nindent_size = 4\nmax_line_length = 80',
+            expected = 'const result = someFunction(\n    firstArgument,\n    secondArgument,\n    thirdArgument,\n    fourthArgument,\n    fifthArgument\n);',
+        },
+    },
+    {
+        filetype = 'javascript',
+        extension = 'js',
+        source = 'const result=someFunction(firstArgument,secondArgument,thirdArgument,fourthArgument,fifthArgument);',
+        expected = 'const result = someFunction(\n    firstArgument,\n    secondArgument,\n    thirdArgument,\n    fourthArgument,\n    fifthArgument,\n);',
+        configs = {
+            ['.prettierrc.json'] = '{"printWidth":80,"tabWidth":4}',
+            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2\nmax_line_length = 120',
+        },
     },
 
     {
@@ -155,7 +188,7 @@ for _, case in ipairs({
         filetype = 'vue',
         extension = 'vue',
         subdir = 'nested',
-        source = '<template><section><div>hello</div></section></template>',
+        source = '<template>\n<section><div>hello</div></section>\n</template>',
         expected = '<template>\n    <section><div>hello</div></section>\n</template>',
         configs = {
             ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 4',
@@ -166,7 +199,7 @@ for _, case in ipairs({
         filetype = 'vue',
         extension = 'vue',
         subdir = 'nested',
-        source = '<template><section><div>hello</div></section></template>',
+        source = '<template>\n<section><div>hello</div></section>\n</template>',
         expected = '<template>\n  <section><div>hello</div></section>\n</template>',
         configs = {
             ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 4',
@@ -304,7 +337,7 @@ for _, case in ipairs({
         .. (case.basename or 'format')
         .. '.'
         .. case.extension
-    vim.fn.writefile({ case.source }, target)
+    vim.fn.writefile(vim.split(case.source, '\n', { plain = true }), target)
     vim.cmd.edit(target)
     vim.bo.filetype = case.filetype
     -- Saving immediately after opening must wait for the formatter to initialize.
@@ -320,7 +353,7 @@ for _, case in ipairs({
     assert(table.concat(vim.fn.readfile(target), '\n') == actual)
     if case.change then
         vim.fn.writefile(
-            { case.change.contents },
+            vim.split(case.change.contents, '\n', { plain = true }),
             directory .. '/' .. case.change.file
         )
         case.configs[case.change.file] = case.change.contents
