@@ -79,7 +79,10 @@ return result`);
     await delay(150);
     const previewed = await snapshot();
     assert(
-      previewed.preview && previewed.preview_focused && previewed.unchanged,
+      previewed.preview &&
+        previewed.focused &&
+        !previewed.preview_focused &&
+        previewed.unchanged,
     );
     assert(previewed.width > shown.width && !previewed.input);
     assert(
@@ -93,19 +96,6 @@ return result`);
       ),
     );
     await rpc('nvim_input', ['j']);
-    await delay(80);
-    assert.equal(
-      (await snapshot()).current,
-      previewed.current,
-      'Reading the preview changed the selected action',
-    );
-    await rpc('nvim_input', ['<C-h>']);
-    await delay(80);
-    assert(
-      (await snapshot()).focused,
-      'Ctrl+H did not return to the action list',
-    );
-    await rpc('nvim_input', ['j']);
     await delay(150);
     const updated = await snapshot();
     assert(updated.preview && updated.focused && updated.unchanged);
@@ -115,6 +105,23 @@ return result`);
         (line) => line.startsWith('+') && line.includes('applied'),
       ),
     );
+    await rpc('nvim_input', ['<C-l>']);
+    await delay(80);
+    const entered = await snapshot();
+    assert(entered.preview_focused && entered.current === updated.current);
+    await rpc('nvim_input', ['j']);
+    await delay(80);
+    assert.equal(
+      (await snapshot()).current,
+      entered.current,
+      'Reading the preview changed the selected action',
+    );
+    await rpc('nvim_input', ['<C-h>']);
+    await delay(80);
+    assert(
+      (await snapshot()).focused,
+      'Ctrl+H did not return to the action list',
+    );
     await rpc('nvim_input', ['<A-p>']);
     await delay(100);
     const compact = await snapshot();
@@ -123,6 +130,10 @@ return result`);
     );
     await rpc('nvim_input', ['<C-l>']);
     await delay(100);
+    const revealed = await snapshot();
+    assert(revealed.preview && revealed.focused && !revealed.preview_focused);
+    await rpc('nvim_input', ['<C-l>']);
+    await delay(80);
     await rpc('nvim_input', ['<Esc>']);
     await delay(100);
     const cancelled = await snapshot();
@@ -153,7 +164,7 @@ return {line=line,commands=s.commands,restored=vim.api.nvim_buf_get_lines(s.bufn
     const selected = await snapshot();
     assert.equal(selected.count, 12);
     assert(selected.text.includes('command') && !selected.input);
-    await rpc('nvim_input', ['<C-l>']);
+    await rpc('nvim_input', ['<C-l><C-l>']);
     await delay(120);
     const commandPreview = await snapshot();
     assert(
@@ -196,7 +207,7 @@ s.preview_original=vim.deepcopy(s.actions)`);
     await rpc('nvim_input', ['<C-l>']);
     await delay(150);
     const multiFile = await snapshot();
-    assert(multiFile.preview_focused && multiFile.unchanged);
+    assert(multiFile.preview && multiFile.focused && multiFile.unchanged);
     assert(
       multiFile.preview_lines.some(
         (line) => line.startsWith('+') && line.includes('const final ='),
@@ -269,7 +280,7 @@ s.actions={{title='Needs resolve',data={id=1}},{title='Direct edit',edit=s.resol
       0,
       'Opening a compact menu must not resolve actions',
     );
-    await rpc('nvim_input', ['<C-l>']);
+    await rpc('nvim_input', ['<C-l><C-l>']);
     await delay(100);
     const loading = await snapshot();
     assert(loading.preview_lines.join('\n').includes('正在获取'));
@@ -296,7 +307,7 @@ return vim.api.nvim_buf_get_lines(p.preview.win.buf,0,-1,false)`);
     await delay(80);
 
     await open();
-    await rpc('nvim_input', ['<C-l>']);
+    await rpc('nvim_input', ['<C-l><C-l>']);
     await delay(100);
     await lua(`local s=_G.__action_ui
 assert(s.pending[2].bufnr==s.bufnr)
@@ -358,6 +369,7 @@ return {line=line,restored=vim.api.nvim_buf_get_lines(s.bufnr,0,-1,false)[1]==s.
       navigated,
       previewed,
       updated,
+      entered,
       compact,
       cancelled,
       applied,

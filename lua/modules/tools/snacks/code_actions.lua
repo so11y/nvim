@@ -164,6 +164,8 @@ return {
                         { win = 'preview', border = true, title = '{preview}' },
                     },
                 })
+                picker:focus('list')
+                return
             end
             picker:focus('preview')
         end,
