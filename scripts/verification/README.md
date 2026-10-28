@@ -22,9 +22,9 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 `module-loading` 检查原生功能和插件声明的自动发现、功能目录的辅助文件边界、延迟初始化，以及 Lazy 重载后保留折叠状态并重新读取插件声明。
 
-`formatting` 检查旧 Prettier 配置格式、缺省值、覆盖规则、嵌套 EditorConfig、配置即时更新，以及保存、撤销和 CRLF 稳定性；`format-failure` 检查配置错误、插件限制、原文保留和项目本地工具。格式化始终调用 Oxfmt；项目已有的 Prettier 或 Oxfmt 随包的 Prettier 只负责解析配置，不调用其格式化 API，也不依赖 prettierd。Oxfmt 版本锁定在 `tools.lock.json`，升级时须验证随包配置解析器和这些回归。
+`formatting` 检查 JSON 配置文件名识别、最近配置与原生覆盖规则、配置更新、服务复用，以及保存、撤销和 CRLF 稳定性；`format-failure` 检查 RPC 错误、原生配置错误通知和项目本地工具。格式化始终使用 Oxfmt 原生 LSP，不再加载 Prettier 配置解析器或启动兼容进程。Oxfmt 版本锁定在 `tools.lock.json`，升级时验证这些回归。
 
-存在项目 Prettier/Oxfmt 配置时使用项目规则，未指定的对应字段由 EditorConfig 补充；没有项目格式化配置时，使用 `format/prettier.json`，再由 EditorConfig 覆盖对应字段。`.editorconfig` 单独存在不会禁用个人默认排版。
+从文件目录向上查找最近的配置，同一目录优先使用 Oxfmt 原生配置，再依次识别 `prettier.json`、`.prettierrc.json` 和 JSON 格式的 `.prettierrc`。找不到时使用 `format/prettier.json`。Neovim 仅选择路径，JSON 解析、选项默认值、`overrides`、忽略规则、EditorConfig 与配置错误处理均按 Oxfmt 原生行为；不再转换 Prettier 扩展选项或读取其 JS/YAML/TOML 配置、`package.json` 中的 `prettier` 字段。
 
 `structural-isolation` 检查结构操作使用独立快照、底部进度动画、按需坐标缓存，并确认输入、导航和文件进入不会留下全量解析状态。
 

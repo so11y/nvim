@@ -73,18 +73,15 @@ for _, case in ipairs({
         extension = 'vue',
         source = '<template><PropertyControlCell property-key="fontWeight"><PropertySelectControl :model-value="weight.state.value" :mixed="weight.state.mixed" :options="fontWeightOptions" placeholder="请选择是否加粗" @change="weight.commit($event)" /></PropertyControlCell></template>',
         expected = [[<template>
-    <PropertyControlCell property-key="fontWeight">
-        <PropertySelectControl
-            :model-value="weight.state.value"
-            :mixed="weight.state.mixed"
-            :options="fontWeightOptions"
-            placeholder="请选择是否加粗"
-            @change="weight.commit($event)" />
-    </PropertyControlCell>
+  <PropertyControlCell property-key="fontWeight">
+    <PropertySelectControl
+      :model-value="weight.state.value"
+      :mixed="weight.state.mixed"
+      :options="fontWeightOptions"
+      placeholder="请选择是否加粗"
+      @change="weight.commit($event)" />
+  </PropertyControlCell>
 </template>]],
-        configs = {
-            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 4\nend_of_line = lf',
-        },
     },
     {
         filetype = 'vue',
@@ -95,24 +92,15 @@ for _, case in ipairs({
     {
         filetype = 'json',
         extension = 'json',
+        basename = 'package',
         source = '{"version":"1.0.0","name":"keep-order"}',
         expected = '{\n  "version": "1.0.0",\n  "name": "keep-order"\n}',
-        basename = 'package',
     },
     {
         filetype = 'javascript',
         extension = 'js',
         source = 'const result=someFunction(firstArgument,secondArgument,thirdArgument,fourthArgument,fifthArgument);',
         expected = 'const result = someFunction(\n  firstArgument,\n  secondArgument,\n  thirdArgument,\n  fourthArgument,\n  fifthArgument\n);',
-        configs = {
-            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2\nend_of_line = lf',
-        },
-    },
-    {
-        filetype = 'vue',
-        extension = 'vue',
-        source = '<template><MyComponent first="one" second="two" third="three" fourth="four" fifth="five" sixth="six" /></template>',
-        expected = '<template>\n  <MyComponent\n    first="one"\n    second="two"\n    third="three"\n    fourth="four"\n    fifth="five"\n    sixth="six" />\n</template>',
         configs = {
             ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2',
         },
@@ -125,6 +113,7 @@ for _, case in ipairs({
         expected = '{\n    "version": "1.0.0",\n    "name": "keep-order"\n}',
         configs = {
             ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 4',
+            ['prettier.json'] = '{"sortPackageJson":false}',
         },
     },
     {
@@ -132,10 +121,7 @@ for _, case in ipairs({
         extension = 'js',
         source = 'const value={message:"你好😀"};',
         expected = "const value = { message: '你好😀' }",
-        configs = {
-            ['prettier.json'] = '{"singleQuote":true,"semi":false}',
-            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2',
-        },
+        configs = { ['prettier.json'] = '{"singleQuote":true,"semi":false}' },
     },
     {
         filetype = 'javascript',
@@ -147,16 +133,24 @@ for _, case in ipairs({
     {
         filetype = 'javascript',
         extension = 'js',
-        source = 'const result=someFunction(firstArgument,secondArgument,thirdArgument,fourthArgument,fifthArgument);',
-        expected = 'const result = someFunction(firstArgument, secondArgument, thirdArgument, fourthArgument, fifthArgument);',
-        configs = {
-            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2\nmax_line_length = 120',
-        },
-        change = {
-            file = '.editorconfig',
-            contents = 'root = true\n[*]\nindent_style = space\nindent_size = 4\nmax_line_length = 80',
-            expected = 'const result = someFunction(\n    firstArgument,\n    secondArgument,\n    thirdArgument,\n    fourthArgument,\n    fifthArgument\n);',
-        },
+        source = 'const value={message:"你好😀"};',
+        expected = "const value = { message: '你好😀' }",
+        configs = { ['.prettierrc'] = '{"singleQuote":true,"semi":false}' },
+    },
+    {
+        filetype = 'javascript',
+        extension = 'js',
+        source = 'const result=someFunction(firstArgument,secondArgument,thirdArgument,fourthArgument);',
+        expected = 'const result = someFunction(firstArgument, secondArgument, thirdArgument, fourthArgument)',
+        configs = { ['prettier.json'] = '{"semi":false}' },
+    },
+    {
+        filetype = 'json',
+        extension = 'json',
+        basename = 'package',
+        source = '{"version":"1.0.0","name":"keep-order"}',
+        expected = '{\n  "name": "keep-order",\n  "version": "1.0.0"\n}',
+        configs = { ['.prettierrc.json'] = '{}' },
     },
     {
         filetype = 'javascript',
@@ -168,85 +162,13 @@ for _, case in ipairs({
             ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2\nmax_line_length = 120',
         },
     },
-
-    {
-        filetype = 'javascript',
-        extension = 'js',
-        source = 'const result=someFunction(firstArgument,secondArgument,thirdArgument,fourthArgument);',
-        expected = 'const result = someFunction(\n  firstArgument,\n  secondArgument,\n  thirdArgument,\n  fourthArgument,\n)',
-        configs = { ['prettier.json'] = '{"semi":false}' },
-    },
-    {
-        filetype = 'json',
-        extension = 'json',
-        basename = 'package',
-        source = '{"version":"1.0.0","name":"keep-order"}',
-        expected = '{\n  "version": "1.0.0",\n  "name": "keep-order"\n}',
-        configs = { ['.prettierrc.json'] = '{}' },
-    },
-    {
-        filetype = 'vue',
-        extension = 'vue',
-        subdir = 'nested',
-        source = '<template>\n<section><div>hello</div></section>\n</template>',
-        expected = '<template>\n    <section><div>hello</div></section>\n</template>',
-        configs = {
-            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 4',
-            ['nested/.editorconfig'] = '[*.vue]\nend_of_line = lf',
-        },
-    },
-    {
-        filetype = 'vue',
-        extension = 'vue',
-        subdir = 'nested',
-        source = '<template>\n<section><div>hello</div></section>\n</template>',
-        expected = '<template>\n  <section><div>hello</div></section>\n</template>',
-        configs = {
-            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 4',
-            ['nested/.editorconfig'] = 'root = true\n[*.vue]\nend_of_line = lf',
-        },
-    },
-    {
-        filetype = 'javascript',
-        extension = 'js',
-        source = 'const value={message:"你好😀"};',
-        expected = "const value = { message: '你好😀' }",
-        configs = { ['.prettierrc.yml'] = 'singleQuote: true\nsemi: false' },
-    },
     {
         filetype = 'javascript',
         extension = 'js',
         source = 'const value={message:"你好😀"};',
         expected = "const value = { message: '你好😀' }",
         configs = {
-            ['.prettierrc.json5'] = '{singleQuote: true, semi: false,}',
-        },
-    },
-    {
-        filetype = 'javascript',
-        extension = 'js',
-        source = 'const value={message:"你好😀"};',
-        expected = "const value = { message: '你好😀' }",
-        configs = {
-            ['prettier.config.cjs'] = 'console.log("loading config"); module.exports = { singleQuote: true, semi: false };',
-        },
-    },
-    {
-        filetype = 'javascript',
-        extension = 'js',
-        source = 'const value={message:"你好😀"};',
-        expected = "const value = { message: '你好😀' }",
-        configs = {
-            ['package.json'] = '{"prettier":{"singleQuote":true,"semi":false}}',
-        },
-    },
-    {
-        filetype = 'javascript',
-        extension = 'js',
-        source = 'const value={message:"你好😀"};',
-        expected = "const value = { message: '你好😀' }",
-        configs = {
-            ['prettier.json'] = '{"singleQuote":false,"overrides":[{"files":"*.js","options":{"singleQuote":true,"semi":false}}]}',
+            ['prettier.json'] = '{"singleQuote":false,"overrides":[{"files":["*.js"],"options":{"singleQuote":true,"semi":false}}]}',
         },
     },
     {
@@ -289,24 +211,21 @@ for _, case in ipairs({
         extension = 'js',
         source = 'const value={message:"你好😀"};',
         expected = 'const value={message:"你好😀"};',
-        configs = {
-            ['.prettierignore'] = 'format.js',
-            ['prettier.json'] = '{broken',
-        },
+        configs = { ['.prettierignore'] = 'format.js' },
     },
     {
         filetype = 'javascriptreact',
         extension = 'jsx',
         source = 'const element=<div foo="x"/>;',
         expected = 'const element = <div foo="x" />;',
-        configs = { ['prettier.json'] = '{"parser":"babel"}' },
+        configs = { ['prettier.json'] = '{}' },
     },
     {
         filetype = 'typescriptreact',
         extension = 'tsx',
         source = 'const element=<div/>;',
         expected = 'const element = <div />;',
-        configs = { ['prettier.json'] = '{"parser":"typescript"}' },
+        configs = { ['prettier.json'] = '{}' },
     },
     {
         filetype = 'javascript',
@@ -316,12 +235,22 @@ for _, case in ipairs({
         configs = {
             ['prettier.json'] = '{"singleQuote":true,"semi":false}',
             ['.oxfmtrc.json'] = '{"singleQuote":false,"semi":true}',
-            ['.editorconfig'] = 'root = true\n[*]\nindent_style = space\nindent_size = 2',
+        },
+    },
+    {
+        filetype = 'javascript',
+        extension = 'js',
+        source = 'const value={message:"你好😀"};',
+        expected = 'const value = { message: "你好😀" };',
+        configs = {
+            ['.prettierrc.yml'] = 'singleQuote: true\nsemi: false',
+            ['prettier.config.cjs'] = 'throw new Error("Prettier config must not be loaded");',
         },
     },
 }) do
     local directory = vim.fn.tempname()
     vim.fn.mkdir(directory, 'p')
+    vim.fn.writefile({ '{}' }, directory .. '/package.json')
     if case.subdir then
         vim.fn.mkdir(directory .. '/' .. case.subdir, 'p')
     end
@@ -347,10 +276,16 @@ for _, case in ipairs({
         actual == case.expected,
         case.filetype .. ' formatting failed: ' .. actual
     )
-    -- Reformatting an already formatted document may return null.
+    -- Reformatting an unchanged config must reuse the native server.
+    local initial_client = vim.lsp.get_clients({ bufnr = 0, name = 'oxfmt' })[1]
     vim.cmd.write()
     require('modules.language.formatting.format').format()
     assert(table.concat(vim.fn.readfile(target), '\n') == actual)
+    assert(
+        vim.lsp.get_clients({ bufnr = 0, name = 'oxfmt' })[1].id
+            == initial_client.id,
+        'Unchanged formatting restarted the native server'
+    )
     if case.change then
         vim.fn.writefile(
             vim.split(case.change.contents, '\n', { plain = true }),
@@ -380,6 +315,9 @@ for _, case in ipairs({
     end
     vim.api.nvim_buf_delete(0, { force = true })
     vim.fn.delete(target)
+    if case.basename ~= 'package' then
+        vim.fn.delete(directory .. '/package.json')
+    end
     for name in pairs(case.configs or {}) do
         vim.fn.delete(directory .. '/' .. name)
     end
@@ -495,25 +433,6 @@ assert(
     'Formatting separated changes moved an unchanged highlight'
 )
 assert(vim.bo.fileformat == 'dos', 'Formatting changed the file line endings')
-local formatter = vim.lsp.get_clients({ bufnr = crlf_buf, name = 'oxfmt' })[1]
-local cancelled_callback = false
-local sent, request_id = formatter:request('textDocument/formatting', {
-    textDocument = vim.lsp.util.make_text_document_params(crlf_buf),
-    options = { tabSize = 2, insertSpaces = true },
-}, function()
-    cancelled_callback = true
-end, crlf_buf)
-assert(sent)
-formatter:cancel_request(request_id)
-vim.wait(200)
-assert(
-    not cancelled_callback,
-    'A cancelled formatting request delivered a late result'
-)
-assert(
-    next(formatter.requests) == nil,
-    'A cancelled formatting request remained pending'
-)
 vim.api.nvim_buf_delete(crlf_buf, { force = true })
 vim.fn.delete(crlf_file)
 

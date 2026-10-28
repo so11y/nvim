@@ -117,44 +117,40 @@ assert(
     formatted == 'const value = { message: "你好😀" };',
     'Project formatter did not run: ' .. formatted
 )
--- Malformed or unsupported configuration must fail visibly without another formatter.
-for _, case in ipairs({
-    { name = 'prettier.json', contents = '{broken' },
-    {
-        name = 'prettier.json',
-        contents = '{"plugins":["prettier-plugin-test"]}',
-    },
-    {
-        name = '.editorconfig',
-        contents = 'root = true\n[*]\nmax_line_length = off',
-    },
-}) do
-    local configfile = project .. '/' .. case.name
-    vim.fn.writefile(
-        vim.split(case.contents, '\n', { plain = true }),
-        configfile
-    )
-    local original = 'const untouched={value:1};'
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, { original })
-    local warning
-    vim.notify = function(message, level, ...)
-        if tostring(message):find('Formatting (oxfmt)', 1, true) then
-            warning = { message = message, level = level }
-        end
-        return notify(message, level, ...)
+-- Configuration errors are reported by the native server.
+local configfile = project .. '/prettier.json'
+vim.fn.writefile({ '{broken' }, configfile)
+vim.api.nvim_buf_set_lines(
+    0,
+    0,
+    -1,
+    false,
+    { 'const untouched = { value: 1 };' }
+)
+local config_failure
+local show_message = vim.lsp.handlers['window/showMessage']
+vim.lsp.handlers['window/showMessage'] = function(err, params, context, config)
+    local client = vim.lsp.get_client_by_id(context.client_id)
+    if
+        client
+        and client.name == 'oxfmt'
+        and params.type == vim.lsp.protocol.MessageType.Error
+    then
+        config_failure = params.message
+        return
     end
-    require('modules.language.formatting.format').format()
-    vim.notify = notify
-    assert(
-        warning and warning.level == vim.log.levels.WARN,
-        'Invalid configuration did not produce a warning'
-    )
-    assert(
-        vim.api.nvim_get_current_line() == original,
-        'Invalid configuration changed the source'
-    )
-    vim.fn.delete(configfile)
+    return show_message(err, params, context, config)
 end
+require('modules.language.formatting.format').format()
+assert(
+    vim.wait(3000, function()
+        return config_failure ~= nil
+    end, 10),
+    'Native configuration error was not reported'
+)
+vim.lsp.handlers['window/showMessage'] = show_message
+vim.fn.delete(configfile)
+vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'const untouched={value:1};' })
 require('modules.language.formatting.format').format()
 assert(
     vim.api.nvim_get_current_line() == 'const untouched = { value: 1 };',
@@ -180,6 +176,7 @@ assert(queries == 0, 'Cached status line repeated formatter checks')
 return {
     notices = notices,
     save_failure = save_failure,
+    config_failure = config_failure,
     errmsg = vim.v.errmsg,
     buffer = buffer,
     project_formatter = formatter.config.root_dir,

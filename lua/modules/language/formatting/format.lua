@@ -57,6 +57,13 @@ function M.format_options(bufnr)
     end
     if
         formatters.name == 'oxfmt'
+        and not require('modules.language.formatting.oxfmt').start(bufnr)
+    then
+        callback('Oxfmt language server could not start')
+        return
+    end
+    if
+        formatters.name == 'oxfmt'
         and not vim.wait(
             require('conform').default_format_opts.timeout_ms,
             function()
