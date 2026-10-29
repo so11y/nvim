@@ -78,9 +78,9 @@ return {
 
             keymap = {
                 preset = 'none',
-                ['<C-e>'] = { 'hide', 'fallback' },
-                ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
-                ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+                ['<C-e>'] = { 'hide', 'show', 'fallback' },
+                ['<C-u>'] = { 'scroll_documentation_up', 'fallback' },
+                ['<C-d>'] = { 'scroll_documentation_down', 'fallback' },
                 ['<CR>'] = { 'accept', 'fallback' },
                 ['<Tab>'] = {
                     'select_and_accept',

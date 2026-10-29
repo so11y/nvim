@@ -1,3 +1,20 @@
+local diagnostics = {
+    preview = function(ctx)
+        ctx.preview:reset()
+        ctx.preview:set_title('诊断详情')
+        ctx.preview:set_lines(
+            vim.split(ctx.item.item.message, '\n', { plain = true })
+        )
+    end,
+    win = {
+        preview = {
+            minimal = true,
+            wo = { wrap = true, linebreak = true, breakindent = true },
+            keys = { ['<C-h>'] = 'focus_list' },
+        },
+    },
+}
+
 return {
     {
         'folke/snacks.nvim',
@@ -140,6 +157,8 @@ return {
                     },
                 },
                 sources = {
+                    diagnostics = diagnostics,
+                    diagnostics_buffer = diagnostics,
                     lsp_symbols = {
                         filter = { default = true },
                         preview = function(ctx)

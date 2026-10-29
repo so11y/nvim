@@ -28,6 +28,8 @@ local common_highlights = {
         italic = true,
     },
     NeoTreeRootName = { link = 'NeoTreeDirectoryName' },
+    NeoTreeFloatBorder = { link = 'FloatBorder' },
+    NeoTreeFloatTitle = { link = 'FloatTitle' },
     NeoTreeGitAdded = { link = 'GitAdded' },
     NeoTreeGitModified = { link = 'GitModified' },
     NeoTreeGitDeleted = { link = 'GitDeleted' },
