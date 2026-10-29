@@ -131,7 +131,7 @@ return {
     end,
     keys = {
         {
-            '<leader>sc',
+            '<leader>uc',
             function()
                 Snacks.picker.colorschemes({
                     title = '选择配色主题',

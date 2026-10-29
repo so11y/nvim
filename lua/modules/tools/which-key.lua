@@ -60,6 +60,10 @@ return {
                     mode = { 'n', 'x', 'o' },
                 },
                 {
+                    '<leader>u',
+                    group = '界面',
+                },
+                {
                     '<leader>w',
                     group = '窗口',
                 },
