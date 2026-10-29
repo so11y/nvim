@@ -27,6 +27,7 @@ local common_highlights = {
         fg = '#585B70',
         italic = true,
     },
+    NeoTreeRootName = { link = 'NeoTreeDirectoryName' },
     NeoTreeGitAdded = { link = 'GitAdded' },
     NeoTreeGitModified = { link = 'GitModified' },
     NeoTreeGitDeleted = { link = 'GitDeleted' },

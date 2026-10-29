@@ -27,6 +27,7 @@ for _, name in ipairs({
     'modules.ui.heirline.components',
     'modules.ui.heirline.statusline',
     'modules.ui.bufferline.git',
+    'modules.ui.bufferline.separators',
     'modules.language.formatting.oxfmt',
     'modules.language.lsp.setup',
     'modules.language.lsp.servers.vtsls',

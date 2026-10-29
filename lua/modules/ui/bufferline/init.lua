@@ -12,6 +12,7 @@ return {
             options = {
                 style_preset = { presets.no_bold, presets.no_italic },
                 indicator = { icon = '▎', style = 'icon' },
+                separator_style = { '▐', '▐' },
                 diagnostics = 'nvim_lsp',
                 modified_icon = '●',
                 close_icon = '',
@@ -34,6 +35,8 @@ return {
             highlights = function(defaults)
                 local highlights = defaults.highlights
                 local gray = require('vscode.colors').get_colors().vscGray
+                highlights.fill.bg = highlights.background.bg
+                highlights.fill.default = false
                 highlights.background.fg = gray
                 highlights.buffer_visible.fg = gray
                 highlights.close_button.fg = highlights.buffer_selected.fg
@@ -45,11 +48,11 @@ return {
     end,
     config = function(_, opts)
         require('bufferline').setup(opts)
+        require('modules.ui.bufferline.separators')()
         require('modules.ui.bufferline.git').setup()
     end,
 
-    keys = { -- 切换标签，使用相同的快捷键
-        -- 切换到上/下一个缓冲区 (Barbar 的 BufferPrevious/BufferNext)
+    keys = {
         {
             '<A-h>',
             '<cmd>BufferLineCyclePrev<cr>',
@@ -59,7 +62,7 @@ return {
             '<A-l>',
             '<cmd>BufferLineCycleNext<cr>',
             desc = '下一个缓冲区',
-        }, -- 移动标签位置 (Barbar 的 BufferMovePrevious/BufferMoveNext)
+        },
         {
             '<A-<>',
             '<cmd>BufferLineMovePrev<cr>',

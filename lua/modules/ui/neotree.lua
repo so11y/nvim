@@ -51,6 +51,7 @@ return {
             },
             default_component_configs = {
                 indent = {
+                    padding = 0,
                     with_expanders = true, -- 加上这个，文件夹展开会有箭头感
                     expander_collapsed = '',
                     expander_expanded = '',

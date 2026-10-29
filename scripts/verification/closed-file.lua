@@ -1,6 +1,10 @@
 -- Run with: nvim --headless -u NONE -i NONE -l scripts/verification/closed-file.lua
 vim.opt.rtp:prepend(vim.fn.getcwd())
-for _, plugin in ipairs({ 'snacks.nvim', 'buffer-reopen.nvim' }) do
+for _, plugin in ipairs({
+    'snacks.nvim',
+    'buffer-reopen.nvim',
+    'bufferline.nvim',
+}) do
     vim.opt.rtp:append(vim.fn.stdpath('data') .. '/lazy/' .. plugin)
 end
 vim.o.hidden = true
