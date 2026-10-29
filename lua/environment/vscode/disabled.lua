@@ -20,6 +20,7 @@ return {
     -- tool
     'iamyoki/buffer-reopen.nvim',
     'folke/snacks.nvim',
+    'folke/trouble.nvim',
     'folke/persistence.nvim',
     'lewis6991/gitsigns.nvim',
     'esmuellert/codediff.nvim',

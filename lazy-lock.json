@@ -147,6 +147,10 @@
     "branch": "main",
     "commit": "6264451f14119d63a52580e5198d6baf8518b0b2"
   },
+  "trouble.nvim": {
+    "branch": "main",
+    "commit": "bd67efe408d4816e25e8491cc5ad4088e708a69a"
+  },
   "vim-visual-multi": {
     "branch": "master",
     "commit": "a6975e7c1ee157615bbc80fc25e4392f71c344d4"

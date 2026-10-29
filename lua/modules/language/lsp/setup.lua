@@ -52,7 +52,6 @@ function M.setup()
         virtual_text = false,
         signs = {
             severity = vim.diagnostic.severity.ERROR,
-            text = { [vim.diagnostic.severity.ERROR] = '' },
             linehl = { [vim.diagnostic.severity.ERROR] = 'DiagnosticLineError' },
         },
         underline = true,
