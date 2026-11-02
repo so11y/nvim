@@ -52,7 +52,6 @@ local shortcuts = {
     { 'Alt+b', '普通', '显示或隐藏文件树' },
     { 'Alt+e', '普通', '在文件树中定位当前文件' },
     { 'Alt+t', '普通/终端', '显示或隐藏终端' },
-    { 'Alt+g', '普通/终端', '显示或隐藏 opencode 代码助手终端' },
 }
 
 return function()

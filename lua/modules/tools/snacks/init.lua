@@ -310,14 +310,6 @@ return {
                 mode = { 'n', 't' },
             },
             {
-                '<A-g>',
-                function()
-                    require('snacks').terminal('opencode')
-                end,
-                desc = '代码助手（浮窗）',
-                mode = { 'n', 't' },
-            }, -- Notification
-            {
                 '<leader>sn',
                 function()
                     require('snacks').picker.notifications()

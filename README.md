@@ -134,7 +134,7 @@ HTML/Vue 中，`gra` 还可删除标签、移除外层标签、切换空标签�
 | `Alt+↑` / `Alt+↓` | 增加 / 减少窗口高度 |
 | `Alt+←` / `Alt+→` | 减少 / 增加窗口宽度 |
 | `Alt+W` | 关闭当前窗口或浮窗；最后一个编辑窗口关闭文件并保留布局 |
-| `Alt+T` / `Alt+G` | 开关终端 / 代码助手，终端内也可使用 |
+| `Alt+T` | 开关终端，终端内也可使用 |
 | `空格 q a` | 退出全部窗口；也可输入 `:qa`，`:q` 只关闭当前窗口 |
 
 文件树默认显示隐藏文件及被 Git 忽略的内容。文件树中的操作：
@@ -196,7 +196,7 @@ Node.js 调试弹出线程选择时，选择 `Resume stopped thread`。
 | macOS | `brew install neovim git node ripgrep`；编译工具用 `xcode-select --install` |
 | Rust 项目 | 另装 Rust 工具链、rust-analyzer、rustfmt；Windows/MSVC 还需 C++ Build Tools 和 Windows SDK |
 
-提交管理界面需安装 `lazygit`，代码助手需安装 `opencode`。VS Code 中使用需安装 `vscode-neovim` 扩展，并先在独立 Neovim 完成首次安装。建议使用带图标的字体。
+提交管理界面需安装 `lazygit`。VS Code 中使用需安装 `vscode-neovim` 扩展，并先在独立 Neovim 完成首次安装。建议使用带图标的字体。
 
 将[本仓库](https://github.com/so11y/nvim)克隆到 Windows 的 `%LOCALAPPDATA%\nvim` 或 macOS 的 `~/.config/nvim`，再启动 Neovim。已有配置先备份，安装需访问 GitHub 和 npm。
 
