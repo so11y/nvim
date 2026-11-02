@@ -1,5 +1,5 @@
-import { setTimeout as delay } from 'node:timers/promises';
 import { readFileSync } from 'node:fs';
+import { waitFor } from './wait.mjs';
 
 export async function verifyFormatKeysUI(rpc) {
   const filename = process.env.NVIM_TEST_ROOT + "/beta/manual 格式's.js";
@@ -18,22 +18,25 @@ export async function verifyFormatKeysUI(rpc) {
     [filename],
   ]);
   await rpc('nvim_input', ['<A-F>']);
-  await delay(300);
-  const normal = await text();
-  if (normal !== "const entry = { message: '你好😀' }")
-    throw new Error('Normal format key or project config failed: ' + normal);
+  const normal = await waitFor(
+    text,
+    (value) => value === "const entry = { message: '你好😀' }",
+    'Normal format key or project config failed',
+  );
   await setText('const entry={message:"第二次😀"};');
   await rpc('nvim_input', ['i<A-F><Esc>']);
-  await delay(300);
-  const insert = await text();
-  if (insert !== "const entry = { message: '第二次😀' }")
-    throw new Error('Insert format key failed: ' + insert);
+  const insert = await waitFor(
+    text,
+    (value) => value === "const entry = { message: '第二次😀' }",
+    'Insert format key failed',
+  );
   await setText('const saved={value:2};');
   await rpc('nvim_input', ['<A-s>']);
-  await delay(300);
-  const saved = readFileSync(filename, 'utf8').trim();
-  if (saved !== 'const saved = { value: 2 }')
-    throw new Error('Save format key failed: ' + saved);
+  const saved = await waitFor(
+    () => readFileSync(filename, 'utf8').trim(),
+    (value) => value === 'const saved = { value: 2 }',
+    'Save format key failed',
+  );
   const result = {
     normal,
     insert,

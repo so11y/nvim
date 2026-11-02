@@ -2,7 +2,7 @@ local report = { startup_errmsg = vim.v.errmsg }
 vim.v.errmsg = ''
 local ok, err = xpcall(function()
     vim.cmd.enew()
-    vim.api.nvim_buf_set_name(0, vim.env.NVIM_TEST_ROOT .. '/status-audit.txt')
+    vim.api.nvim_buf_set_name(0, vim.fn.tempname() .. '-status-audit.txt')
     vim.api.nvim_buf_set_lines(
         0,
         0,
@@ -154,6 +154,32 @@ local ok, err = xpcall(function()
             .. vim.inspect(colors)
     )
     report.vue_color_scope = { script = 0, template_styles = 3, style = 1 }
+
+    local breadcrumbs = {
+        configured = require('lazy.core.config').plugins['dropbar.nvim'] ~= nil,
+        loaded = package.loaded.dropbar ~= nil,
+        winbar = vim.wo.winbar,
+        autocmds = 0,
+        picker = vim.fn.maparg('<Space>;', 'n'),
+        toggle = vim.fn.maparg('<Space>wd', 'n'),
+    }
+    for _, cmd in ipairs(vim.api.nvim_get_autocmds({})) do
+        if
+            cmd.group_name and cmd.group_name:lower():find('dropbar', 1, true)
+        then
+            breadcrumbs.autocmds = breadcrumbs.autocmds + 1
+        end
+    end
+    assert(
+        not breadcrumbs.configured
+            and not breadcrumbs.loaded
+            and breadcrumbs.winbar == ''
+            and breadcrumbs.autocmds == 0
+            and breadcrumbs.picker == ''
+            and breadcrumbs.toggle == '',
+        'Breadcrumb plugin was not disabled: ' .. vim.inspect(breadcrumbs)
+    )
+    report.breadcrumbs = breadcrumbs
 end, debug.traceback)
 report.error = not ok and err or nil
 report.errmsg = vim.v.errmsg

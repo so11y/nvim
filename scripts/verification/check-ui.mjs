@@ -5,18 +5,21 @@ import { basename, dirname, join, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { decodeMultiStream, encode } from '@msgpack/msgpack';
-import { uiScenarios } from './ui/index.mjs';
+import { scenarios } from './scenarios.mjs';
 
 const directory = dirname(fileURLToPath(import.meta.url));
 const root = resolve(directory, '../..');
 const suite = process.argv[2] || 'workflows';
+if (!Object.hasOwn(scenarios, suite) || scenarios[suite].headless)
+  throw new Error('Unknown UI suite: ' + suite + '. Run npm run test:list.');
+const scenario = scenarios[suite];
 const output =
   process.argv[3] ||
   join(
     mkdtempSync(join(tmpdir(), 'nvim-check-')),
     suite.replace(/[^a-zA-Z0-9_-]/g, '_') + '.json',
   );
-const host = suite === 'host';
+const host = scenario.host;
 const args = ['--embed', '-i', 'NONE', '-n'];
 if (host) {
   const runtime = process.env.NVIM_VSCODE_RUNTIME;
@@ -93,9 +96,7 @@ function rpc(method, params = []) {
     editor.stdin.write(encode([0, id, method, params]));
   });
 }
-const deadlineMs = ['rust-debug.lua', 'navigation-performance'].includes(suite)
-  ? 120000
-  : 60000;
+const deadlineMs = scenario.timeout ?? 60000;
 const deadline = setTimeout(() => {
   rejectCalls(new Error('Verification timed out after ' + deadlineMs + ' ms'));
   editor.kill();
@@ -118,17 +119,11 @@ try {
     ]);
   // Each scenario starts with a fresh error marker after plugin initialization.
   await rpc('nvim_exec_lua', ["vim.v.errmsg=''", []]);
-  const file =
-    suite === 'workflows'
-      ? '../check-workflows.lua'
-      : suite === 'host'
-        ? 'host.lua'
-        : suite;
   const result =
-    (uiScenarios[suite]
-      ? await uiScenarios[suite](rpc)
+    (scenario.run
+      ? await scenario.run(rpc)
       : await rpc('nvim_exec_lua', [
-          readFileSync(resolve(directory, file), 'utf8'),
+          readFileSync(resolve(directory, scenario.file), 'utf8'),
           [],
         ])) ?? {};
   if (host) result.hostActions = hostActions;

@@ -34,7 +34,7 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 `definitions` 检查定义跳转和引用预览，`emmet` 包含补全关闭后的片段跳转，`hover` 检查悬停文档显示、原生窗口切换和 Esc 关闭；`vue-folding` 与 `fold-colors` 检查原生折叠范围和语法颜色。
 
-`config-audit` 检查诊断跳转与原生半页滚动计数；`linked-tags` 和 `typescript-refactor` 检查原生重命名的取消、标签/变量修改和提取函数后的重命名。
+`config-audit` 检查诊断跳转、原生半页滚动计数，以及面包屑插件、窗口栏和相关快捷键均未启用；`linked-tags` 和 `typescript-refactor` 检查原生重命名的取消、标签/变量修改和提取函数后的重命名。
 
 `mason-commands` 使用已安装的本地注册表，检查原生命令和补全时关闭该测试进程的元数据刷新，避免顺带下载注册表。
 
@@ -54,18 +54,23 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 入口在系统临时目录创建 `nvim-verification-results-*`，开始和结束时都会打印绝对路径。目录中保存 `results.json` 汇总、各场景日志及 UI 场景的 JSON 和 `.errors`。性能和安装检查也将 JSON 写入该目录。
 
-`fixtures/` 是版本管理中的只读模板。需要公共样例时，每次运行只安装一次依赖，各场景使用独立的临时文件副本并共享依赖目录；Emmet、导入路径等自行准备样例的场景会跳过这一步。测试中的保存、重命名和格式化不会修改仓库里的模板。结果保留供检查，可在不再需要时删除对应临时目录。
+`fixtures/` 是版本管理中的只读模板。需要公共样例时，每次运行只安装一次依赖，各场景使用独立的临时文件副本并共享依赖目录；`action-ui`、`config-audit`、Emmet、导入路径等自行准备样例的场景会跳过这一步。测试中的保存、重命名和格式化不会修改仓库里的模板。结果保留供检查，可在不再需要时删除对应临时目录。
 
 ## 脚本分工
 
 | 文件或目录 | 职责 |
 | --- | --- |
 | `run.mjs` | 场景选择、临时项目、进程执行、结果汇总 |
+| `scenarios.mjs` | 场景名称、执行入口、公共样例依赖、可选标记与特殊运行条件 |
 | `check-ui.mjs` | Neovim RPC、UI 初始化、超时与进程清理、结果收集 |
-| `ui/` | 按功能拆分的 UI 场景；`index.mjs` 注册场景名 |
+| `ui/` | 按功能拆分的 UI 场景；`wait.mjs` 等待实际状态并在超时时报告最后状态 |
 | `*.lua` | 独立或由 UI 执行器运行的 Lua 检查 |
 | `create-fixtures.mjs` | 复制模板并安装样例依赖，也可单独运行 |
 | `../check-workflows.lua` | 多语言编辑工作流 |
 | `../check-performance.lua` | 结构跳转基准 |
 
-新增 UI 场景时在 `ui/index.mjs` 注册；新增独立 Lua 场景时在 `run.mjs` 对应列表登记。不使用公共样例的 UI 或 Lua 场景同时加入 `selfContained`。单独调试需要公共样例的场景时，先运行 `node scripts/verification/create-fixtures.mjs`，按输出设置 `NVIM_TEST_ROOT`，再运行 `node scripts/verification/check-ui.mjs 场景名`；未指定结果路径时仍写入新的临时目录。
+新增场景只在 `scenarios.mjs` 登记：`run` 指定 JavaScript UI 函数，`file` 指定 Lua 文件；独立 Lua 场景标记 `headless: true`，其中需要加载完整配置的场景再标记 `init: true`。只有使用公共样例的场景才标记 `fixtures: true`；按需运行的场景标记 `optional: true`。特殊 UI 超时使用 `timeout`（毫秒），VS Code 宿主场景使用 `host: true`。
+
+单独调试 UI 场景时使用与统一入口相同的场景名，不带 `.lua` 后缀。需要公共样例时，先运行 `node scripts/verification/create-fixtures.mjs`，按输出设置 `NVIM_TEST_ROOT`，再运行 `node scripts/verification/check-ui.mjs 场景名`；未指定结果路径时仍写入新的临时目录。
+
+Code Action 和格式化按键测试只发送一次操作，再通过 `waitFor` 等待菜单、焦点或文本达到预期状态；超时会失败，不重发操作。布局检查保留展开与收起的相对关系，不固定具体行号或宽度。

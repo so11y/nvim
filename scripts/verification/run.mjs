@@ -4,112 +4,42 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createFixtures } from './create-fixtures.mjs';
-import { uiScenarios } from './ui/index.mjs';
+import { scenarios } from './scenarios.mjs';
 
 const directory = dirname(fileURLToPath(import.meta.url));
 const root = resolve(directory, '../..');
-const standalone = new Map([
-  ['module-loading', 'module-loading.lua'],
-  ['textobjects', 'textobjects.lua'],
-  ['linked-tag-requests', 'linked-tag-requests.lua'],
-  ['closed-file', 'closed-file.lua'],
-  ['formatting', 'formatting.lua'],
-  ['performance', '../check-performance.lua'],
-]);
-const ui = new Map(
-  Object.keys(uiScenarios).map((name) => [name.replace(/\.lua$/, ''), name]),
-);
-for (const name of [
-  'brackets',
-  'config-audit',
-  'definitions',
-  'editing-regressions',
-  'emmet-context',
-  'emmet-vue',
-  'emmet-wrap',
-  'format-failure',
-  'interactions',
-  'mason-commands',
-  'mason-tools',
-  'node-debug',
-  'rust-debug',
-  'secondary-languages',
-  'structural-isolation',
-  'tag-actions',
-  'tag-jsx',
-  'treesitter-undo',
-  'vue-folding',
-  'vue-textobjects',
-  'vue-workspaces',
-  'workspace-sdk',
-])
-  ui.set(name, name + '.lua');
-ui.set('workflows', 'workflows');
-ui.set('host', 'host');
-const selfContained = new Set([
-  'brackets',
-  'emmet',
-  'emmet-context',
-  'emmet-vue',
-  'emmet-wrap',
-  'git',
-  'host',
-  'import-paths',
-  'mason-tools',
-  'multicursor',
-  'search-count',
-  'structural-isolation',
-  'tag-jsx',
-  'treesitter-undo',
-  'unocss',
-]);
-const optional = new Set([
-  'performance',
-  'navigation-performance',
-  'rust-debug',
-  'host',
-  'installation',
-]);
-const names = [...standalone.keys(), ...ui.keys(), 'installation'];
+const names = Object.keys(scenarios);
 const requested = process.argv.slice(2);
 if (requested.includes('--list') || requested.includes('--help')) {
   console.log(
     'Usage: npm test -- [suite ...]\nWithout suite names, runs all entries except those marked optional.\n',
   );
   for (const name of names)
-    console.log(name + (optional.has(name) ? ' (optional)' : ''));
+    console.log(name + (scenarios[name].optional ? ' (optional)' : ''));
   process.exit(0);
 }
 const selected = requested.length
   ? requested
-  : names.filter((name) => !optional.has(name));
+  : names.filter((name) => !scenarios[name].optional);
 for (const name of selected) {
   if (!names.includes(name))
     throw new Error('Unknown suite: ' + name + '. Run npm run test:list.');
 }
-if (selected.includes('host') && !process.env.NVIM_VSCODE_RUNTIME) {
-  throw new Error(
-    'Set NVIM_VSCODE_RUNTIME to the vscode-neovim extension runtime directory.',
-  );
-}
-
 const output = await mkdtemp(join(tmpdir(), 'nvim-verification-results-'));
 console.log('Results: ' + output);
-const fixtureSuites = new Set(
-  selected.filter((name) => ui.has(name) && !selfContained.has(name)),
-);
-const template = fixtureSuites.size
+const template = selected.some((name) => scenarios[name].fixtures)
   ? await createFixtures(join(output, 'template'))
   : null;
 const results = [];
 for (const name of selected) {
+  const scenario = scenarios[name];
   console.log('RUN ' + name);
   const env = {
     ...process.env,
     NVIM_APPNAME: basename(root),
     NVIM_TEST_OUTPUT: join(output, name + '.json'),
   };
-  if (fixtureSuites.has(name)) {
+  if (scenario.fixtures) {
     // Share installed dependencies, but give every scenario its own editable files.
     const fixture = join(output, 'fixtures', name);
     await mkdir(dirname(fixture), { recursive: true });
@@ -127,20 +57,16 @@ for (const name of selected) {
     env.NVIM_TEST_ROOT = fixture;
   }
   let executable, args;
-  if (ui.has(name)) {
+  if (!scenario.headless) {
     executable = process.execPath;
-    args = [
-      join(directory, 'check-ui.mjs'),
-      ui.get(name),
-      env.NVIM_TEST_OUTPUT,
-    ];
+    args = [join(directory, 'check-ui.mjs'), name, env.NVIM_TEST_OUTPUT];
   } else {
     executable = process.env.NEOVIM_BIN || 'nvim';
     args = ['--headless', '-i', 'NONE', '-n'];
-    if (name === 'installation') {
-      args.push('-c', "lua dofile('scripts/verification/installation.lua')");
+    if (scenario.init) {
+      args.push('-c', `lua dofile('scripts/verification/${scenario.file}')`);
     } else {
-      args.push('-u', 'NONE', '-l', resolve(directory, standalone.get(name)));
+      args.push('-u', 'NONE', '-l', resolve(directory, scenario.file));
     }
   }
   const started = Date.now();
