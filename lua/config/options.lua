@@ -6,7 +6,7 @@ vim.opt.number = true -- 显示绝对行号
 vim.opt.relativenumber = true -- 显示相对行号
 vim.wo.cursorline = true -- 高亮当前光标所在的行（方便定位）
 vim.opt.cursorlineopt = 'both' -- 当前行贯穿正文与侧栏。
-vim.opt.list = true -- 显示不可见字符（如空格、Tab）
+vim.opt.list = false -- 隐藏空白字符标记（如 Tab 箭头）
 vim.opt.listchars:remove('trail') -- 不把新行的自动缩进空格显示成横杠
 
 vim.o.signcolumn = 'yes:1' -- 左侧“符号栏”始终显示，宽度固定为1。防止 Git 符号或错误提示出现时屏幕抖动。

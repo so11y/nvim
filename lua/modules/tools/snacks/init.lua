@@ -92,6 +92,12 @@ return {
             },
             scroll = { enabled = false },
             picker = {
+                db = {
+                    -- 随 nvim-data 携带，避免临时缓存清理后重新下载。
+                    sqlite3_path = vim.fn.has('win32') == 1
+                            and (vim.fn.stdpath('data') .. '/sqlite3.dll')
+                        or nil,
+                },
                 ui_select = true,
                 focus = 'list',
                 layouts = {
