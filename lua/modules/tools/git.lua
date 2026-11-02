@@ -16,11 +16,15 @@ return {
             },
         },
         opts = {
+            explorer = {
+                view_mode = 'tree',
+                auto_open_on_cursor = true,
+            },
             keymaps = {
                 view = {
                     toggle_explorer = '<A-b>',
                     focus_explorer = '<A-e>',
-                    toggle_stage = '<Tab>',
+                    toggle_stage = '<Space>',
                 },
                 explorer = { restore = 'd' },
             },
