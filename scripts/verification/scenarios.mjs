@@ -69,6 +69,7 @@ export const scenarios = {
   'tag-jsx': { file: 'tag-jsx.lua' },
   'treesitter-undo': { file: 'treesitter-undo.lua' },
   'vue-folding': { file: 'vue-folding.lua', fixtures: true },
+  'vue-tag-colors': { file: 'vue-tag-colors.lua' },
   'vue-textobjects': { file: 'vue-textobjects.lua', fixtures: true },
   'vue-workspaces': { file: 'vue-workspaces.lua', fixtures: true },
   'workspace-sdk': { file: 'workspace-sdk.lua', fixtures: true },
