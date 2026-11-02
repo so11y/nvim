@@ -251,17 +251,17 @@ map('n', '<C-l>', '<C-w>l', {
     desc = '跳转右窗口',
 })
 
--- 窗口大小调整 (Alt + 方向键)
-map('n', '<A-Up>', '<C-w>+', {
+-- 窗口大小调整 (Ctrl + 方向键)
+map('n', '<C-Up>', '<C-w>+', {
     desc = '增加窗口高度',
 })
-map('n', '<A-Down>', '<C-w>-', {
+map('n', '<C-Down>', '<C-w>-', {
     desc = '减少窗口高度',
 })
-map('n', '<A-Left>', '<C-w><', {
+map('n', '<C-Left>', '<C-w><', {
     desc = '减少窗口宽度',
 })
-map('n', '<A-Right>', '<C-w>>', {
+map('n', '<C-Right>', '<C-w>>', {
     desc = '增加窗口宽度',
 })
 
