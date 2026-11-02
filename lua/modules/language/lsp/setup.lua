@@ -70,6 +70,9 @@ function M.setup()
     vim.api.nvim_create_autocmd('LspAttach', {
         group = group,
         callback = function(ev)
+            if vim.bo[ev.buf].filetype == 'vue' then
+                vim.lsp.semantic_tokens.enable(false, { bufnr = ev.buf })
+            end
             local client = vim.lsp.get_client_by_id(ev.data.client_id)
             if
                 (client.name == 'vue_ls' or client.name == 'html')

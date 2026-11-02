@@ -1,98 +1,158 @@
+vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/test.ts')
+local ts_buf = vim.api.nvim_get_current_buf()
+assert(
+    vim.wait(15000, function()
+        return #(vim.lsp.semantic_tokens.get_at_pos(ts_buf, 1, 13) or {}) > 0
+    end, 50),
+    'TypeScript semantic highlighting missing'
+)
+
 local lines = {
-    '<template>',
-    '  <ScopeLayout un-gap isFull>',
-    '    <template #topLeft>',
-    '      <el-button @click="registerDialogControl.createView()" type="primary">',
-    '      </el-button>',
-    '    </template>',
-    '    <PageCore />',
-    '    <registerDialogControl.Drawer size="700">',
-    '      <registerDialog />',
-    '    </registerDialogControl.Drawer>',
-    '    <Dialog.Drawer.Panel>',
-    '    </Dialog.Drawer.Panel>',
-    '    <Dialog.Drawer.Panel />',
-    '    <input .value="value" />',
-    '  </ScopeLayout>',
-    '</template>',
-    '<script setup>',
-    'const value = 1',
+    '<script setup lang="ts">',
+    "import registerDialog from './App.vue';",
+    'const registerDialogControl = { Drawer: registerDialog };',
+    'const Dialog = { Drawer: { Panel: registerDialog } };',
+    "const value = 'test';",
     '</script>',
+    '<template>',
+    '  <registerDialogControl.Drawer size="700">',
+    '  </registerDialogControl.Drawer>',
+    '  <registerDialogControl.Drawer />',
+    '  <Dialog.Drawer.Panel>',
+    '  </Dialog.Drawer.Panel>',
+    '  <Dialog.Drawer.Panel />',
+    '  <registerDialog />',
+    '  <input .value="value" />',
+    '</template>',
 }
-local buf = vim.api.nvim_create_buf(false, true)
-vim.api.nvim_set_current_buf(buf)
-vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-vim.bo[buf].filetype = 'vue'
+local path = vim.env.NVIM_TEST_ROOT .. '/alpha/MemberTags.vue'
+vim.fn.writefile(lines, path)
+vim.cmd.edit(path)
+local buf = vim.api.nvim_get_current_buf()
 vim.wo.foldenable = false
 vim.wo.cursorline = false
 vim.wo.cursorcolumn = false
-vim.api.nvim_win_set_cursor(0, { 18, 0 })
-vim.treesitter.get_parser(buf):parse(true)
+vim.diagnostic.enable(false, { bufnr = buf })
+vim.api.nvim_win_set_cursor(0, { 1, 0 })
 
-local function color(row, col)
-    local pos = vim.fn.screenpos(0, row, col)
+for _, name in ipairs({ 'vue_ls', 'vtsls' }) do
+    assert(
+        vim.wait(15000, function()
+            local client = vim.lsp.get_clients({ bufnr = buf, name = name })[1]
+            return client and client.initialized
+        end, 50),
+        name .. ' missing'
+    )
+end
+
+local function column(row, word)
+    local col = assert(lines[row]:find(word, 1, true))
+    return col
+end
+assert(
+    not vim.lsp.semantic_tokens.is_enabled({ bufnr = buf }),
+    'Vue semantic highlighting still enabled'
+)
+assert(
+    vim.lsp.semantic_tokens.is_enabled({ bufnr = ts_buf }),
+    'Vue disabled TypeScript semantic highlighting'
+)
+local ts_client = vim.lsp.get_clients({ bufnr = buf, name = 'vtsls' })[1]
+local hover = ts_client:request_sync('textDocument/hover', {
+    textDocument = { uri = vim.uri_from_bufnr(buf) },
+    position = { line = 2, character = 6 },
+}, 10000, buf)
+assert(
+    hover and hover.result and hover.result.contents,
+    'Vue LSP hover stopped working'
+)
+
+local function color(row, word)
+    local pos = vim.fn.screenpos(0, row, column(row, word))
     assert(pos.row > 0, 'Test position is not visible')
     return vim.fn.screenattr(pos.row, pos.col)
 end
-
-local tags = {}
-for row, line in ipairs(lines) do
-    local first, last, name = line:find('</?([%w_.-]+)')
-    if name then
-        tags[#tags + 1] = {
-            row = row,
-            first = last - #name + 1,
-            last = last,
-            name = name,
-        }
-    end
-end
-
-local function check_tags()
+local function check()
     vim.cmd.redraw()
-    local expected = color(1, 2)
-    for _, tag in ipairs(tags) do
-        for col = tag.first, tag.last do
-            assert(
-                color(tag.row, col) == expected,
-                ('Different tag color: %s at %d:%d'):format(
-                    tag.name,
-                    tag.row,
-                    col
-                )
-            )
+    local result = {}
+    for _, case in ipairs({
+        {
+            rows = { 8, 9, 10 },
+            owner = 'registerDialogControl',
+            member = 'Drawer',
+        },
+        { rows = { 11, 12, 13 }, owner = 'Dialog', member = 'Panel' },
+    }) do
+        local owner = color(case.rows[1], case.owner)
+        local member = color(case.rows[1], case.member)
+        assert(
+            owner ~= member,
+            'Object and component lost their distinct colors'
+        )
+        for _, row in ipairs(case.rows) do
+            assert(color(row, case.owner) == owner, 'Object colors differ')
+            assert(color(row, case.member) == member, 'Component colors differ')
         end
+        result[#result + 1] = { owner = owner, member = member }
     end
-    local attribute = assert(lines[14]:find('value', 1, true))
-    assert(color(14, attribute) ~= expected, '.value binding became a tag')
-    assert(color(8, 35) ~= expected, 'size attribute became a tag')
-    assert(color(18, 7) ~= expected, 'Script variable became a tag')
-    return expected
+    assert(
+        color(11, 'Drawer') == color(12, 'Drawer'),
+        'Intermediate member differs'
+    )
+    assert(
+        color(11, 'Drawer') == color(11, 'Panel'),
+        'Dotted members have different syntax colors'
+    )
+    assert(
+        color(15, 'input') ~= color(15, 'value'),
+        '.value binding became a tag'
+    )
+    return result
 end
-
-local before = check_tags()
--- Reproduce the overlapping LSP type/modifier colors deterministically.
-local namespace = vim.api.nvim_create_namespace('test.vue-tag-semantic-colors')
-local groups = {
-    '@lsp.type.class.vue',
-    '@lsp.typemod.variable.readonly.vue',
-    '@lsp.type.property.vue',
-}
-local function semantic(row, first, last, group)
-    vim.api.nvim_buf_set_extmark(buf, namespace, row - 1, first - 1, {
-        end_col = last,
-        hl_group = group,
-        priority = vim.hl.priorities.semantic_tokens + 2,
-    })
-end
-for index, tag in ipairs(tags) do
-    if tag.row ~= 1 then
-        semantic(tag.row, tag.first, tag.last, groups[(index % #groups) + 1])
-    end
-end
-semantic(18, 7, 11, groups[1])
-local after = check_tags()
-assert(before == after, 'Semantic tokens changed tag colors')
+local colors = check()
 vim.cmd.colorscheme('vscode')
-check_tags()
-return { tags = #tags, semantic_overlay = true, errmsg = vim.v.errmsg }
+check()
+for row = 8, 15 do
+    lines[row] = '  ' .. lines[row]
+end
+vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+check()
+
+for _ = 1, 80 do
+    table.insert(lines, 9, '')
+end
+vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+vim.api.nvim_win_set_cursor(0, { 89, 0 })
+vim.cmd.normal({ args = { 'zz' }, bang = true })
+vim.cmd.redraw()
+assert(vim.fn.screenpos(0, 8, 1).row == 0, 'Opening tag is still on screen')
+assert(
+    color(89, 'Drawer') == color(90, 'Drawer'),
+    'Off-screen opening changed closing color'
+)
+assert(
+    color(89, 'Drawer') ~= color(89, 'registerDialogControl'),
+    'Off-screen case lost distinct colors'
+)
+vim.api.nvim_set_current_buf(ts_buf)
+assert(
+    vim.lsp.semantic_tokens.is_enabled({ bufnr = ts_buf }),
+    'TypeScript semantics changed after Vue edits'
+)
+assert(
+    #(vim.lsp.semantic_tokens.get_at_pos(ts_buf, 1, 13) or {}) > 0,
+    'TypeScript semantic tokens were cleared'
+)
+assert(
+    not vim.lsp.semantic_tokens.is_enabled({ bufnr = buf }),
+    'Vue semantics restarted after edits'
+)
+return {
+    colors = colors,
+    vue_semantic_tokens = false,
+    typescript_semantic_tokens = true,
+    vue_hover = true,
+    unsaved_edit = true,
+    offscreen_opening = true,
+    errmsg = vim.v.errmsg,
+}

@@ -1,31 +1,23 @@
 ;; extends
 
-; Keep template tag names above LSP semantic colors.
-((tag_name) @tag
-  (#set! priority 130))
-
-; The parser treats .Drawer (and further members) as a directive.
+; Dotted component members are parsed as directives on opening tags and errors
+; on closing tags. Give both the same syntax color, excluding <input .value>.
 ([
   (start_tag
     (tag_name)
     .
-    (directive_attribute) @tag)
+    (directive_attribute) @variable.member)
   (self_closing_tag
     (tag_name)
     .
-    (directive_attribute) @tag)
+    (directive_attribute) @variable.member)
+  (end_tag
+    (tag_name)
+    .
+    (ERROR) @variable.member)
 ] @_tag
-  ; Whitespace distinguishes a real property binding: <input .value="value">.
-  (#lua-match? @_tag "^<[^%s>]+%.")
-  (#set! priority 130))
-
-; The Vue parser represents the suffix in </Dialog.Drawer> as an error node.
-(end_tag
-  (tag_name)
-  .
-  (ERROR
-    ".") @tag
-  (#set! priority 130))
+  (#lua-match? @_tag "^</?[^%s/>]+%.")
+  (#set! priority 105))
 
 ((directive_name) @keyword.conditional
   (#any-of? @keyword.conditional "v-if" "v-else-if" "v-else")
