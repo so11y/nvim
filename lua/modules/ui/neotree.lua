@@ -79,7 +79,7 @@ return {
                 bind_to_cwd = true,
                 use_libuv_file_watcher = true, -- 文件夹变动自动刷新
                 filtered_items = {
-                    visible = true, -- 显示隐藏文件 (.gitignore 等)
+                    visible = true, -- 显示隐藏项，包括被 Git 忽略的内容
                     hide_dotfiles = false,
                 },
                 follow_current_file = {

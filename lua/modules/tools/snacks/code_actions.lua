@@ -69,6 +69,9 @@ local function edit_preview(edit, encoding)
 end
 
 return {
+    layout = {
+        layout = { width = 0.4, min_width = 64, max_width = 80 },
+    },
     config = function(opts)
         local height = #opts.finder()
         opts.layout.config = function(layout)
@@ -182,7 +185,6 @@ return {
         preview = {
             wo = { foldmethod = 'manual', foldenable = false },
             keys = {
-                ['<C-h>'] = 'focus_list',
                 ['<C-l>'] = 'focus_preview',
                 ['<CR>'] = 'confirm',
             },

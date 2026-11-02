@@ -83,6 +83,11 @@ return {
             picker = {
                 ui_select = true,
                 focus = 'list',
+                layouts = {
+                    select = {
+                        layout = { row = 4 },
+                    },
+                },
                 kinds = {
                     codeaction = require('modules.tools.snacks.code_actions'),
                 },
@@ -112,7 +117,7 @@ return {
                         keys = {
                             ['<A-w>'] = false,
                             ['<C-h>'] = {
-                                'focus_input',
+                                'focus_list',
                                 mode = { 'i', 'n' },
                             },
                             ['<C-j>'] = {
@@ -140,6 +145,20 @@ return {
                     },
                 },
                 sources = {
+                    projects = {
+                        layout = {
+                            preset = 'select',
+                            layout = {
+                                width = 0.4,
+                                min_width = 64,
+                                max_width = 80,
+                            },
+                        },
+                        actions = {
+                            focus_preview = 'nop',
+                            toggle_preview = 'nop',
+                        },
+                    },
                     lsp_symbols = {
                         filter = { default = true },
                         preview = function(ctx)
@@ -161,11 +180,6 @@ return {
                             ctx.preview:highlight({ buf = ctx.item.buf })
                             ctx.preview:loc()
                         end,
-                        win = {
-                            preview = {
-                                keys = { ['<C-h>'] = 'focus_list' },
-                            },
-                        },
                     },
                     files = {
                         hidden = true,
@@ -173,6 +187,7 @@ return {
                     },
 
                     grep = {
+                        hidden = true,
                         exclude = { '.git', 'node_modules' },
                     },
                 },
