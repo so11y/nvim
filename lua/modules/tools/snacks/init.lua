@@ -1,3 +1,14 @@
+local terminal_shell
+if vim.fn.has('win32') == 1 then
+    terminal_shell = { 'powershell.exe', '-NoLogo', '-NoProfile' }
+    if vim.fn.executable('inshellisense') == 1 then
+        vim.list_extend(terminal_shell, {
+            '-Command',
+            'inshellisense -s powershell',
+        })
+    end
+end
+
 return {
     {
         'folke/snacks.nvim',
@@ -199,13 +210,7 @@ return {
             },
             terminal = {
                 enabled = true,
-                shell = vim.fn.has('win32') == 1 and {
-                    'powershell.exe',
-                    '-NoLogo',
-                    '-NoProfile',
-                    '-Command',
-                    'inshellisense -s powershell',
-                } or nil,
+                shell = terminal_shell,
                 win = {
                     position = 'float', -- 终端也走浮窗，样式同 styles.terminal（90% + 圆角）
                 },

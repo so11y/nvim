@@ -192,7 +192,7 @@ Node.js 调试弹出线程选择时，选择 `Resume stopped thread`。
 | 环境 | 安装示例或补充要求 |
 | --- | --- |
 | Windows | `scoop install neovim git nodejs-lts ripgrep gcc` |
-| Windows 终端 | 使用 PowerShell，并执行 `npm install -g @microsoft/inshellisense` |
+| Windows 终端 | 默认使用 PowerShell；可选安装补全增强：`npm install -g @microsoft/inshellisense`，检测到后自动启用 |
 | macOS | `brew install neovim git node ripgrep`；编译工具用 `xcode-select --install` |
 | Rust 项目 | 另装 Rust 工具链、rust-analyzer、rustfmt；Windows/MSVC 还需 C++ Build Tools 和 Windows SDK |
 
