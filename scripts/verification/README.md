@@ -36,6 +36,8 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 `config-audit` 检查诊断跳转、原生半页滚动计数，以及面包屑层级显示、快捷键打开同级列表与跳转；`linked-tags` 和 `typescript-refactor` 检查原生重命名的取消、标签/变量修改和提取函数后的重命名。
 
+`tree-navigation` 检查 Neo-tree 与面包屑的 `h/l` 展开、收起和返回，以及叶子节点直接打开、符号跳转和文件树根目录边界。
+
 `mason-commands` 使用已安装的本地注册表，检查原生命令和补全时关闭该测试进程的元数据刷新，避免顺带下载注册表。
 
 以下检查按需显式选择：

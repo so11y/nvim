@@ -28,6 +28,21 @@ return {
                 position = 'left',
                 width = 30,
                 mappings = {
+                    ['h'] = function(state)
+                        local node = state.tree:get_node()
+                        local target = node:has_children()
+                                and node:is_expanded()
+                                and node:get_id()
+                            or node:get_parent_id()
+                        if target then
+                            state.commands.close_node(state)
+                            require('neo-tree.ui.renderer').focus_node(
+                                state,
+                                target
+                            )
+                        end
+                    end,
+                    ['l'] = 'open',
                     ['<space>'] = 'open',
                     ['<cr>'] = 'open',
                     ['<tab>'] = 'set_root',
