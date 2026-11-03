@@ -127,6 +127,22 @@ M.FileType = {
     end,
 }
 
+M.Encoding = {
+    provider = function()
+        local encoding = vim.bo.fileencoding
+        return (encoding ~= '' and encoding or vim.o.encoding):upper()
+    end,
+}
+
+M.FileFormat = {
+    static = {
+        format_names = { unix = 'LF', dos = 'CRLF', mac = 'CR' },
+    },
+    provider = function(self)
+        return self.format_names[vim.bo.fileformat]
+    end,
+}
+
 -- Git
 M.Git = {
     condition = conditions.is_git_repo,
@@ -143,7 +159,7 @@ M.Git = {
 }
 
 M.Ruler = {
-    provider = '%l:%v',
+    provider = '行 %l, 列 %v',
 }
 
 return M

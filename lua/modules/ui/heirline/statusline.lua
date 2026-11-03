@@ -8,7 +8,9 @@ return {
     components.MacroRecording,
     components.Fill,
     components.RightPadding(components.Ruler, 2),
+    components.RightPadding(components.Encoding, 2),
+    components.RightPadding(components.FileFormat, 2),
+    components.RightPadding(components.FileType, 2),
     components.RightPadding(components.LSPActive, 2),
-    components.RightPadding(components.Formatters, 2),
-    components.RightPadding(components.FileType, 1),
+    components.RightPadding(components.Formatters, 1),
 }
