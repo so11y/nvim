@@ -3,6 +3,7 @@ return {
     lazy = false,
     opts = {
         menu = {
+            preview = false,
             keymaps = {
                 ['h'] = '<C-w>q',
                 ['l'] = function()
