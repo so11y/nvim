@@ -155,31 +155,82 @@ local ok, err = xpcall(function()
     )
     report.vue_color_scope = { script = 0, template_styles = 3, style = 1 }
 
-    local breadcrumbs = {
-        configured = require('lazy.core.config').plugins['dropbar.nvim'] ~= nil,
-        loaded = package.loaded.dropbar ~= nil,
-        winbar = vim.wo.winbar,
-        autocmds = 0,
-        picker = vim.fn.maparg('<Space>;', 'n'),
-        toggle = vim.fn.maparg('<Space>wd', 'n'),
-    }
-    for _, cmd in ipairs(vim.api.nvim_get_autocmds({})) do
-        if
-            cmd.group_name and cmd.group_name:lower():find('dropbar', 1, true)
-        then
-            breadcrumbs.autocmds = breadcrumbs.autocmds + 1
+    vim.cmd.enew()
+    vim.api.nvim_buf_set_name(0, vim.fn.tempname() .. '-breadcrumbs.md')
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, {
+        '# Breadcrumb root',
+        '',
+        '## First section',
+        'first body',
+        '',
+        '## Second section',
+        'second body',
+    })
+    vim.bo.filetype = 'markdown'
+    vim.api.nvim_win_set_cursor(0, { 4, 0 })
+    local breadcrumb_buf = vim.api.nvim_get_current_buf()
+    local breadcrumb_win = vim.api.nvim_get_current_win()
+    local api = require('dropbar.api')
+    local function bar_text()
+        return vim.api.nvim_eval_statusline(vim.wo.winbar, {
+            winid = breadcrumb_win,
+            use_winbar = true,
+        }).str
+    end
+    vim.api.nvim_exec_autocmds('CursorMoved', { buffer = breadcrumb_buf })
+    assert(
+        vim.wait(3000, function()
+            local text = bar_text()
+            return text:find('Breadcrumb root', 1, true)
+                and text:find('First section', 1, true)
+        end, 10),
+        'Breadcrumbs did not show the current heading hierarchy'
+    )
+    local bar = api.get_dropbar(breadcrumb_buf, breadcrumb_win)
+    local clickables = vim.tbl_filter(function(component)
+        return component.on_click
+    end, bar.components)
+    local pivot = require('dropbar.configs').opts.bar.pick.pivots:sub(
+        #clickables,
+        #clickables
+    )
+    vim.api.nvim_feedkeys(vim.keycode('<Space>;' .. pivot), 'xt', false)
+    local menu = require('dropbar.utils.menu').get_current()
+    assert(
+        menu and vim.api.nvim_win_is_valid(menu.win),
+        'Breadcrumb picker did not open'
+    )
+    local entries = vim.api.nvim_buf_get_lines(menu.buf, 0, -1, false)
+    local target
+    for row, line in ipairs(entries) do
+        if line:find('Second section', 1, true) then
+            target = row
+            break
         end
     end
+    assert(target, 'Breadcrumb menu is missing the sibling heading')
+    vim.api.nvim_win_set_cursor(menu.win, { target, 0 })
+    vim.api.nvim_feedkeys(vim.keycode('<CR>'), 'xt', false)
     assert(
-        not breadcrumbs.configured
-            and not breadcrumbs.loaded
-            and breadcrumbs.winbar == ''
-            and breadcrumbs.autocmds == 0
-            and breadcrumbs.picker == ''
-            and breadcrumbs.toggle == '',
-        'Breadcrumb plugin was not disabled: ' .. vim.inspect(breadcrumbs)
+        vim.wait(1000, function()
+            return vim.api.nvim_get_current_win() == breadcrumb_win
+                and vim.api.nvim_win_get_cursor(0)[1] == 6
+        end, 10),
+        'Breadcrumb menu did not jump to the selected heading'
     )
-    report.breadcrumbs = breadcrumbs
+    vim.api.nvim_exec_autocmds('CursorMoved', { buffer = breadcrumb_buf })
+    assert(
+        vim.wait(1000, function()
+            return bar_text():find('Second section', 1, true)
+        end, 10),
+        'Breadcrumbs did not follow the cursor after jumping'
+    )
+    report.breadcrumbs = {
+        hierarchy = true,
+        picker = true,
+        sibling_jump = 6,
+    }
+    vim.bo.modified = false
 end, debug.traceback)
 report.error = not ok and err or nil
 report.errmsg = vim.v.errmsg

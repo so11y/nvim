@@ -2,6 +2,20 @@ local vue_language_server_path = vim.fn.stdpath('data')
     .. '/mason/packages/vue-language-server'
 
 return {
+    on_init = function(client)
+        local supports_method = client.supports_method
+        client.supports_method = function(self, method, bufnr)
+            -- vtsls forwards Vue requests but does not return its document symbols.
+            if
+                method == 'textDocument/documentSymbol'
+                and bufnr
+                and vim.bo[bufnr].filetype == 'vue'
+            then
+                return false
+            end
+            return supports_method(self, method, bufnr)
+        end
+    end,
     capabilities = {
         textDocument = { codeAction = { disabledSupport = false } },
     },

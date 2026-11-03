@@ -34,7 +34,7 @@ npm --prefix scripts/verification test -- formatting textobjects linked-tags
 
 `definitions` 检查定义跳转和引用预览，`emmet` 包含补全关闭后的片段跳转，`hover` 检查悬停文档显示、原生窗口切换和 Esc 关闭；`vue-folding` 与 `fold-colors` 检查原生折叠范围和语法颜色。
 
-`config-audit` 检查诊断跳转、原生半页滚动计数，以及面包屑插件、窗口栏和相关快捷键均未启用；`linked-tags` 和 `typescript-refactor` 检查原生重命名的取消、标签/变量修改和提取函数后的重命名。
+`config-audit` 检查诊断跳转、原生半页滚动计数，以及面包屑层级显示、快捷键打开同级列表与跳转；`linked-tags` 和 `typescript-refactor` 检查原生重命名的取消、标签/变量修改和提取函数后的重命名。
 
 `mason-commands` 使用已安装的本地注册表，检查原生命令和补全时关闭该测试进程的元数据刷新，避免顺带下载注册表。
 

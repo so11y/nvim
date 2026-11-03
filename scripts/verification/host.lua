@@ -8,6 +8,7 @@ for _, name in ipairs({
     'nvim-dap',
     'snacks.nvim',
     'glance.nvim',
+    'dropbar.nvim',
     'codediff.nvim',
     'vim-visual-multi',
 }) do

@@ -14,6 +14,7 @@ return {
     'nvim-neo-tree/neo-tree.nvim',
     'folke/noice.nvim',
     'rebelot/heirline.nvim',
+    'Bekaboo/dropbar.nvim',
     'NvChad/nvim-colorizer.lua',
     'rachartier/tiny-inline-diagnostic.nvim',
     'petertriho/nvim-scrollbar',

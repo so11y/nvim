@@ -189,7 +189,11 @@ check('vue_hybrid_and_unicode', function()
     )
     assert(
         vim.wait(20000, function()
-            return #vim.diagnostic.get(vue) > 0
+            for _, d in ipairs(vim.diagnostic.get(vue)) do
+                if d.source == 'ts-plugin' and d.code == 2322 then
+                    return true
+                end
+            end
         end, 50),
         'Vue TypeScript diagnostics missing'
     )
@@ -216,6 +220,100 @@ check('vue_hybrid_and_unicode', function()
         formatted = true,
     }
 end)
+for _, sample in ipairs({
+    { 'vue_javascript_eslint', 'LintJs.vue' },
+    { 'vue_typescript_eslint', 'LintTs.vue' },
+}) do
+    check(sample[1], function()
+        local buf = open('alpha/' .. sample[2])
+        local eslint = client(buf, 'eslint')
+        local expected = {
+            ['no-var'] = 2,
+            eqeqeq = 4,
+            ['vue/require-v-for-key'] = 9,
+        }
+        local diagnostics
+        assert(
+            vim.wait(20000, function()
+                diagnostics = vim.tbl_filter(function(d)
+                    return d.source == 'eslint'
+                end, vim.diagnostic.get(buf))
+                local found = {}
+                for _, d in ipairs(diagnostics) do
+                    if expected[d.code] == d.lnum + 1 then
+                        found[d.code] = true
+                    end
+                end
+                return found['no-var']
+                    and found.eqeqeq
+                    and found['vue/require-v-for-key']
+            end, 50),
+            sample[2]
+                .. ' ESLint script/template diagnostics missing: '
+                .. vim.inspect(diagnostics)
+        )
+        assert(#diagnostics == 3, vim.inspect(diagnostics))
+        local diagnostic
+        for _, d in ipairs(diagnostics) do
+            if d.code == 'no-var' then
+                diagnostic = d.user_data.lsp
+            end
+        end
+        local actions = request(eslint, 'textDocument/codeAction', {
+            textDocument = vim.lsp.util.make_text_document_params(buf),
+            range = diagnostic.range,
+            context = { diagnostics = { diagnostic }, only = { 'quickfix' } },
+        }, buf)
+        local fix
+        for _, action in ipairs(actions) do
+            if
+                action.command
+                and action.command.command == 'eslint.applySingleFix'
+            then
+                fix = action.command
+            end
+        end
+        assert(fix, sample[2] .. ' no-var quick fix missing')
+        request(eslint, 'workspace/executeCommand', fix, buf)
+        assert(
+            vim.wait(10000, function()
+                local remaining = {}
+                for _, d in ipairs(vim.diagnostic.get(buf)) do
+                    if d.source == 'eslint' then
+                        remaining[d.code] = true
+                    end
+                end
+                return not remaining['no-var']
+                    and remaining.eqeqeq
+                    and remaining['vue/require-v-for-key']
+                    and vim.api
+                            .nvim_buf_get_lines(buf, 1, 2, false)[1]
+                            :match('^let ')
+                        ~= nil
+            end, 50),
+            sample[2] .. ' no-var quick fix did not update text and diagnostics'
+        )
+        local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+        for i, line in ipairs(lines) do
+            lines[i] = line:gsub(' == ', ' === ')
+                :gsub('@click=', ':key="item" @click=')
+        end
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+        assert(
+            vim.wait(10000, function()
+                for _, d in ipairs(vim.diagnostic.get(buf)) do
+                    if d.source == 'eslint' then
+                        return false
+                    end
+                end
+                return true
+            end, 50),
+            sample[2] .. ' ESLint diagnostics did not clear after fixing'
+        )
+        vim.cmd.write()
+        return { rules = expected, quick_fix = true, cleared = true }
+    end)
+end
 check('windows_space_and_unicode_filename', function()
     local buf = open("alpha/文 件's.js")
     assert(

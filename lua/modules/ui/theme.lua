@@ -1,4 +1,6 @@
 local common_highlights = {
+    WinBarNC = { link = 'WinBar' },
+    DropBarIconUISeparator = { fg = '#FFFFFF' },
     GitAdded = {
         fg = '#3fb950',
         bg = 'NONE',

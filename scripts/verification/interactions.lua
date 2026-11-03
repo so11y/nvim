@@ -123,6 +123,16 @@ local ok, err = xpcall(function()
     vim.cmd.edit(vim.env.NVIM_TEST_ROOT .. '/alpha/App.vue')
     local vue_buf = vim.api.nvim_get_current_buf()
     wait_symbols(vue_buf)
+    local ts_client =
+        vim.lsp.get_clients({ bufnr = source_buf, name = 'vtsls' })[1]
+    assert(
+        ts_client and ts_client.attached_buffers[vue_buf],
+        'Vue is not using the existing TypeScript service'
+    )
+    assert(
+        ts_client:supports_method('textDocument/documentSymbol', source_buf),
+        'Vue disabled document symbols in TypeScript files'
+    )
     outline = open_outline(5, 'greet')
     vim.fn.maparg('<CR>', 'n', false, true).callback()
     assert(
@@ -132,7 +142,24 @@ local ok, err = xpcall(function()
         end, 25),
         'Vue outline jump missed greet'
     )
-    assert(vim.wo.winbar == '', 'Outline enabled breadcrumbs')
+    local breadcrumb_symbols
+    assert(
+        vim.wait(3000, function()
+            breadcrumb_symbols = vim.tbl_map(
+                function(symbol)
+                    return symbol.name
+                end,
+                require('dropbar.sources.lsp').get_symbols(
+                    vue_buf,
+                    vim.api.nvim_get_current_win(),
+                    vim.api.nvim_win_get_cursor(0)
+                )
+            )
+            return vim.list_contains(breadcrumb_symbols, 'greet')
+        end, 25),
+        'Vue breadcrumbs did not receive the selected function'
+    )
+    report.vue_breadcrumbs = breadcrumb_symbols
     local original = vim.api.nvim_buf_get_lines(vue_buf, 4, 5, false)[1]
     vim.api.nvim_buf_set_lines(
         vue_buf,
